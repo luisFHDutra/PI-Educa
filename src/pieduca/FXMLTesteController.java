@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import negocio.Categoria;
+import negocio.CategoriaExemplo;
 
 /**
  * FXML Controller class
@@ -23,11 +23,11 @@ import negocio.Categoria;
 public class FXMLTesteController implements Initializable {
 
     @FXML
-    private ComboBox<Categoria> cbCategorias;
+    private ComboBox<CategoriaExemplo> cbCategorias;
     
-    private List<Categoria> categorias = new ArrayList<>();
+    private List<CategoriaExemplo> categorias = new ArrayList<>();
     
-    private ObservableList<Categoria> obsCategorias;
+    private ObservableList<CategoriaExemplo> obsCategorias;
     
     /**
      * Initializes the controller class.
@@ -39,7 +39,7 @@ public class FXMLTesteController implements Initializable {
     
    public void carregarCategorias() {
        
-       Categoria categoria = new Categoria(1, "teste");
+       CategoriaExemplo categoria = new CategoriaExemplo(1, "teste");
        
        categorias.add(categoria);
        
