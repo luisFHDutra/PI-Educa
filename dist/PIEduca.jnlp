@@ -8,8 +8,10 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="PIEduca.jar" size="26940" download="eager" />
+    <jar href="PIEduca.jar" size="65358" download="eager" />
+    <jar href="lib\controlsfx-8.40.11.jar" size="985420" download="eager" />
+    <jar href="lib\jfoenix-8.0.8.jar" size="2708772" download="eager" />
   </resources>
-  <jfx:javafx-desc  width="800" height="600" main-class="pieduca.PIEduca"  name="PIEduca" />
+  <jfx:javafx-desc  width="800" height="600" main-class="pieduca.Main"  name="PIEduca" />
   <update check="always"/>
 </jnlp>
