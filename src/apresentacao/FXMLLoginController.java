@@ -1,8 +1,10 @@
 package apresentacao;
 
+import auth.Authenticator;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,13 +19,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import negocio.Usuario;
 import org.controlsfx.control.Notifications;
 
-/**
- * FXML Controller class
- *
- * @author luis.dutra
- */
 public class FXMLLoginController implements Initializable {
 
     @FXML
@@ -40,7 +38,17 @@ public class FXMLLoginController implements Initializable {
     }    
     
     public void login (MouseEvent event) throws Exception {
-        if (tfUsuario.getText().equals("admin") && tfPassword.getText().equals("admin")){
+        // teste
+        Usuario userAdmin = new Usuario(1, "admin", "$2a$10$dtAPkculHQqRuDd6Znn0KOQQIa61Jlt0iL73ZbmyPm3gD6VSfGcQa");
+        
+        ArrayList<Usuario> users = new ArrayList();
+        users.add(userAdmin);
+        
+        Authenticator auth = new Authenticator(users, tfUsuario.getText(), tfPassword.getText());
+        
+//        System.out.println(auth.generateHashCode("admin"));
+
+        if (auth.isRight()){
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
             Scene scene = new Scene(root);

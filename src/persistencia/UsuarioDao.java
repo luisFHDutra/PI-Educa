@@ -21,7 +21,7 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
             
             String sql = "INSERT INTO usuario VALUES ( ?, ?, ?);";
             
-            dbcm.runPreparedSQL(sql, objeto.getIdUsuario(), objeto.getUsername(), objeto.getSenha());
+            dbcm.runPreparedSQL(sql, objeto.getIdUsuario(), objeto.getUsername(), objeto.getHashCode());
         } 
         catch (DataBaseException ex)
         {
@@ -124,7 +124,7 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
             dbcm = Sys.getInstance().getDB();
             
             String sql = "UPDATE usuario SET username = ?, senha = ? WHERE id_usuario = ?";
-            dbcm.runPreparedSQL(sql, objeto.getUsername(), objeto.getSenha(), objeto.getIdUsuario());
+            dbcm.runPreparedSQL(sql, objeto.getUsername(), objeto.getHashCode(), objeto.getIdUsuario());
         } 
         catch (DataBaseException ex)
         {

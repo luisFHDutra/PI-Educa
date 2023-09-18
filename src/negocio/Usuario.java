@@ -1,16 +1,18 @@
 
 package negocio;
 
-public class Usuario {
+import auth.User;
+
+public class Usuario implements User {
     
     private Integer idUsuario;
     private String username;
-    private String senha;
+    private String hashCode;
 
-    public Usuario(Integer idUsuario, String username, String senha) {
+    public Usuario(Integer idUsuario, String username, String hashCode) {
         this.idUsuario = idUsuario;
         this.username = username;
-        this.senha = senha;
+        this.hashCode = hashCode;
     }
     
     public Integer getIdUsuario() {
@@ -29,12 +31,12 @@ public class Usuario {
         this.username = username;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getHashCode() {
+        return hashCode;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setHashCode(String hashCode) {
+        this.hashCode = hashCode;
     }
 
     @Override
