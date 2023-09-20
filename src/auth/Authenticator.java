@@ -1,31 +1,32 @@
 package auth;
 
 import java.util.ArrayList;
+import negocio.Usuario;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Authenticator
 {
-    private ArrayList<? extends User> users;
-    private User loggedUser;
-    private String username;
+    private ArrayList<Usuario> users;
+    private Usuario loggedUser;
+    private Integer id;
     private String senha;
 
-    public Authenticator(ArrayList<? extends User> users, String username, String senha)
+    public Authenticator(ArrayList<Usuario> users, Integer id, String senha)
     {
         this.users = users;
         this.loggedUser = null;
-        this.username = username;
+        this.id = id;
         this.senha = senha;
     }
 
     public boolean isRight()
     {
         boolean ok = false;
-        if (!username.isEmpty() && !senha.isEmpty())
+        if (id != 0 && !senha.isEmpty())
         {
-            for (User user : users)
+            for (Usuario user : users)
             {
-                if (user.getUsername().equals(username))
+                if (user.getId().equals(id))
                 {
                     // Verifique a senha usando a API de verificação de senha
                     if (checkPassword(senha, user.getHashCode()))
@@ -48,7 +49,7 @@ public class Authenticator
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
     
-    public User getLoggedUser()
+    public Usuario getLoggedUser()
     {
         return loggedUser;
     }

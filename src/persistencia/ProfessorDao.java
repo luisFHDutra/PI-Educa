@@ -23,55 +23,56 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         dbcm = Sys.getInstance().getDB();
         try
         {
-            dbcm.runSQL("begin transaction;");
+//            dbcm.runSQL("begin transaction;");
             
-            String sql = "INSERT INTO professor VALUES ( ?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO professor VALUES ( ?, ?, ?, ?);";
             
-            dbcm.runPreparedSQL(sql, objeto.getIdProfessor(), objeto.getNome(), objeto.getCpf(),
-                    objeto.getEndereco(), objeto.getDataNascimento(), objeto.getUsuario().getIdUsuario());
+            dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(),objeto.getContato());
             
-            createProfessorDisciplina(objeto);
+            String sqlUser = "INSERT INTO professor VALUES ( ?, ?, ?, ?);";
             
-            dbcm.runSQL("commit;");
+            dbcm.runPreparedSQL(sqlUser, objeto.getNome(), objeto.getAreaEspecializacao(),objeto.getContato());
+            
+//            dbcm.runSQL("commit;");
             
         } catch (DataBaseException ex) {
-            try {
-                dbcm.runSQL("rollback;");
-            } catch (DataBaseException ex1) {
-                Logger.getLogger(ProfessorDao.class.getName()).log(Level.SEVERE, null, ex1);
-            }
+//            try {
+////                dbcm.runSQL("rollback;");
+//            } catch (DataBaseException ex1) {
+//                Logger.getLogger(ProfessorDao.class.getName()).log(Level.SEVERE, null, ex1);
+//            }
 
             JOptionPane.showMessageDialog(null,
-                    "Erro no banco de dados",
+                    "Chave primária duplicada",
                     "Inserção no banco de dados", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void createProfessorDisciplina(Professor objeto) {
-        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
-
-        ArrayList<Disciplina> professorDisc = objeto.getDisciplinas();
-
-        String sql = "INSERT INTO professor_disciplina (id_disciplina, id_professor) VALUES (?, ?)";
-
-        PreparedStatement statement = null;
-        try {
-
-            // Prepara a instrução SQL
-            statement = dbcm.prepareStatement(sql);
-
-            // Percorre a lista de itens e insere cada um no banco de dados
-            for (Disciplina disciplina : professorDisc) {
-                statement.setInt(1, disciplina.getIdDisciplina());
-                statement.setInt(2, objeto.getIdProfessor());
-
-                // Executa a instrução SQL para inserir o item
-                statement.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DisciplinaDao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    private void createProfessorDisciplina(Professor objeto) {
+//        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+//
+//        ArrayList<Disciplina> professorDisc = objeto.getDisciplinas();
+//
+//        String sql = "INSERT INTO professor_disciplina (id_disciplina, id_professor) VALUES (?, ?)";
+//
+//        PreparedStatement statement = null;
+//        try {
+//
+//            // Prepara a instrução SQL
+//            statement = dbcm.prepareStatement(sql);
+//
+//            // Percorre a lista de itens e insere cada um no banco de dados
+//            for (Disciplina disciplina : professorDisc) {
+//                statement.setInt(1, disciplina.getIdDisciplina());
+//                statement.setInt(2, objeto.getIdProfessor());
+//
+//                // Executa a instrução SQL para inserir o item
+//                statement.executeUpdate();
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(DisciplinaDao.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
     
     @Override
     public Professor read(Integer primaryKey) throws NotFoundException {
@@ -90,43 +91,41 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                 rs.next();
                 int id = rs.getInt("id_professor");
                 String nome = rs.getString("nome");
-                String dataNasc = rs.getString("data_nasc");
-                String cpf = rs.getString("cpf");
-                String endereco = rs.getString("endereco");
-                int idUser = rs.getInt("id_usuario");
+                String areaEspecializacao = rs.getString("area_especializacao");
+                String contato = rs.getString("contato");
                 
                 Usuario user = null;
                 try {
-                    user = DaoFactory.criarUsuarioDao().read(idUser);
+                    user = DaoFactory.criarUsuarioDao().read(id);
                 } catch (NotFoundException ex) {
                     System.out.println("não existe");
                 }
                 
-                ArrayList<Disciplina> disciplinas = new ArrayList();
+//                ArrayList<Disciplina> disciplinas = new ArrayList();
 
-                String sqlDisciplina = "SELECT * FROM professor_disciplina WHERE id_professor = ?;";
-                ResultSet rsDisciplina = dbcm.runPreparedQuerySQL(sqlDisciplina, primaryKey);
+//                String sqlDisciplina = "SELECT * FROM professor_disciplina WHERE id_professor = ?;";
+//                ResultSet rsDisciplina = dbcm.runPreparedQuerySQL(sqlDisciplina, primaryKey);
                 
-                if (rsDisciplina.isBeforeFirst()) // acho alguma coisa?
-                {
-                    rsDisciplina.next();
-                    while (!rs.isAfterLast()) {
-                        int idDisciplina = rsDisciplina.getInt("id_disciplina");
-
-                        Disciplina disciplina = null;
-                        try {
-                            disciplina = DaoFactory.criarDisciplinaDao().read(idDisciplina);
-                        } catch (NotFoundException ex) {
-                            System.out.println("não existe");
-                        }
-
-                        disciplinas.add(disciplina);
-                        
-                        rs.next();
-                    }
-                }
+//                if (rsDisciplina.isBeforeFirst()) // acho alguma coisa?
+//                {
+//                    rsDisciplina.next();
+//                    while (!rs.isAfterLast()) {
+//                        int idDisciplina = rsDisciplina.getInt("id_disciplina");
+//
+//                        Disciplina disciplina = null;
+//                        try {
+//                            disciplina = DaoFactory.criarDisciplinaDao().read(idDisciplina);
+//                        } catch (NotFoundException ex) {
+//                            System.out.println("não existe");
+//                        }
+//
+//                        disciplinas.add(disciplina);
+//                        
+//                        rs.next();
+//                    }
+//                }
                 
-                p = new Professor(idUser, nome, cpf, endereco, dataNasc, user, disciplinas);
+                p = new Professor(id, nome, areaEspecializacao, contato, user);
             }
         } 
         catch (DataBaseException ex)
@@ -165,43 +164,17 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                 {
                     int id = rs.getInt("id_professor");
                     String nome = rs.getString("nome");
-                    String dataNasc = rs.getString("data_nasc");
-                    String cpf = rs.getString("cpf");
-                    String endereco = rs.getString("endereco");
-                    int idUser = rs.getInt("id_usuario");
+                    String areaEspecializacao = rs.getString("area_especializacao");
+                    String contato = rs.getString("contato");
 
                     Usuario user = null;
                     try {
-                        user = DaoFactory.criarUsuarioDao().read(idUser);
+                        user = DaoFactory.criarUsuarioDao().read(id);
                     } catch (NotFoundException ex) {
                         System.out.println("não existe");
                     }
 
-                    ArrayList<Disciplina> disciplinas = new ArrayList();
-
-                    String sqlDisciplina = "SELECT * FROM professor_disciplina WHERE id_professor = ?;";
-                    ResultSet rsDisciplina = dbcm.runPreparedQuerySQL(sqlDisciplina, id);
-
-                    if (rsDisciplina.isBeforeFirst()) // acho alguma coisa?
-                    {
-                        rsDisciplina.next();
-                        while (!rs.isAfterLast()) {
-                            int idDisciplina = rsDisciplina.getInt("id_disciplina");
-
-                            Disciplina disciplina = null;
-                            try {
-                                disciplina = DaoFactory.criarDisciplinaDao().read(idDisciplina);
-                            } catch (NotFoundException ex) {
-                                System.out.println("não existe");
-                            }
-
-                            disciplinas.add(disciplina);
-
-                            rs.next();
-                        }
-                    }
-
-                    Professor p = new Professor(idUser, nome, cpf, endereco, dataNasc, user, disciplinas);
+                    Professor p = new Professor(id, nome, areaEspecializacao, contato, user);
                     lista.add(p);
                     
                     rs.next();
@@ -233,9 +206,9 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "UPDATE professor SET nome = ?, cpf = ?, endereco = ?, data_nasc = ?, id_usuario WHERE id_professor = ?";
-            dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getCpf(), objeto.getEndereco(),
-                    objeto.getDataNascimento(), objeto.getUsuario().getIdUsuario(), objeto.getIdProfessor());
+            String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ? WHERE id_professor = ?";
+            dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(), objeto.getContato(),
+                    objeto.getIdProfessor());
         } 
         catch (DataBaseException ex)
         {
@@ -258,6 +231,32 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             throw new NotFoundException();
         }
+    }
+    
+    public Integer maxId() {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        try {
+            String sql = "SELECT MAX(id) FROM professor";
+            ResultSet rs = dbcm.runQuerySQL(sql);
+
+            int ultimoID = 0;
+
+            if (rs.next()) {
+             // Obtém o último ID da consulta
+             ultimoID = rs.getInt(1);
+            }
+
+            // Calcula o próximo ID
+            return ultimoID + 1;
+        
+        } catch (SQLException e) {
+            System.out.println("erro");
+        } catch (DataBaseException ex) {
+            Logger.getLogger(ProfessorDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+         
     }
     
 }

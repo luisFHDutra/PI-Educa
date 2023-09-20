@@ -19,9 +19,9 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "INSERT INTO usuario VALUES ( ?, ?, ?);";
+            String sql = "INSERT INTO usuario VALUES ( ?, ?);";
             
-            dbcm.runPreparedSQL(sql, objeto.getIdUsuario(), objeto.getUsername(), objeto.getHashCode());
+            dbcm.runPreparedSQL(sql, objeto.getId(), objeto.getHashCode());
         } 
         catch (DataBaseException ex)
         {
@@ -47,10 +47,9 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
             {
                 rs.next();
                 int id = rs.getInt("id_usuario");
-                String username = rs.getString("username");
                 String senha = rs.getString("senha");
                 
-                u = new Usuario(id,username,senha);
+                u = new Usuario(id,senha);
             }
         } 
         catch (DataBaseException ex)
@@ -88,10 +87,9 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
                 while (!rs.isAfterLast())
                 {
                     int id = rs.getInt("id_usuario");
-                    String username = rs.getString("username");
                     String senha = rs.getString("senha");
                 
-                    Usuario u = new Usuario(id,username,senha);
+                    Usuario u = new Usuario(id,senha);
                     lista.add(u);
                     
                     rs.next();
@@ -123,8 +121,8 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "UPDATE usuario SET username = ?, senha = ? WHERE id_usuario = ?";
-            dbcm.runPreparedSQL(sql, objeto.getUsername(), objeto.getHashCode(), objeto.getIdUsuario());
+            String sql = "UPDATE usuario SET senha = ? WHERE id_usuario = ?";
+            dbcm.runPreparedSQL(sql, objeto.getHashCode(), objeto.getId());
         } 
         catch (DataBaseException ex)
         {

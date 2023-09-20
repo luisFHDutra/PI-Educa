@@ -1,26 +1,27 @@
 
 package negocio;
 
-import java.util.ArrayList;
-
 public class Professor {
     
     private Integer idProfessor;
     private String nome;
-    private String cpf;
-    private String endereco;
-    private String dataNascimento;
+    private String areaEspecializacao;
+    private String contato;
     private Usuario usuario;
-    private ArrayList<Disciplina> disciplinas;
 
-    public Professor(Integer idProfessor, String nome, String cpf, String endereco, String dataNascimento, Usuario usuario, ArrayList<Disciplina> disciplinas) {
-        this.idProfessor = idProfessor;
+    public Professor(String nome, String areaEspecializacao, String contato, Usuario usuario) {
         this.nome = nome;
-        this.cpf = cpf;
-        this.endereco = endereco;
-        this.dataNascimento = dataNascimento;
+        this.areaEspecializacao = areaEspecializacao;
+        this.contato = contato;
         this.usuario = usuario;
-        this.disciplinas = disciplinas;
+    }
+    
+    public Professor(Integer idProfessor, String nome, String areaEspecializacao, String contato, Usuario usuario) {
+        this.nome = nome;
+        this.areaEspecializacao = areaEspecializacao;
+        this.contato = contato;
+        this.usuario = usuario;
+        this.idProfessor = idProfessor;
     }
 
     public Integer getIdProfessor() {
@@ -39,28 +40,20 @@ public class Professor {
         this.nome = nome;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getAreaEspecializacao() {
+        return areaEspecializacao;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setAreaEscpecializacao(String areaEspecializacao) {
+        this.areaEspecializacao = areaEspecializacao;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public String getContato() {
+        return contato;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
-    public String getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setContato(String contato) {
+        this.contato = contato;
     }
 
     public Usuario getUsuario() {
@@ -69,14 +62,6 @@ public class Professor {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-    }
-
-    public ArrayList<Disciplina> getDisciplinas() {
-        return disciplinas;
-    }
-
-    public void setDisciplinas(ArrayList<Disciplina> disciplinas) {
-        this.disciplinas = disciplinas;
     }
     
     @Override

@@ -33,21 +33,21 @@ public class FXMLLoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Image img = new Image("/imagens/avatar-batman.png");
+        Image img = new Image("/imagens/icon-user.png");
         imgLogo.setImage(img);
     }    
     
     public void login (MouseEvent event) throws Exception {
         // teste
-        Usuario userAdmin = new Usuario(1, "admin", "$2a$10$dtAPkculHQqRuDd6Znn0KOQQIa61Jlt0iL73ZbmyPm3gD6VSfGcQa");
+        Usuario userAdmin = new Usuario(1, "$2a$10$dtAPkculHQqRuDd6Znn0KOQQIa61Jlt0iL73ZbmyPm3gD6VSfGcQa");
         
         ArrayList<Usuario> users = new ArrayList();
         users.add(userAdmin);
         
-        Authenticator auth = new Authenticator(users, tfUsuario.getText(), tfPassword.getText());
+        Authenticator auth = new Authenticator(users, Integer.valueOf(tfUsuario.getText()), tfPassword.getText());
         
 //        System.out.println(auth.generateHashCode("admin"));
-
+            
         if (auth.isRight()){
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
@@ -66,8 +66,8 @@ public class FXMLLoginController implements Initializable {
         Notifications notification = Notifications.create();
         notification.title("Error");
         notification.text("Usuário ou senha incorretos");
-        notification.hideAfter(Duration.seconds(5));
-        notification.position(Pos.BASELINE_RIGHT);
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.BOTTOM_CENTER);
         notification.show();
     }
     
@@ -75,8 +75,8 @@ public class FXMLLoginController implements Initializable {
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
         notification.text("Bem vindo");
-        notification.hideAfter(Duration.seconds(5));
-        notification.position(Pos.BASELINE_RIGHT);
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.BOTTOM_CENTER);
         notification.show();
     }
 }
