@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -37,10 +38,10 @@ public class FXMLCadastroProfessoresController implements Initializable {
         // TODO
     }   
     
-    public void voltarMain (MouseEvent event) throws Exception {
+    public void voltar (MouseEvent event) throws Exception {
         
         Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLConsultaProfessor.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
 //      stage.initStyle(StageStyle.UNDECORATED);
@@ -50,25 +51,49 @@ public class FXMLCadastroProfessoresController implements Initializable {
     }
  
     public void cadastrarProfessor (MouseEvent event) throws Exception {
+        String senha = tfPassword.getText();
+        String nome = tfNome.getText();
+        String area = tfAreaEspecializacao.getText();
+        String contato = tfContato.getText();
         
-        ProfessorDao professor = new ProfessorDao();
-        int id = professor.maxId();
-        
-        Authenticator auth = new Authenticator();
-        String hashCode = auth.generateHashCode(tfPassword.getText());
-        
-        Usuario user = new Usuario(id, hashCode);
-        
-        Professor prof = new Professor(id, tfNome.getText(), tfAreaEspecializacao.getText(), tfContato.getText(), user);
-
-        DaoFactory.criarProfessorDao().create(prof);
-        
-        if (id < professor.maxId()) {
-            check();
+        if (senha.isEmpty() || nome.isEmpty() || area.isEmpty() || contato.isEmpty()) {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setHeaderText(null);
+            alerta.setContentText("Preencha todas os campos");
+            alerta.showAndWait();
         } else {
-            error();
+            ProfessorDao professor = new ProfessorDao();
+            int id = professor.maxId();
+
+            Authenticator auth = new Authenticator();
+            String hashCode = auth.generateHashCode(senha);
+
+            Usuario user = new Usuario(id, hashCode);
+
+            Professor prof = new Professor(id, nome, area, contato, user);
+
+            DaoFactory.criarProfessorDao().create(prof);
+
+            limpar();
+            
+            if (id < professor.maxId()) {
+                check();
+            } else {
+                error();
+            }
         }
         
+    }
+    
+    public void limparCampos() {
+        limpar();
+    }
+    
+    private void limpar() {
+        tfNome.setText(null);
+        tfContato.setText(null);
+        tfAreaEspecializacao.setText(null);
+        tfPassword.setText(null);
     }
     
     private void error(){

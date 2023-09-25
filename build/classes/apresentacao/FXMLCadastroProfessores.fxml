@@ -14,6 +14,7 @@
       <Label layoutX="224.0" layoutY="70.0" text="Cadastro de professores" />
       <JFXTextField fx:id="tfAreaEspecializacao" layoutX="221.0" layoutY="188.0" promptText="Área de especialização" />
       <JFXTextField fx:id="tfContato" layoutX="221.0" layoutY="236.0" promptText="Contato" />
-      <JFXButton layoutX="43.0" layoutY="339.0" onMouseClicked="#voltarMain" text="Voltar" />
+      <JFXButton layoutX="43.0" layoutY="339.0" onMouseClicked="#voltar" text="Voltar" />
+      <JFXButton layoutX="469.0" layoutY="339.0" onMouseClicked="#limparCampos" text="Limpar" />
    </children>
 </AnchorPane>

@@ -35,9 +35,12 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             
             dbcm.runSQL("commit;");
             
+            dbcm.closeConnection();
         } catch (DataBaseException ex) {
             try {
                 dbcm.runSQL("rollback;");
+                
+                dbcm.closeConnection();
             } catch (DataBaseException ex1) {
                 notifications.rollback();
             }
@@ -48,39 +51,13 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             notifications.erroSintaxe();
         }
     }
-
-//    private void createProfessorDisciplina(Professor objeto) {;
-//        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
-//
-//        String sql = "INSERT INTO usuario (id_disciplina, id_professor) VALUES (?, ?)";
-//
-//        PreparedStatement statement = null;
-//        try {
-//
-//            // Prepara a instrução SQL
-//            statement = dbcm.prepareStatement(sql);
-//
-//            // Percorre a lista de itens e insere cada um no banco de dados
-//            for (Disciplina disciplina : professorDisc) {
-//                statement.setInt(1, disciplina.getIdDisciplina());
-//                statement.setInt(2, objeto.getIdProfessor());
-//
-//                // Executa a instrução SQL para inserir o item
-//                statement.executeUpdate();
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(DisciplinaDao.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
     
     @Override
     public Professor read(Integer primaryKey) throws NotFoundException {
         Professor p = null;
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try
         {
-            dbcm = Sys.getInstance().getDB();
-            
             String sql = "SELECT * FROM professor WHERE id = ?";
             
             ResultSet rs = dbcm.runPreparedQuerySQL(sql, primaryKey );
@@ -100,32 +77,10 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                    notifications.tabelaNaoExiste();
                 }
                 
-//                ArrayList<Disciplina> disciplinas = new ArrayList();
-
-//                String sqlDisciplina = "SELECT * FROM professor_disciplina WHERE id_professor = ?;";
-//                ResultSet rsDisciplina = dbcm.runPreparedQuerySQL(sqlDisciplina, primaryKey);
-                
-//                if (rsDisciplina.isBeforeFirst()) // acho alguma coisa?
-//                {
-//                    rsDisciplina.next();
-//                    while (!rs.isAfterLast()) {
-//                        int idDisciplina = rsDisciplina.getInt("id_disciplina");
-//
-//                        Disciplina disciplina = null;
-//                        try {
-//                            disciplina = DaoFactory.criarDisciplinaDao().read(idDisciplina);
-//                        } catch (NotFoundException ex) {
-//                            System.out.println("não existe");
-//                        }
-//
-//                        disciplinas.add(disciplina);
-//                        
-//                        rs.next();
-//                    }
-//                }
-                
                 p = new Professor(id, nome, areaEspecializacao, contato, user);
             }
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -143,11 +98,9 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
     public ArrayList<Professor> readAll() {
         ArrayList<Professor> lista = new ArrayList();
         
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try
         {
-            dbcm = Sys.getInstance().getDB();
-            
             String sql = "SELECT * FROM professor;";
             
             ResultSet rs = dbcm.runQuerySQL( sql );
@@ -176,6 +129,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                 }
             }
 
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -191,15 +145,15 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
 
     @Override
     public void update(Professor objeto) throws NotFoundException {
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
         {
-            dbcm = Sys.getInstance().getDB();
-            
             String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(), objeto.getContato(),
                     objeto.getIdProfessor());
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -210,14 +164,17 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
 
     @Override
     public void delete(Integer primaryKey) throws NotFoundException {
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
         {
-            dbcm = Sys.getInstance().getDB();
+            String sqlUser = "DELETE FROM usuario WHERE id = ?";
+            dbcm.runPreparedSQL(sqlUser, primaryKey );
             
-            String sql = "DELETE FROM professor WHERE id = ?";
-            dbcm.runPreparedSQL(sql, primaryKey );
+            String sqlProf = "DELETE FROM professor WHERE id = ?";
+            dbcm.runPreparedSQL(sqlProf, primaryKey );
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -240,9 +197,11 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
              ultimoID = rs.getInt(1);
             }
 
+            dbcm.closeConnection();
+            
             // Calcula o próximo ID
             return ultimoID + 1;
-        
+            
         } catch (SQLException e) {
             notifications.tabelaNaoExiste();
         } catch (DataBaseException ex) {
