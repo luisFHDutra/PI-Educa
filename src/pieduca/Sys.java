@@ -3,14 +3,15 @@ package pieduca;
 
 import db.DataBaseConnectionManager;
 import db.DataBaseException;
-import javax.swing.JOptionPane;
 import negocio.Usuario;
+import persistencia.NotificationSQL;
 
 public class Sys {
     
     private String nomeSys;
     private Usuario user;
     private DataBaseConnectionManager dbcm;
+    private NotificationSQL notifications = new NotificationSQL();
     
     private static Sys sys = new Sys();
 
@@ -27,14 +28,12 @@ public class Sys {
         
         try
         {
-            this.dbcm = new DataBaseConnectionManager( DataBaseConnectionManager.MYSQL,
-                    "educa","mysql","mysql");
+            this.dbcm = new DataBaseConnectionManager( DataBaseConnectionManager.POSTGRESQL,
+                    "educa","postgres","postgres");
         } 
         catch (DataBaseException ex)
         {
-            JOptionPane.showMessageDialog(null, 
-                    "Erro fatal na configuração de acesso ao banco de dados",
-                    "Conexão com o banco de dados", JOptionPane.ERROR_MESSAGE);
+            notifications.conexaoBD();
             System.exit(0);
         }
     }
@@ -47,6 +46,10 @@ public class Sys {
     public Usuario getUser()
     {
         return user;
+    }
+
+    public void setUser(Usuario user) {
+        this.user = user;
     }
     
     public DataBaseConnectionManager getDB()

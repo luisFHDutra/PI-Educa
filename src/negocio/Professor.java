@@ -64,8 +64,8 @@ public class Professor {
         this.usuario = usuario;
     }
     
-    @Override
-    public String toString() {
-        return getNome();
-    }
+//    @Override
+//    public String toString() {
+//        return getNome();
+//    }
 }

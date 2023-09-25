@@ -10,7 +10,7 @@
    <children>
       <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="221.0" layoutY="133.0" promptText="Nome" />
       <JFXPasswordField fx:id="tfPassword" labelFloat="true" layoutX="221.0" layoutY="281.0" promptText="Senha" />
-      <JFXButton layoutX="255.0" layoutY="339.0" text="Cadastrar" />
+      <JFXButton layoutX="255.0" layoutY="339.0" onMouseClicked="#cadastrarProfessor" text="Cadastrar" />
       <Label layoutX="224.0" layoutY="70.0" text="Cadastro de professores" />
       <JFXTextField fx:id="tfAreaEspecializacao" layoutX="221.0" layoutY="188.0" promptText="Área de especialização" />
       <JFXTextField fx:id="tfContato" layoutX="221.0" layoutY="236.0" promptText="Contato" />

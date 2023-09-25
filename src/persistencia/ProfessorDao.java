@@ -7,53 +7,52 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import negocio.Disciplina;
 import negocio.Professor;
 import negocio.Usuario;
 import pieduca.Sys;
 
 public class ProfessorDao extends DaoAdapter<Professor, Integer> {
 
+    private NotificationSQL notifications = new NotificationSQL();
+    
     @Override
     public void create(Professor objeto) {
-        DataBaseConnectionManager dbcm;
-        dbcm = Sys.getInstance().getDB();
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try
         {
-//            dbcm.runSQL("begin transaction;");
+            dbcm.runSQL("begin transaction;");
             
             String sql = "INSERT INTO professor VALUES ( ?, ?, ?, ?);";
             
-            dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(),objeto.getContato());
+            dbcm.runPreparedSQL(sql, objeto.getIdProfessor(), objeto.getNome(), objeto.getAreaEspecializacao(),objeto.getContato());
             
-            String sqlUser = "INSERT INTO professor VALUES ( ?, ?, ?, ?);";
+            String sqlUser = "INSERT INTO usuario (id, senha) VALUES ( ?, ?);";
             
-            dbcm.runPreparedSQL(sqlUser, objeto.getNome(), objeto.getAreaEspecializacao(),objeto.getContato());
+            PreparedStatement statement = dbcm.prepareStatement(sqlUser);
+            statement.setInt(1, objeto.getUsuario().getId());
+            statement.setString(2, objeto.getUsuario().getHashCode());
+            statement.executeUpdate();
             
-//            dbcm.runSQL("commit;");
+            dbcm.runSQL("commit;");
             
         } catch (DataBaseException ex) {
-//            try {
-////                dbcm.runSQL("rollback;");
-//            } catch (DataBaseException ex1) {
-//                Logger.getLogger(ProfessorDao.class.getName()).log(Level.SEVERE, null, ex1);
-//            }
+            try {
+                dbcm.runSQL("rollback;");
+            } catch (DataBaseException ex1) {
+                notifications.rollback();
+            }
 
-            JOptionPane.showMessageDialog(null,
-                    "Chave primária duplicada",
-                    "Inserção no banco de dados", JOptionPane.ERROR_MESSAGE);
+            notifications.chaveDuplicada();
+        } catch (SQLException ex) {
+            
+            notifications.erroSintaxe();
         }
     }
 
-//    private void createProfessorDisciplina(Professor objeto) {
+//    private void createProfessorDisciplina(Professor objeto) {;
 //        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
 //
-//        ArrayList<Disciplina> professorDisc = objeto.getDisciplinas();
-//
-//        String sql = "INSERT INTO professor_disciplina (id_disciplina, id_professor) VALUES (?, ?)";
+//        String sql = "INSERT INTO usuario (id_disciplina, id_professor) VALUES (?, ?)";
 //
 //        PreparedStatement statement = null;
 //        try {
@@ -82,14 +81,14 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "SELECT * FROM professor WHERE id_professor = ?";
+            String sql = "SELECT * FROM professor WHERE id = ?";
             
             ResultSet rs = dbcm.runPreparedQuerySQL(sql, primaryKey );
             
             if (rs.isBeforeFirst()) 
             {
                 rs.next();
-                int id = rs.getInt("id_professor");
+                int id = rs.getInt("id");
                 String nome = rs.getString("nome");
                 String areaEspecializacao = rs.getString("area_especializacao");
                 String contato = rs.getString("contato");
@@ -98,7 +97,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                 try {
                     user = DaoFactory.criarUsuarioDao().read(id);
                 } catch (NotFoundException ex) {
-                    System.out.println("não existe");
+                   notifications.tabelaNaoExiste();
                 }
                 
 //                ArrayList<Disciplina> disciplinas = new ArrayList();
@@ -130,15 +129,11 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         } 
         catch (DataBaseException ex)
         {
-            JOptionPane.showMessageDialog(null, 
-                    "Erro de sintaxe ou semântica",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+            notifications.erroSintaxe();
         } 
         catch (SQLException ex)
         {
-            JOptionPane.showMessageDialog(null, 
-                    "DataType errado na query",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+            notifications.dataTypeErrado();
         }
         
         return p;
@@ -153,7 +148,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "SELECT * FROM aluno;";
+            String sql = "SELECT * FROM professor;";
             
             ResultSet rs = dbcm.runQuerySQL( sql );
             
@@ -162,7 +157,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                 rs.next();
                 while (!rs.isAfterLast())
                 {
-                    int id = rs.getInt("id_professor");
+                    int id = rs.getInt("id");
                     String nome = rs.getString("nome");
                     String areaEspecializacao = rs.getString("area_especializacao");
                     String contato = rs.getString("contato");
@@ -171,7 +166,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                     try {
                         user = DaoFactory.criarUsuarioDao().read(id);
                     } catch (NotFoundException ex) {
-                        System.out.println("não existe");
+                        notifications.tabelaNaoExiste();
                     }
 
                     Professor p = new Professor(id, nome, areaEspecializacao, contato, user);
@@ -184,15 +179,11 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         } 
         catch (DataBaseException ex)
         {
-            JOptionPane.showMessageDialog(null, 
-                    "Erro de sintaxe ou semântica",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+            notifications.erroSintaxe();
         } 
         catch (SQLException ex)
         {
-            JOptionPane.showMessageDialog(null, 
-                    "DataType errado na query",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+            notifications.dataTypeErrado();
         }
         
         return lista;
@@ -206,12 +197,13 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ? WHERE id_professor = ?";
+            String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(), objeto.getContato(),
                     objeto.getIdProfessor());
         } 
         catch (DataBaseException ex)
         {
+            notifications.tabelaNaoExiste();
             throw new NotFoundException();
         }
     }
@@ -224,11 +216,12 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "DELETE FROM professor WHERE id_professor = ?";
+            String sql = "DELETE FROM professor WHERE id = ?";
             dbcm.runPreparedSQL(sql, primaryKey );
         } 
         catch (DataBaseException ex)
         {
+            notifications.tabelaNaoExiste();
             throw new NotFoundException();
         }
     }
@@ -240,7 +233,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             String sql = "SELECT MAX(id) FROM professor";
             ResultSet rs = dbcm.runQuerySQL(sql);
 
-            int ultimoID = 0;
+            int ultimoID = 1;
 
             if (rs.next()) {
              // Obtém o último ID da consulta
@@ -251,9 +244,9 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             return ultimoID + 1;
         
         } catch (SQLException e) {
-            System.out.println("erro");
+            notifications.tabelaNaoExiste();
         } catch (DataBaseException ex) {
-            Logger.getLogger(ProfessorDao.class.getName()).log(Level.SEVERE, null, ex);
+            notifications.erroSintaxe();
         }
         return null;
          

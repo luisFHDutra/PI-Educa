@@ -1,5 +1,6 @@
 package apresentacao;
 
+import auth.Authenticator;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
@@ -7,15 +8,17 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import negocio.Professor;
 import negocio.Usuario;
+import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
-import persistencia.IDao;
 import persistencia.ProfessorDao;
 
 public class FXMLCadastroProfessoresController implements Initializable {
@@ -49,12 +52,40 @@ public class FXMLCadastroProfessoresController implements Initializable {
     public void cadastrarProfessor (MouseEvent event) throws Exception {
         
         ProfessorDao professor = new ProfessorDao();
-        
         int id = professor.maxId();
         
-        Usuario user = new Usuario(id, tfPassword.toString());
+        Authenticator auth = new Authenticator();
+        String hashCode = auth.generateHashCode(tfPassword.getText());
         
-        Professor prof = new Professor(id, tfNome.toString(), tfAreaEspecializacao.toString(), tfContato.toString(), user);
+        Usuario user = new Usuario(id, hashCode);
+        
+        Professor prof = new Professor(id, tfNome.getText(), tfAreaEspecializacao.getText(), tfContato.getText(), user);
+
+        DaoFactory.criarProfessorDao().create(prof);
+        
+        if (id < professor.maxId()) {
+            check();
+        } else {
+            error();
+        }
         
     }
+    
+    private void error(){
+        Notifications notification = Notifications.create();
+        notification.title("Error");
+        notification.text("Erro ao cadastrar usuário ou professor");
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.BOTTOM_CENTER);
+        notification.show();
+     }
+
+     private void check(){
+        Notifications notification = Notifications.create();
+        notification.title("Sucesso");
+        notification.text("Cadastro realizado com sucesso");
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.BOTTOM_CENTER);
+        notification.show();
+     }
 }

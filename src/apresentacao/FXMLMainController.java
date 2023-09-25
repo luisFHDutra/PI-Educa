@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import pieduca.Sys;
 
 
 public class FXMLMainController implements Initializable {
@@ -21,7 +22,7 @@ public class FXMLMainController implements Initializable {
         // TODO
     }    
     
-    public void cadastroProfessores (MouseEvent event) throws Exception {
+    public void cadastroProfessor (MouseEvent event) throws Exception {
         
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLCadastroProfessores.fxml"));
@@ -33,4 +34,28 @@ public class FXMLMainController implements Initializable {
         
     }
     
+    public void consultaProfessor (MouseEvent event) throws Exception {
+        
+        Stage stage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLConsultaProfessor.fxml"));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+//      stage.initStyle(StageStyle.UNDECORATED);
+        stage.show();
+        ((Node)event.getSource()).getScene().getWindow().hide();
+        
+    }
+    
+    public void loginoff (MouseEvent event) throws Exception {
+        Sys.getInstance().setUser(null);
+        
+        Stage stage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLLogin.fxml"));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+//      stage.initStyle(StageStyle.UNDECORATED);
+        stage.show();
+        ((Node)event.getSource()).getScene().getWindow().hide();
+        
+    }
 }

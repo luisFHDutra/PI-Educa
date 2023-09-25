@@ -6,37 +6,40 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class Authenticator
 {
-    private ArrayList<Usuario> users;
+    private Usuario user;
     private Usuario loggedUser;
     private Integer id;
     private String senha;
 
-    public Authenticator(ArrayList<Usuario> users, Integer id, String senha)
+    public Authenticator()
     {
-        this.users = users;
+        this.user = null;
+        this.loggedUser = null;
+    }
+
+    public Authenticator(Usuario user, Integer id, String senha)
+    {
+        this.user = user;
         this.loggedUser = null;
         this.id = id;
         this.senha = senha;
     }
-
+    
     public boolean isRight()
     {
         boolean ok = false;
         if (id != 0 && !senha.isEmpty())
         {
-            for (Usuario user : users)
+            
+            if (user.getId() == id)
             {
-                if (user.getId().equals(id))
+                if (checkPassword(senha, user.getHashCode()))
                 {
-                    // Verifique a senha usando a API de verificação de senha
-                    if (checkPassword(senha, user.getHashCode()))
-                    {
-                        this.loggedUser = user;
-                        ok = true;
-                        break;
-                    }
+                    this.loggedUser = user;
+                    ok = true;
                 }
             }
+            
         }
         return ok;
     }

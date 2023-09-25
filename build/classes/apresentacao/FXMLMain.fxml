@@ -12,6 +12,8 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <JFXButton layoutX="49.0" layoutY="56.0" onMouseClicked="#cadastroProfessores" text="Cadastro Professores" />
+      <JFXButton layoutX="49.0" layoutY="56.0" onMouseClicked="#cadastroProfessor" text="Cadastro Professores" />
+      <JFXButton layoutX="221.0" layoutY="56.0" onMouseClicked="#consultaProfessor" text="Consulta Professores" />
+      <JFXButton layoutX="508.0" layoutY="14.0" onMouseClicked="#loginoff" text="Log in/off" />
    </children>
 </AnchorPane>

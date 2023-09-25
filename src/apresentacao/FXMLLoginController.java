@@ -4,7 +4,6 @@ import auth.Authenticator;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +20,8 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import negocio.Usuario;
 import org.controlsfx.control.Notifications;
+import persistencia.DaoFactory;
+import pieduca.Sys;
 
 public class FXMLLoginController implements Initializable {
 
@@ -38,17 +39,14 @@ public class FXMLLoginController implements Initializable {
     }    
     
     public void login (MouseEvent event) throws Exception {
-        // teste
-        Usuario userAdmin = new Usuario(1, "$2a$10$dtAPkculHQqRuDd6Znn0KOQQIa61Jlt0iL73ZbmyPm3gD6VSfGcQa");
         
-        ArrayList<Usuario> users = new ArrayList();
-        users.add(userAdmin);
-        
-        Authenticator auth = new Authenticator(users, Integer.valueOf(tfUsuario.getText()), tfPassword.getText());
-        
-//        System.out.println(auth.generateHashCode("admin"));
+        Usuario user = DaoFactory.criarUsuarioDao().read(Integer.valueOf(tfUsuario.getText()));
+
+        Authenticator auth = new Authenticator(user, Integer.valueOf(tfUsuario.getText()), tfPassword.getText());
             
         if (auth.isRight()){
+            Sys.getInstance().setUser(user);
+            
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
             Scene scene = new Scene(root);
@@ -62,7 +60,7 @@ public class FXMLLoginController implements Initializable {
         }
     }
     
-    public void error(){
+    private void error(){
         Notifications notification = Notifications.create();
         notification.title("Error");
         notification.text("Usuário ou senha incorretos");
@@ -71,7 +69,7 @@ public class FXMLLoginController implements Initializable {
         notification.show();
     }
     
-    public void check(){
+    private void check(){
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
         notification.text("Bem vindo");
