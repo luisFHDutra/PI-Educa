@@ -59,7 +59,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
         if (senha.isEmpty() || nome.isEmpty() || area.isEmpty() || contato.isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
             alerta.setHeaderText(null);
-            alerta.setContentText("Preencha todas os campos");
+            alerta.setContentText("Preencha todos os campos");
             alerta.showAndWait();
         } else {
             ProfessorDao professor = new ProfessorDao();

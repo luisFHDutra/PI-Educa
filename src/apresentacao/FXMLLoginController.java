@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -40,23 +41,30 @@ public class FXMLLoginController implements Initializable {
     
     public void login (MouseEvent event) throws Exception {
         
-        Usuario user = DaoFactory.criarUsuarioDao().read(Integer.valueOf(tfUsuario.getText()));
-
-        Authenticator auth = new Authenticator(user, Integer.valueOf(tfUsuario.getText()), tfPassword.getText());
-            
-        if (auth.isRight()){
-            Sys.getInstance().setUser(user);
-            
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-//            stage.initStyle(StageStyle.UNDECORATED);
-            stage.show();
-            ((Node)event.getSource()).getScene().getWindow().hide();
-            check();
+        if (tfUsuario.getText().isEmpty() || tfPassword.getText().isEmpty()) {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setHeaderText(null);
+            alerta.setContentText("Preencha todos os campos");
+            alerta.showAndWait();
         } else {
-            error();
+            Usuario user = DaoFactory.criarUsuarioDao().read(Integer.valueOf(tfUsuario.getText()));
+
+            Authenticator auth = new Authenticator(user, Integer.valueOf(tfUsuario.getText()), tfPassword.getText());
+
+            if (auth.isRight()){
+                Sys.getInstance().setUser(user);
+
+                Stage stage = new Stage();
+                Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+    //            stage.initStyle(StageStyle.UNDECORATED);
+                stage.show();
+                ((Node)event.getSource()).getScene().getWindow().hide();
+                check();
+            } else {
+                error();
+            }
         }
     }
     
