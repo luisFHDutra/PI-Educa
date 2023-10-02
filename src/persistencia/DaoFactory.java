@@ -6,6 +6,7 @@ import negocio.AlunoDisciplina;
 import negocio.DiaSemana;
 import negocio.Disciplina;
 import negocio.Periodo;
+import negocio.Permissao;
 import negocio.Professor;
 import negocio.Turma;
 import negocio.Usuario;
@@ -47,4 +48,8 @@ public class DaoFactory {
         return new DisciplinaDao();
     }
     
+    public static IDao<Permissao,Integer> criarPermissaoDao()
+    {
+        return new PermissaoDao();
+    }
 }

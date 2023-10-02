@@ -26,11 +26,12 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             
             dbcm.runPreparedSQL(sql, objeto.getIdProfessor(), objeto.getNome(), objeto.getAreaEspecializacao(),objeto.getContato());
             
-            String sqlUser = "INSERT INTO usuario (id, senha) VALUES ( ?, ?);";
+            String sqlUser = "INSERT INTO usuario (id, senha, permissao_id) VALUES ( ?, ?, ?);";
             
             PreparedStatement statement = dbcm.prepareStatement(sqlUser);
             statement.setInt(1, objeto.getUsuario().getId());
             statement.setString(2, objeto.getUsuario().getHashCode());
+            statement.setInt(3, objeto.getUsuario().getPermissao().getIdPermissao());
             statement.executeUpdate();
             
             dbcm.runSQL("commit;");

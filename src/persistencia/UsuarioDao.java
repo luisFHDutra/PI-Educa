@@ -6,6 +6,7 @@ import db.DataBaseException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import negocio.Permissao;
 import negocio.Usuario;
 import pieduca.Sys;
 
@@ -28,8 +29,16 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
                 rs.next();
                 int id = rs.getInt("id");
                 String senha = rs.getString("senha");
+                int idPermissao = rs.getInt("permissao_id");
                 
-                u = new Usuario(id,senha);
+                Permissao permissao = null;
+                try {
+                    permissao = DaoFactory.criarPermissaoDao().read(idPermissao);
+                } catch (NotFoundException ex) {
+                   notifications.tabelaNaoExiste();
+                }
+                
+                u = new Usuario(id, senha, permissao);
             }
             
             dbcm.closeConnection();
@@ -64,8 +73,16 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
                 {
                     int id = rs.getInt("id");
                     String senha = rs.getString("senha");
+                    int idPermissao = rs.getInt("permissao_id");
+                    
+                    Permissao permissao = null;
+                    try {
+                        permissao = DaoFactory.criarPermissaoDao().read(idPermissao);
+                    } catch (NotFoundException ex) {
+                       notifications.tabelaNaoExiste();
+                    }
                 
-                    Usuario u = new Usuario(id,senha);
+                    Usuario u = new Usuario(id, senha, permissao);
                     lista.add(u);
                     
                     rs.next();

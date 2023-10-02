@@ -1,5 +1,6 @@
 package apresentacao;
 
+import com.jfoenix.controls.JFXButton;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -22,6 +24,7 @@ import negocio.Professor;
 import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
 import persistencia.ProfessorDao;
+import pieduca.Sys;
 
 public class FXMLConsultaProfessorController implements Initializable {
 
@@ -35,7 +38,12 @@ public class FXMLConsultaProfessorController implements Initializable {
     private TableColumn<Professor, String> area_espec;
     @FXML
     private TableColumn<Professor, String> contato;
-
+    
+    @FXML
+    private JFXButton btnAdicionar;
+    @FXML
+    private JFXButton btnDeletar;
+    
     private ObservableList<Professor> obsProfessores;
     
     @Override
@@ -50,6 +58,10 @@ public class FXMLConsultaProfessorController implements Initializable {
         
         tabela.setItems(obsProfessores);
         
+        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() != 1) {
+            btnDeletar.setDisable(true);
+            btnAdicionar.setDisable(true);
+        }
     }    
     
     public void voltarMain (MouseEvent event) throws Exception {
@@ -118,14 +130,14 @@ public class FXMLConsultaProfessorController implements Initializable {
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();
-     }
+    }
 
-     private void check(){
+    private void check(){
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
         notification.text("Delete realizado com sucesso");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();
-     }
+    }
 }

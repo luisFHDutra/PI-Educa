@@ -1,10 +1,14 @@
 package apresentacao;
 
 import auth.Authenticator;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import negocio.Permissao;
 import negocio.Professor;
 import negocio.Usuario;
 import org.controlsfx.control.Notifications;
@@ -32,10 +37,18 @@ public class FXMLCadastroProfessoresController implements Initializable {
     private JFXTextField tfAreaEspecializacao;
     @FXML
     private JFXTextField tfContato;
+    @FXML
+    private JFXComboBox cbPermissoes;
+    
+    private ObservableList<Permissao> obsPermissoes;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        List<Permissao> permissoes = DaoFactory.criarPermissaoDao().readAll();
+        
+        obsPermissoes = FXCollections.observableArrayList(permissoes);
+       
+        cbPermissoes.setItems(obsPermissoes);
     }   
     
     public void voltar (MouseEvent event) throws Exception {
@@ -55,6 +68,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
         String nome = tfNome.getText();
         String area = tfAreaEspecializacao.getText();
         String contato = tfContato.getText();
+        Permissao permissao = (Permissao) cbPermissoes.getSelectionModel().getSelectedItem();
         
         if (senha.isEmpty() || nome.isEmpty() || area.isEmpty() || contato.isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
@@ -68,8 +82,8 @@ public class FXMLCadastroProfessoresController implements Initializable {
             Authenticator auth = new Authenticator();
             String hashCode = auth.generateHashCode(senha);
 
-            Usuario user = new Usuario(id, hashCode);
-
+            Usuario user = new Usuario(id, hashCode, permissao);
+            
             Professor prof = new Professor(id, nome, area, contato, user);
 
             DaoFactory.criarProfessorDao().create(prof);
@@ -113,4 +127,5 @@ public class FXMLCadastroProfessoresController implements Initializable {
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();
      }
+     
 }
