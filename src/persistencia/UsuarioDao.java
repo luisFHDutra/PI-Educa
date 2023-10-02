@@ -104,7 +104,7 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
     }
 
     @Override
-    public void update(Usuario objeto) throws NotFoundException {
+    public void update(Usuario objeto) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
@@ -117,7 +117,6 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
         catch (DataBaseException ex)
         {
             notifications.tabelaNaoExiste();
-            throw new NotFoundException();
         }
     }
 

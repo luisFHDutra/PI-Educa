@@ -76,8 +76,8 @@ public class FXMLCadastroProfessoresController implements Initializable {
             alerta.setContentText("Preencha todos os campos");
             alerta.showAndWait();
         } else {
-            ProfessorDao professor = new ProfessorDao();
-            int id = professor.maxId();
+            ProfessorDao professordao = new ProfessorDao();
+            int id = professordao.maxId();
 
             Authenticator auth = new Authenticator();
             String hashCode = auth.generateHashCode(senha);
@@ -90,7 +90,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
 
             limpar();
             
-            if (id < professor.maxId()) {
+            if (id < professordao.maxId()) {
                 check();
             } else {
                 error();

@@ -145,7 +145,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
     }
 
     @Override
-    public void update(Professor objeto) throws NotFoundException {
+    public void update(Professor objeto) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
@@ -159,12 +159,11 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         catch (DataBaseException ex)
         {
             notifications.tabelaNaoExiste();
-            throw new NotFoundException();
         }
     }
 
     @Override
-    public void delete(Integer primaryKey) throws NotFoundException {
+    public void delete(Integer primaryKey) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
@@ -180,7 +179,6 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         catch (DataBaseException ex)
         {
             notifications.tabelaNaoExiste();
-            throw new NotFoundException();
         }
     }
     

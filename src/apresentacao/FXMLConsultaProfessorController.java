@@ -13,7 +13,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -109,18 +108,30 @@ public class FXMLConsultaProfessorController implements Initializable {
     public void deletar (MouseEvent event) throws Exception {
         Professor prof = tabela.getSelectionModel().getSelectedItem();
         
-        ProfessorDao professor = new ProfessorDao();
-        int id = professor.maxId();
-        
-        DaoFactory.criarProfessorDao().delete(prof.getIdProfessor());
-        
-        refresh();
-        
-        if (id > professor.maxId()) {
-            check();
+        if (prof != null) {
+            ProfessorDao professordao = new ProfessorDao();
+            int id = professordao.maxId();
+
+            DaoFactory.criarProfessorDao().delete(prof.getIdProfessor());
+
+            refresh();
+
+            if (id > professordao.maxId()) {
+                check();
+            } else {
+                error();
+            }
         } else {
-            error();
+            
+            Notifications notification = Notifications.create();
+            notification.title("Error");
+            notification.text("Selecione um item da tabela");
+            notification.hideAfter(Duration.seconds(3));
+            notification.position(Pos.BOTTOM_CENTER);
+            notification.show();
+            
         }
+        
     }
     
     private void error(){
