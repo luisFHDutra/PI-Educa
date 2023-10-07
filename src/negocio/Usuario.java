@@ -6,11 +6,13 @@ public class Usuario {
     private Integer idUsuario;
     private String hashCode;
     private Permissao permissao;
+    private Boolean deletado;
 
-    public Usuario(Integer idUsuario, String hashCode, Permissao permissao) {
+    public Usuario(Integer idUsuario, String hashCode, Permissao permissao, Boolean deletado) {
         this.idUsuario = idUsuario;
         this.hashCode = hashCode;
         this.permissao = permissao;
+        this.deletado = deletado;
     }
     
     public Integer getId() {
@@ -36,4 +38,13 @@ public class Usuario {
     public void setPermissao(Permissao permissao) {
         this.permissao = permissao;
     }
+
+    public Boolean getDeletado() {
+        return deletado;
+    }
+
+    public void setDeletado(Boolean deletado) {
+        this.deletado = deletado;
+    }
+    
 }

@@ -22,17 +22,12 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             dbcm.runSQL("begin transaction;");
             
-            String sql = "INSERT INTO professor VALUES ( ?, ?, ?, ?);";
+            String sql = "INSERT INTO professor VALUES ( ?, ?, ?, ?, ?);";
             
-            dbcm.runPreparedSQL(sql, objeto.getIdProfessor(), objeto.getNome(), objeto.getAreaEspecializacao(),objeto.getContato());
+            dbcm.runPreparedSQL(sql, objeto.getIdProfessor(), objeto.getNome(), objeto.getAreaEspecializacao()
+                    ,objeto.getContato(), objeto.getDeletado().toString());
             
-            String sqlUser = "INSERT INTO usuario (id, senha, permissao_id) VALUES ( ?, ?, ?);";
-            
-            PreparedStatement statement = dbcm.prepareStatement(sqlUser);
-            statement.setInt(1, objeto.getUsuario().getId());
-            statement.setString(2, objeto.getUsuario().getHashCode());
-            statement.setInt(3, objeto.getUsuario().getPermissao().getIdPermissao());
-            statement.executeUpdate();
+            cadastrarUsuario(objeto);
             
             dbcm.runSQL("commit;");
             
@@ -47,8 +42,24 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             }
 
             notifications.chaveDuplicada();
-        } catch (SQLException ex) {
+        }
+    }
+    
+    private void cadastrarUsuario (Professor objeto) {
+        
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        try
+        {
+            String sqlUser = "INSERT INTO usuario (id, senha, permissao_id, deletado) VALUES ( ?, ?, ?, ?);";
             
+            PreparedStatement statement = dbcm.prepareStatement(sqlUser);
+            statement.setInt(1, objeto.getUsuario().getId());
+            statement.setString(2, objeto.getUsuario().getHashCode());
+            statement.setInt(3, objeto.getUsuario().getPermissao().getIdPermissao());
+            statement.setBoolean(4, objeto.getUsuario().getDeletado());
+            statement.executeUpdate();
+            
+        } catch (SQLException ex) {
             notifications.erroSintaxe();
         }
     }
@@ -70,6 +81,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                 String nome = rs.getString("nome");
                 String areaEspecializacao = rs.getString("area_especializacao");
                 String contato = rs.getString("contato");
+                Boolean deletado = rs.getBoolean("deletado");
                 
                 Usuario user = null;
                 try {
@@ -78,7 +90,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                    notifications.tabelaNaoExiste();
                 }
                 
-                p = new Professor(id, nome, areaEspecializacao, contato, user);
+                p = new Professor(id, nome, areaEspecializacao, contato, user, deletado);
             }
             
             dbcm.closeConnection();
@@ -115,7 +127,8 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                     String nome = rs.getString("nome");
                     String areaEspecializacao = rs.getString("area_especializacao");
                     String contato = rs.getString("contato");
-
+                    Boolean deletado = rs.getBoolean("deletado");
+                    
                     Usuario user = null;
                     try {
                         user = DaoFactory.criarUsuarioDao().read(id);
@@ -123,7 +136,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                         notifications.tabelaNaoExiste();
                     }
 
-                    Professor p = new Professor(id, nome, areaEspecializacao, contato, user);
+                    Professor p = new Professor(id, nome, areaEspecializacao, contato, user, deletado);
                     lista.add(p);
                     
                     rs.next();
@@ -150,9 +163,9 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         
         try
         {
-            String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ? WHERE id = ?";
+            String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ?, deletado = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(), objeto.getContato(),
-                    objeto.getIdProfessor());
+                    objeto.getDeletado().toString(), objeto.getIdProfessor());
             
             dbcm.closeConnection();
         } 
@@ -168,11 +181,11 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         
         try
         {
-            String sqlUser = "DELETE FROM usuario WHERE id = ?";
-            dbcm.runPreparedSQL(sqlUser, primaryKey );
+            String sqlUser = "UPDATE usuario set deletado = ? WHERE id = ?";
+            dbcm.runPreparedSQL(sqlUser, "true", primaryKey );
             
-            String sqlProf = "DELETE FROM professor WHERE id = ?";
-            dbcm.runPreparedSQL(sqlProf, primaryKey );
+            String sqlProf = "UPDATE professor set deletado = ? WHERE id = ?";
+            dbcm.runPreparedSQL(sqlProf, "true",primaryKey );
             
             dbcm.closeConnection();
         } 

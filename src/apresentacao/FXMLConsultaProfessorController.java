@@ -22,7 +22,7 @@ import javafx.util.Duration;
 import negocio.Professor;
 import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
-import persistencia.ProfessorDao;
+import persistencia.Filter;
 import pieduca.Sys;
 
 public class FXMLConsultaProfessorController implements Initializable {
@@ -52,7 +52,13 @@ public class FXMLConsultaProfessorController implements Initializable {
         area_espec.setCellValueFactory(new PropertyValueFactory<Professor, String>("areaEspecializacao"));
         contato.setCellValueFactory(new PropertyValueFactory<Professor, String>("contato"));
         
-        List<Professor> profs = DaoFactory.criarProfessorDao().readAll();
+        List<Professor> profs = DaoFactory.criarProfessorDao().readAll(new Filter<Professor>() {
+            @Override
+            public boolean isAccept(Professor record) {
+                return (record.getDeletado() == Boolean.FALSE);
+            }
+        });
+        
         obsProfessores = FXCollections.observableArrayList(profs);
         
         tabela.setItems(obsProfessores);
@@ -87,7 +93,13 @@ public class FXMLConsultaProfessorController implements Initializable {
         area_espec.setCellValueFactory(new PropertyValueFactory<Professor, String>("areaEspecializacao"));
         contato.setCellValueFactory(new PropertyValueFactory<Professor, String>("contato"));
         
-        List<Professor> profs = DaoFactory.criarProfessorDao().readAll();
+        List<Professor> profs = DaoFactory.criarProfessorDao().readAll(new Filter<Professor>() {
+            @Override
+            public boolean isAccept(Professor record) {
+                return (record.getDeletado() == Boolean.FALSE);
+            }
+        });
+        
         obsProfessores = FXCollections.observableArrayList(profs);
         
         tabela.setItems(obsProfessores);
@@ -109,14 +121,15 @@ public class FXMLConsultaProfessorController implements Initializable {
         Professor prof = tabela.getSelectionModel().getSelectedItem();
         
         if (prof != null) {
-            ProfessorDao professordao = new ProfessorDao();
-            int id = professordao.maxId();
+            prof.setDeletado(Boolean.TRUE);
 
             DaoFactory.criarProfessorDao().delete(prof.getIdProfessor());
 
             refresh();
 
-            if (id > professordao.maxId()) {
+            Professor p = DaoFactory.criarProfessorDao().read(prof.getIdProfessor());
+            
+            if (p.getDeletado() == Boolean.TRUE) {
                 check();
             } else {
                 error();

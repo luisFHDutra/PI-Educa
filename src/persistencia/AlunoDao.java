@@ -6,7 +6,6 @@ import db.DataBaseException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import negocio.Aluno;
 import pieduca.Sys;
 
@@ -21,10 +20,11 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "INSERT INTO aluno VALUES ( ?, ?, ?, ?, ?);";
+            String sqls = "INSERT INTO aluno VALUES ( ?, ?, ?, ?, ?, ?);";
             
-            dbcm.runPreparedSQL(sql, objeto.getIdAluno(), objeto.getNome(), objeto.getDataNascimento(),
-                   objeto.getFiliacao(), objeto.getRg());
+            dbcm.runPreparedSQL(sqls, objeto.getIdAluno(), objeto.getNome(), objeto.getDataNascimento(),
+                   objeto.getFiliacao(), objeto.getRg(), objeto.getDeletado().toString());
+            
         } 
         catch (DataBaseException ex)
         {
@@ -52,8 +52,9 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
                 String dataNasc = rs.getString("data_nascimento");
                 String rg = rs.getString("rg");
                 String filiacao = rs.getString("filiacao");
+                Boolean deletado = rs.getBoolean("deletado");
                 
-                a = new Aluno(id, nome, dataNasc, rg, filiacao);
+                a = new Aluno(id, nome, dataNasc, rg, filiacao, deletado);
             }
         } 
         catch (DataBaseException ex)
@@ -91,8 +92,9 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
                     String dataNasc = rs.getString("data_nascimento");
                     String rg = rs.getString("rg");
                     String filiacao = rs.getString("filiacao");
+                    Boolean deletado = rs.getBoolean("deletado");
 
-                    Aluno a = new Aluno(id,nome, dataNasc, rg, filiacao);
+                    Aluno a = new Aluno(id,nome, dataNasc, rg, filiacao, deletado);
                     lista.add(a);
                     
                     rs.next();
@@ -120,9 +122,9 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, rg = ?, filiacao = ? WHERE id = ?";
+            String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, rg = ?, filiacao = ?, deletado = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getDataNascimento(), objeto.getRg(),
-                    objeto.getFiliacao(), objeto.getIdAluno());
+                    objeto.getFiliacao(), objeto.getDeletado().toString(), objeto.getIdAluno());
         } 
         catch (DataBaseException ex)
         {

@@ -8,13 +8,15 @@ public class Aluno {
     private String dataNascimento;
     private String rg;
     private String filiacao;
+    private Boolean deletado;
 
-    public Aluno(Integer idAluno, String nome, String dataNascimento, String rg, String filiacao) {
+    public Aluno(Integer idAluno, String nome, String dataNascimento, String rg, String filiacao, Boolean deletado) {
         this.idAluno = idAluno;
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.rg = rg;
         this.filiacao = filiacao;
+        this.deletado = deletado;
     }
 
     public Integer getIdAluno() {
@@ -57,6 +59,14 @@ public class Aluno {
         this.filiacao = filiacao;
     }
 
+    public Boolean getDeletado() {
+        return deletado;
+    }
+
+    public void setDeletado(Boolean deletado) {
+        this.deletado = deletado;
+    }
+    
     @Override
     public String toString() {
         return getNome();

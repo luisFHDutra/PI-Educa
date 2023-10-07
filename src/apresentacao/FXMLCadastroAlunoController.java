@@ -64,10 +64,10 @@ public class FXMLCadastroAlunoController implements Initializable {
             AlunoDao alunodao = new AlunoDao();
             int id = alunodao.maxId();
             
-            Aluno aluno = new Aluno(id, nome, data, rg, filiacao);
+            Aluno aluno = new Aluno(id, nome, data, rg, filiacao, Boolean.FALSE);
 
             DaoFactory.criarAlunoDao().create(aluno);
-
+            
             limpar();
             
             if (id < alunodao.maxId()) {
@@ -76,7 +76,7 @@ public class FXMLCadastroAlunoController implements Initializable {
                 error();
             }
         }
-        
+    
     }
     
     public void limparCampos() {
@@ -120,11 +120,6 @@ public class FXMLCadastroAlunoController implements Initializable {
     }
     
     public void checkNumeros(KeyEvent event) {
-        
-//        if (tfRg.getText().length() >= 10){
-//            event.consume();
-//            tfRg.setStyle("-fx-border-color: red");
-//        }
 
         tfRg.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() > 10) {

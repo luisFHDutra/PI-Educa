@@ -8,20 +8,23 @@ public class Professor {
     private String areaEspecializacao;
     private String contato;
     private Usuario usuario;
+    private Boolean deletado;
 
-    public Professor(String nome, String areaEspecializacao, String contato, Usuario usuario) {
+    public Professor(String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado) {
         this.nome = nome;
         this.areaEspecializacao = areaEspecializacao;
         this.contato = contato;
         this.usuario = usuario;
+        this.deletado = deletado;
     }
     
-    public Professor(Integer idProfessor, String nome, String areaEspecializacao, String contato, Usuario usuario) {
+    public Professor(Integer idProfessor, String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado) {
         this.nome = nome;
         this.areaEspecializacao = areaEspecializacao;
         this.contato = contato;
         this.usuario = usuario;
         this.idProfessor = idProfessor;
+        this.deletado = deletado;
     }
 
     public Integer getIdProfessor() {
@@ -63,9 +66,17 @@ public class Professor {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    public Boolean getDeletado() {
+        return deletado;
+    }
+
+    public void setDeletado(Boolean deletado) {
+        this.deletado = deletado;
+    }
     
-//    @Override
-//    public String toString() {
-//        return getNome();
-//    }
+    //    @Override
+    //    public String toString() {
+    //        return getNome();
+    //    }
 }

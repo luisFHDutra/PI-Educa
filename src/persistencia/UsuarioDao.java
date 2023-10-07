@@ -30,6 +30,7 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
                 int id = rs.getInt("id");
                 String senha = rs.getString("senha");
                 int idPermissao = rs.getInt("permissao_id");
+                Boolean deletado = rs.getBoolean("deletado");
                 
                 Permissao permissao = null;
                 try {
@@ -38,7 +39,7 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
                    notifications.tabelaNaoExiste();
                 }
                 
-                u = new Usuario(id, senha, permissao);
+                u = new Usuario(id, senha, permissao, deletado);
             }
             
             dbcm.closeConnection();
@@ -74,6 +75,7 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
                     int id = rs.getInt("id");
                     String senha = rs.getString("senha");
                     int idPermissao = rs.getInt("permissao_id");
+                    Boolean deletado = rs.getBoolean("deletado");
                     
                     Permissao permissao = null;
                     try {
@@ -82,7 +84,7 @@ public class UsuarioDao extends DaoAdapter<Usuario, Integer> {
                        notifications.tabelaNaoExiste();
                     }
                 
-                    Usuario u = new Usuario(id, senha, permissao);
+                    Usuario u = new Usuario(id, senha, permissao, deletado);
                     lista.add(u);
                     
                     rs.next();

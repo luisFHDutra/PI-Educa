@@ -21,8 +21,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import negocio.Aluno;
 import org.controlsfx.control.Notifications;
-import persistencia.AlunoDao;
 import persistencia.DaoFactory;
+import persistencia.Filter;
 import pieduca.Sys;
 
 public class FXMLConsultaAlunoController implements Initializable {
@@ -55,7 +55,13 @@ public class FXMLConsultaAlunoController implements Initializable {
         filiacao.setCellValueFactory(new PropertyValueFactory<Aluno, String>("filiacao"));
         rg.setCellValueFactory(new PropertyValueFactory<Aluno, String>("rg"));
         
-        List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll();
+        List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll(new Filter<Aluno>() {
+            @Override
+            public boolean isAccept(Aluno record) {
+                return (record.getDeletado() == Boolean.FALSE);
+            }
+        });
+        
         obsAlunos = FXCollections.observableArrayList(alunos);
         
         tabela.setItems(obsAlunos);
@@ -91,7 +97,13 @@ public class FXMLConsultaAlunoController implements Initializable {
         filiacao.setCellValueFactory(new PropertyValueFactory<Aluno, String>("filiacao"));
         rg.setCellValueFactory(new PropertyValueFactory<Aluno, String>("rg"));
         
-        List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll();
+        List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll(new Filter<Aluno>() {
+            @Override
+            public boolean isAccept(Aluno record) {
+                return (record.getDeletado() == Boolean.FALSE);
+            }
+        });
+        
         obsAlunos = FXCollections.observableArrayList(alunos);
         
         tabela.setItems(obsAlunos);
@@ -101,14 +113,15 @@ public class FXMLConsultaAlunoController implements Initializable {
         Aluno aluno = tabela.getSelectionModel().getSelectedItem();
         
         if (aluno != null) {
-            AlunoDao alunodao = new AlunoDao();
-            int id = alunodao.maxId();
+            aluno.setDeletado(Boolean.TRUE);
 
-            DaoFactory.criarAlunoDao().delete(aluno.getIdAluno());
+            DaoFactory.criarAlunoDao().update(aluno);
 
             refresh();
 
-            if (id > alunodao.maxId()) {
+            Aluno a = DaoFactory.criarAlunoDao().read(aluno.getIdAluno());
+            
+            if (a.getDeletado() == Boolean.TRUE) {
                 check();
             } else {
                 error();
