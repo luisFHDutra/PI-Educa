@@ -9,14 +9,16 @@ public class Aluno {
     private String rg;
     private String filiacao;
     private Boolean deletado;
+    private Turma turma;
 
-    public Aluno(Integer idAluno, String nome, String dataNascimento, String rg, String filiacao, Boolean deletado) {
+    public Aluno(Integer idAluno, String nome, String dataNascimento, String rg, String filiacao, Boolean deletado, Turma turma) {
         this.idAluno = idAluno;
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.rg = rg;
         this.filiacao = filiacao;
         this.deletado = deletado;
+        this.turma = turma;
     }
 
     public Integer getIdAluno() {
@@ -65,6 +67,14 @@ public class Aluno {
 
     public void setDeletado(Boolean deletado) {
         this.deletado = deletado;
+    }
+
+    public Turma getTurma() {
+        return turma;
+    }
+
+    public void setIdTurma(Turma turma) {
+        this.turma = turma;
     }
     
     @Override

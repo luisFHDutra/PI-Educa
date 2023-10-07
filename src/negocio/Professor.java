@@ -1,6 +1,8 @@
 
 package negocio;
 
+import java.util.ArrayList;
+
 public class Professor {
     
     private Integer idProfessor;
@@ -9,22 +11,25 @@ public class Professor {
     private String contato;
     private Usuario usuario;
     private Boolean deletado;
+    private ArrayList<Disciplina> disciplinas;
 
-    public Professor(String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado) {
+    public Professor(String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado, ArrayList<Disciplina> disciplinas) {
         this.nome = nome;
         this.areaEspecializacao = areaEspecializacao;
         this.contato = contato;
         this.usuario = usuario;
         this.deletado = deletado;
+        this.disciplinas = disciplinas;
     }
     
-    public Professor(Integer idProfessor, String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado) {
+    public Professor(Integer idProfessor, String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado, ArrayList<Disciplina> disciplinas) {
         this.nome = nome;
         this.areaEspecializacao = areaEspecializacao;
         this.contato = contato;
         this.usuario = usuario;
         this.idProfessor = idProfessor;
         this.deletado = deletado;
+        this.disciplinas = disciplinas;
     }
 
     public Integer getIdProfessor() {
@@ -75,8 +80,16 @@ public class Professor {
         this.deletado = deletado;
     }
     
-    //    @Override
-    //    public String toString() {
-    //        return getNome();
-    //    }
+    public ArrayList<Disciplina> getDisciplinas() {
+        return disciplinas;
+    }
+
+    public void setDisciplinas(ArrayList<Disciplina> disciplinas) {
+        this.disciplinas = disciplinas;
+    }
+    
+    @Override
+    public String toString() {
+        return getNome();
+    }
 }

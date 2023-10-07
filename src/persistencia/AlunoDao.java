@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import negocio.Aluno;
+import negocio.Turma;
 import pieduca.Sys;
 
 public class AlunoDao extends DaoAdapter<Aluno, Integer> {
@@ -15,15 +16,13 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
     
     @Override
     public void create(Aluno objeto) {
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try
         {
-            dbcm = Sys.getInstance().getDB();
-            
-            String sqls = "INSERT INTO aluno VALUES ( ?, ?, ?, ?, ?, ?);";
+            String sqls = "INSERT INTO aluno VALUES ( ?, ?, ?, ?, ?, ?, ?);";
             
             dbcm.runPreparedSQL(sqls, objeto.getIdAluno(), objeto.getNome(), objeto.getDataNascimento(),
-                   objeto.getFiliacao(), objeto.getRg(), objeto.getDeletado().toString());
+                   objeto.getFiliacao(), objeto.getRg(), objeto.getDeletado().toString(), objeto.getTurma().getIdTurma());
             
         } 
         catch (DataBaseException ex)
@@ -53,8 +52,16 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
                 String rg = rs.getString("rg");
                 String filiacao = rs.getString("filiacao");
                 Boolean deletado = rs.getBoolean("deletado");
+                int idTurma = rs.getInt("turma_id");
                 
-                a = new Aluno(id, nome, dataNasc, rg, filiacao, deletado);
+                Turma turma = null;
+                try {
+                    turma = DaoFactory.criarTurmaDao().read(idTurma);
+                } catch (NotFoundException ex) {
+                   notifications.tabelaNaoExiste();
+                }
+                
+                a = new Aluno(id, nome, dataNasc, rg, filiacao, deletado, turma);
             }
         } 
         catch (DataBaseException ex)
@@ -93,8 +100,16 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
                     String rg = rs.getString("rg");
                     String filiacao = rs.getString("filiacao");
                     Boolean deletado = rs.getBoolean("deletado");
+                    int idTurma = rs.getInt("turma_id");
 
-                    Aluno a = new Aluno(id,nome, dataNasc, rg, filiacao, deletado);
+                    Turma turma = null;
+                    try {
+                        turma = DaoFactory.criarTurmaDao().read(idTurma);
+                    } catch (NotFoundException ex) {
+                       notifications.tabelaNaoExiste();
+                    }
+
+                    Aluno a = new Aluno(id, nome, dataNasc, rg, filiacao, deletado, turma);
                     lista.add(a);
                     
                     rs.next();
@@ -122,9 +137,9 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
         {
             dbcm = Sys.getInstance().getDB();
             
-            String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, rg = ?, filiacao = ?, deletado = ? WHERE id = ?";
+            String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, rg = ?, filiacao = ?, deletado = ?, turma_id = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getDataNascimento(), objeto.getRg(),
-                    objeto.getFiliacao(), objeto.getDeletado().toString(), objeto.getIdAluno());
+                    objeto.getFiliacao(), objeto.getDeletado().toString(), objeto.getTurma().getIdTurma(), objeto.getIdAluno());
         } 
         catch (DataBaseException ex)
         {

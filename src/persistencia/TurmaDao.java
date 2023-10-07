@@ -34,37 +34,37 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
     @Override
     public Turma read(Integer primaryKey) throws NotFoundException {
         Turma t = null;
-        DataBaseConnectionManager dbcm;
-        try
-        {
-            dbcm = Sys.getInstance().getDB();
-            
-            String sql = "SELECT * FROM turma WHERE id_turma = ?";
-            
-            ResultSet rs = dbcm.runPreparedQuerySQL(sql, primaryKey );
-            
-            if (rs.isBeforeFirst()) // acho alguma coisa?
-            {
-                rs.next();
-                int id = rs.getInt("id_turma");
-                String nome = rs.getString("nome");
-                int anoLetivo = rs.getInt("ano_letivo");
-                
-                t = new Turma(id,nome,anoLetivo);
-            }
-        } 
-        catch (DataBaseException ex)
-        {
-            JOptionPane.showMessageDialog(null, 
-                    "Erro de sintaxe ou semântica",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
-        } 
-        catch (SQLException ex)
-        {
-            JOptionPane.showMessageDialog(null, 
-                    "DataType errado na query",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
-        }
+//        DataBaseConnectionManager dbcm;
+//        try
+//        {
+//            dbcm = Sys.getInstance().getDB();
+//            
+//            String sql = "SELECT * FROM turma WHERE id_turma = ?";
+//            
+//            ResultSet rs = dbcm.runPreparedQuerySQL(sql, primaryKey );
+//            
+//            if (rs.isBeforeFirst()) // acho alguma coisa?
+//            {
+//                rs.next();
+//                int id = rs.getInt("id_turma");
+//                String nome = rs.getString("nome");
+//                int anoLetivo = rs.getInt("ano_letivo");
+//                
+//                t = new Turma(id,nome,anoLetivo);
+//            }
+//        } 
+//        catch (DataBaseException ex)
+//        {
+//            JOptionPane.showMessageDialog(null, 
+//                    "Erro de sintaxe ou semântica",
+//                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+//        } 
+//        catch (SQLException ex)
+//        {
+//            JOptionPane.showMessageDialog(null, 
+//                    "DataType errado na query",
+//                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+//        }
         
         return t;
     }
@@ -72,46 +72,46 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
     @Override
     public ArrayList<Turma> readAll() {
         ArrayList<Turma> lista = new ArrayList();
-        
-        DataBaseConnectionManager dbcm;
-        try
-        {
-            dbcm = Sys.getInstance().getDB();
-            
-            String sql = "SELECT * FROM turma;";
-            
-            ResultSet rs = dbcm.runQuerySQL( sql );
-            
-            if (rs.isBeforeFirst())
-            {
-                rs.next();
-                while (!rs.isAfterLast())
-                {
-                    int id = rs.getInt("id_turma");
-                    String nome = rs.getString("nome");
-                    int anoLetivo = rs.getInt("ano_letivo");
-                
-                    Turma t = new Turma(id,nome,anoLetivo);
-                    lista.add(t);
-                    
-                    rs.next();
-                }
-            }
-
-        } 
-        catch (DataBaseException ex)
-        {
-            JOptionPane.showMessageDialog(null, 
-                    "Erro de sintaxe ou semântica",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
-        } 
-        catch (SQLException ex)
-        {
-            JOptionPane.showMessageDialog(null, 
-                    "DataType errado na query",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
-        }
-        
+//        
+//        DataBaseConnectionManager dbcm;
+//        try
+//        {
+//            dbcm = Sys.getInstance().getDB();
+//            
+//            String sql = "SELECT * FROM turma;";
+//            
+//            ResultSet rs = dbcm.runQuerySQL( sql );
+//            
+//            if (rs.isBeforeFirst())
+//            {
+//                rs.next();
+//                while (!rs.isAfterLast())
+//                {
+//                    int id = rs.getInt("id_turma");
+//                    String nome = rs.getString("nome");
+//                    int anoLetivo = rs.getInt("ano_letivo");
+//                
+//                    Turma t = new Turma(id,nome,anoLetivo);
+//                    lista.add(t);
+//                    
+//                    rs.next();
+//                }
+//            }
+//
+//        } 
+//        catch (DataBaseException ex)
+//        {
+//            JOptionPane.showMessageDialog(null, 
+//                    "Erro de sintaxe ou semântica",
+//                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+//        } 
+//        catch (SQLException ex)
+//        {
+//            JOptionPane.showMessageDialog(null, 
+//                    "DataType errado na query",
+//                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+//        }
+//        
         return lista;
     }
 

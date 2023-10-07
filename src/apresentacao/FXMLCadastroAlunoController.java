@@ -64,7 +64,7 @@ public class FXMLCadastroAlunoController implements Initializable {
             AlunoDao alunodao = new AlunoDao();
             int id = alunodao.maxId();
             
-            Aluno aluno = new Aluno(id, nome, data, rg, filiacao, Boolean.FALSE);
+            Aluno aluno = new Aluno(id, nome, data, rg, filiacao, Boolean.FALSE, null);
 
             DaoFactory.criarAlunoDao().create(aluno);
             

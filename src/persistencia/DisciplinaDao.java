@@ -3,89 +3,57 @@ package persistencia;
 
 import db.DataBaseConnectionManager;
 import db.DataBaseException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import negocio.Aluno;
-import negocio.AlunoDisciplina;
-import negocio.DiaSemana;
+import negocio.Presenca;
 import negocio.Disciplina;
-import negocio.Periodo;
-import negocio.Professor;
 import pieduca.Sys;
 
 public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
 
+    private NotificationSQL notifications = new NotificationSQL();
+    
     @Override
-    public void create(Disciplina objeto) throws KeyViolationException, InvalidKeyException {
-        DataBaseConnectionManager dbcm;
-        dbcm = Sys.getInstance().getDB();
+    public void create(Disciplina objeto) {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
 
         try {
-            dbcm.runSQL("begin transaction;");
+            String sql = "INSERT INTO disciplina VALUES ( ?, ?, ?);";
 
-            String sql = "INSERT INTO disciplina VALUES ( ?, ?, ?, ?, ?);";
+            dbcm.runPreparedSQL(sql, objeto.getIdDisciplina(), objeto.getNome(), objeto.getCargaHorariaTotal());
 
-            dbcm.runPreparedSQL(sql, objeto.getIdDisciplina(), objeto.getNome(), objeto.getCargaHorariaTotal(),
-                    objeto.getDiaSemana().getIdDiaSemana(), objeto.getPeriodo().getIdPeriodo());
-
-            createAlunoDisciplina(objeto); // insert tabela aluno_disciplina
-            
-            dbcm.runSQL("commit;");
-
-        } catch (DataBaseException ex) {
-            try {
-                dbcm.runSQL("rollback;");
-            } catch (DataBaseException ex1) {
-                Logger.getLogger(DisciplinaDao.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-
-            JOptionPane.showMessageDialog(null,
-                    "Erro no banco de dados",
-                    "Inserção no banco de dados", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (DataBaseException ex)
+        {
+            notifications.chaveDuplicada();
         }
     }
 
-    private void createAlunoDisciplina(Disciplina objeto) {
+    public void createPresenca(Disciplina objeto, Presenca objeto1) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
-
-        ArrayList<AlunoDisciplina> alunoDisc = objeto.getAlunoDisciplina();
-
-        String sql = "INSERT INTO aluno_disciplina (id_disciplina, id_aluno, presenca, nota) VALUES (?, ?, ?, ?)";
-
-        PreparedStatement statement = null;
+        
         try {
+            String sql = "INSERT INTO presenca VALUES ( ?, ?, ?, ?);";
 
-            // Prepara a instrução SQL
-            statement = dbcm.prepareStatement(sql);
+            dbcm.runPreparedSQL(sql, objeto1.getAluno().getIdAluno(), objeto.getIdDisciplina(),
+                    objeto1.getData(), objeto1.getPresente().toString());
 
-            // Percorre a lista de itens e insere cada um no banco de dados
-            for (AlunoDisciplina aluno : alunoDisc) {
-                statement.setInt(1, objeto.getIdDisciplina());
-                statement.setInt(2, aluno.getAluno().getIdAluno());
-                statement.setDouble(3, aluno.getPresenca());
-                statement.setDouble(4, aluno.getNota());
-
-                // Executa a instrução SQL para inserir o item
-                statement.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DisciplinaDao.class.getName()).log(Level.SEVERE, null, ex);
         }
+        catch (DataBaseException ex)
+        {
+            notifications.chaveDuplicada();
+        }
+        
     }
     
     @Override
     public Disciplina read(Integer primaryKey) throws NotFoundException {
         Disciplina d = null;
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try {
-            dbcm = Sys.getInstance().getDB();
-
-            String sql = "SELECT * FROM disciplina WHERE id_disciplina = ?";
+            String sql = "SELECT * FROM disciplina WHERE id = ?";
 
             ResultSet rs = dbcm.runPreparedQuerySQL(sql, primaryKey);
 
@@ -93,63 +61,47 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
             {
                 rs.next();
                 // não precisa while por que eu sei que só tem um resultado
-                int id = rs.getInt("id_disciplina");
+                int id = rs.getInt("id");
                 String nome = rs.getString("nome");
-                int cargaTotal = rs.getInt("carga_total");
-                int idDiaSemana = rs.getInt("id_dia_semana");
-                int idPeriodo = rs.getInt("id_periodo");
+                int cargaTotal = rs.getInt("carga_horaria");
 
-                DiaSemana diaSemana = null;
-                try {
-                    diaSemana = DaoFactory.criarDiaSemanaDao().read(idDiaSemana);
-                } catch (NotFoundException ex) {
-                    System.out.println("não existe");
-                }
+                ArrayList<Presenca> presencas = new ArrayList();
 
-                Periodo periodo = null;
-                try {
-                    periodo = DaoFactory.criarPeriodoDao().read(idPeriodo);
-                } catch (NotFoundException ex) {
-                    System.out.println("não existe");
-                }
-
-                ArrayList<AlunoDisciplina> alunos = new ArrayList();
-
-                String sqlAluno = "SELECT * FROM aluno_disciplina WHERE id_disciplina = ?;";
-                ResultSet rsAluno = dbcm.runPreparedQuerySQL(sqlAluno, primaryKey);
+                String sqlPresenca = "SELECT * FROM presenca WHERE disciplina_id = ?;";
+                ResultSet rsPresenca = dbcm.runPreparedQuerySQL(sqlPresenca, primaryKey);
                 
-                if (rsAluno.isBeforeFirst()) // acho alguma coisa?
+                if (rsPresenca.isBeforeFirst()) // acho alguma coisa?
                 {
-                    rsAluno.next();
+                    rsPresenca.next();
                     while (!rs.isAfterLast()) {
-                        int idAluno = rsAluno.getInt("id_aluno");
-                        int presenca = rsAluno.getInt("presenca");
-                        double nota = rsAluno.getDouble("nota");
+                        int idAluno = rsPresenca.getInt("aluno_id");
+                        String data = rsPresenca.getString("data");
+                        Boolean presente = rsPresenca.getBoolean("presente");
 
                         Aluno aluno = null;
                         try {
                             aluno = DaoFactory.criarAlunoDao().read(idAluno);
                         } catch (NotFoundException ex) {
-                            System.out.println("não existe");
+                            notifications.tabelaNaoExiste();
                         }
 
-                        AlunoDisciplina alunoDisciplina = new AlunoDisciplina(aluno, presenca, nota);
-                        alunos.add(alunoDisciplina);
+                        Presenca presenca = new Presenca(aluno, data, presente);
+                        presencas.add(presenca);
                         
                         rs.next();
                     }
                 }
 
-                d = new Disciplina(idDiaSemana, nome, cargaTotal, diaSemana, periodo, alunos);
+                d = new Disciplina(id, nome, cargaTotal, presencas);
             }
-        } catch (DataBaseException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Erro de sintaxe ou semântica",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "DataType errado na query",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+        } 
+        catch (DataBaseException ex)
+        {
+            notifications.erroSintaxe();
+        } 
+        catch (SQLException ex)
+        {
+            notifications.dataTypeErrado();
         }
 
         return d;
@@ -159,10 +111,8 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
     public ArrayList<Disciplina> readAll() {
         ArrayList<Disciplina> lista = new ArrayList();
 
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try {
-            dbcm = Sys.getInstance().getDB();
-
             String sql = "SELECT * FROM disciplina;";
 
             ResultSet rs = dbcm.runQuerySQL(sql);
@@ -171,54 +121,38 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
             {
                 rs.next();
                 while (!rs.isAfterLast()) {
-                    int id = rs.getInt("id_disciplina");
+                    int id = rs.getInt("id");
                     String nome = rs.getString("nome");
-                    int cargaTotal = rs.getInt("carga_total");
-                    int idDiaSemana = rs.getInt("id_dia_semana");
-                    int idPeriodo = rs.getInt("id_periodo");
+                    int cargaTotal = rs.getInt("carga_horaria");
 
-                    DiaSemana diaSemana = null;
-                    try {
-                        diaSemana = DaoFactory.criarDiaSemanaDao().read(idDiaSemana);
-                    } catch (NotFoundException ex) {
-                        System.out.println("não existe");
-                    }
+                    ArrayList<Presenca> presencas = new ArrayList();
 
-                    Periodo periodo = null;
-                    try {
-                        periodo = DaoFactory.criarPeriodoDao().read(idPeriodo);
-                    } catch (NotFoundException ex) {
-                        System.out.println("não existe");
-                    }
+                    String sqlPresenca = "SELECT * FROM presenca WHERE disciplina_id = ?;";
+                    ResultSet rsPresenca = dbcm.runPreparedQuerySQL(sqlPresenca, id);
 
-                    ArrayList<AlunoDisciplina> alunos = new ArrayList();
-
-                    String sqlAluno = "SELECT * FROM aluno_disciplina WHERE id_disciplina = ?;";
-                    ResultSet rsAluno = dbcm.runPreparedQuerySQL(sqlAluno, id);
-
-                    if (rsAluno.isBeforeFirst()) // acho alguma coisa?
+                    if (rsPresenca.isBeforeFirst()) // acho alguma coisa?
                     {
-                        rsAluno.next();
+                        rsPresenca.next();
                         while (!rs.isAfterLast()) {
-                            int idAluno = rsAluno.getInt("id_aluno");
-                            int presenca = rsAluno.getInt("presenca");
-                            double nota = rsAluno.getDouble("nota");
+                            int idAluno = rsPresenca.getInt("aluno_id");
+                            String data = rsPresenca.getString("data");
+                            Boolean presente = rsPresenca.getBoolean("presente");
 
                             Aluno aluno = null;
                             try {
                                 aluno = DaoFactory.criarAlunoDao().read(idAluno);
                             } catch (NotFoundException ex) {
-                                System.out.println("não existe");
+                                notifications.tabelaNaoExiste();
                             }
 
-                            AlunoDisciplina alunoDisciplina = new AlunoDisciplina(aluno, presenca, nota);
-                            alunos.add(alunoDisciplina);
+                            Presenca presenca = new Presenca(aluno, data, presente);
+                            presencas.add(presenca);
 
                             rs.next();
                         }
                     }
 
-                    Disciplina d = new Disciplina(idDiaSemana, nome, cargaTotal, diaSemana, periodo, alunos);
+                    Disciplina d = new Disciplina(id, nome, cargaTotal, presencas);
 
                     lista.add(d);
 
@@ -226,14 +160,14 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
                 }
             }
 
-        } catch (DataBaseException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Erro de sintaxe ou semântica",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "DataType errado na query",
-                    "Consulta no banco de dados", JOptionPane.ERROR_MESSAGE);
+        } 
+        catch (DataBaseException ex)
+        {
+            notifications.erroSintaxe();
+        } 
+        catch (SQLException ex)
+        {
+            notifications.dataTypeErrado();
         }
 
         return lista;
@@ -241,37 +175,36 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
 
     @Override
     public void update(Disciplina objeto) throws NotFoundException {
-        DataBaseConnectionManager dbcm;
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
         {
-            dbcm = Sys.getInstance().getDB();
-            
-            String sql = "UPDATE disciplina SET nome = ?, carga_total = ?, id_dia_semana = ?, id_periodo = ? WHERE id_disciplina = ?";
-            dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getCargaHorariaTotal(), objeto.getDiaSemana().getIdDiaSemana(),
-                    objeto.getPeriodo().getIdPeriodo(), objeto.getIdDisciplina());
+            String sql = "UPDATE disciplina SET nome = ?, carga_horaria = ? WHERE id = ?";
+            dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getCargaHorariaTotal(), objeto.getIdDisciplina());
         } 
         catch (DataBaseException ex)
         {
-            throw new NotFoundException();
+            notifications.tabelaNaoExiste();
         }
     }
 
     @Override
     public void delete(Integer primaryKey) throws NotFoundException {
-        DataBaseConnectionManager dbcm;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
-        try {
-            dbcm = Sys.getInstance().getDB();
-
-            String sqlDelteAluno = "DELETE FROM aluno_disciplina WHERE id_disciplina = ?";
-            dbcm.runPreparedSQL(sqlDelteAluno, primaryKey);
-            
-            String sql = "DELETE FROM disciplina WHERE id_disciplina = ?";
-            dbcm.runPreparedSQL(sql, primaryKey);
-        } catch (DataBaseException ex) {
-            throw new NotFoundException();
+    public void updatePresenca(Disciplina objeto, Presenca objeto1) {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        try
+        {
+            String sql = "UPDATE presenca SET presente = ? WHERE aluno_id = ? AND disciplina_id = ? AND data = ?";
+            dbcm.runPreparedSQL(sql, objeto1.getPresente(), objeto1.getAluno().getIdAluno(), 
+                    objeto.getIdDisciplina(), objeto1.getData());
+        } 
+        catch (DataBaseException ex)
+        {
+            notifications.tabelaNaoExiste();
         }
     }
-    
 }

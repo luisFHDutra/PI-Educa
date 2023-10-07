@@ -84,7 +84,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
 
             Usuario user = new Usuario(id, hashCode, permissao, false);
             
-            Professor prof = new Professor(id, nome, area, contato, user, false);
+            Professor prof = new Professor(id, nome, area, contato, user, false, null);
 
             DaoFactory.criarProfessorDao().create(prof);
 

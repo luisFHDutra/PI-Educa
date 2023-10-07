@@ -8,17 +8,13 @@ public class Disciplina {
     private Integer idDisciplina;
     private String nome;
     private Integer cargaHorariaTotal;
-    private DiaSemana diaSemana;
-    private Periodo periodo;
-    private ArrayList<AlunoDisciplina> alunoDisciplina;
+    private ArrayList<Presenca> presencas;
 
-    public Disciplina(Integer idDisciplina, String nome, Integer cargaHorariaTotal, DiaSemana diaSemana, Periodo periodo, ArrayList<AlunoDisciplina> alunoDisciplina) {
+    public Disciplina(Integer idDisciplina, String nome, Integer cargaHorariaTotal, ArrayList<Presenca> presencas) {
         this.idDisciplina = idDisciplina;
         this.nome = nome;
         this.cargaHorariaTotal = cargaHorariaTotal;
-        this.diaSemana = diaSemana;
-        this.periodo = periodo;
-        this.alunoDisciplina = alunoDisciplina;
+        this.presencas = presencas;
     }
 
     public Integer getIdDisciplina() {
@@ -45,28 +41,12 @@ public class Disciplina {
         this.cargaHorariaTotal = cargaHorariaTotal;
     }
 
-    public DiaSemana getDiaSemana() {
-        return diaSemana;
+    public ArrayList<Presenca> getPresencas() {
+        return presencas;
     }
 
-    public void setDiaSemana(DiaSemana diaSemana) {
-        this.diaSemana = diaSemana;
-    }
-
-    public Periodo getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(Periodo periodo) {
-        this.periodo = periodo;
-    }
-
-    public ArrayList<AlunoDisciplina> getAlunoDisciplina() {
-        return alunoDisciplina;
-    }
-
-    public void setAlunoDisciplina(ArrayList<AlunoDisciplina> alunoDisciplina) {
-        this.alunoDisciplina = alunoDisciplina;
+    public void setPresencas(ArrayList<Presenca> presencas) {
+        this.presencas = presencas;
     }
     
     @Override
