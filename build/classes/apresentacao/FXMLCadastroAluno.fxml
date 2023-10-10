@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
@@ -16,5 +17,6 @@
       <JFXButton layoutX="56.0" layoutY="336.0" onMouseClicked="#voltar" text="Voltar" />
       <JFXButton layoutX="274.0" layoutY="336.0" onMouseClicked="#cadastrarAluno" text="Cadastrar" />
       <JFXButton layoutX="467.0" layoutY="336.0" onMouseClicked="#limparCampos" text="Limpar" />
+      <JFXComboBox fx:id="cbTurma" layoutX="203.0" layoutY="276.0" prefHeight="25.0" prefWidth="154.0" />
    </children>
 </AnchorPane>

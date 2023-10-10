@@ -20,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import negocio.Disciplina;
 import negocio.Permissao;
 import negocio.Professor;
 import negocio.Usuario;
@@ -39,8 +40,12 @@ public class FXMLCadastroProfessoresController implements Initializable {
     private JFXTextField tfContato;
     @FXML
     private JFXComboBox cbPermissoes;
+    @FXML
+    private JFXComboBox cbDisciplina;
     
     private ObservableList<Permissao> obsPermissoes;
+    
+    private ObservableList<Disciplina> obsDisciplinas;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -49,6 +54,12 @@ public class FXMLCadastroProfessoresController implements Initializable {
         obsPermissoes = FXCollections.observableArrayList(permissoes);
        
         cbPermissoes.setItems(obsPermissoes);
+        
+        List<Disciplina> disciplinas = DaoFactory.criarDisciplinaDao().readAll();
+        
+        obsDisciplinas = FXCollections.observableArrayList(disciplinas);
+       
+        cbDisciplina.setItems(obsDisciplinas);
     }   
     
     public void voltar (MouseEvent event) throws Exception {
@@ -69,6 +80,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
         String area = tfAreaEspecializacao.getText();
         String contato = tfContato.getText();
         Permissao permissao = (Permissao) cbPermissoes.getSelectionModel().getSelectedItem();
+        Disciplina disciplina = (Disciplina) cbDisciplina.getSelectionModel().getSelectedItem();
         
         if (senha.isEmpty() || nome.isEmpty() || area.isEmpty() || contato.isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
@@ -84,7 +96,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
 
             Usuario user = new Usuario(id, hashCode, permissao, false);
             
-            Professor prof = new Professor(id, nome, area, contato, user, false, null);
+            Professor prof = new Professor(id, nome, area, contato, user, false, disciplina);
 
             DaoFactory.criarProfessorDao().create(prof);
 

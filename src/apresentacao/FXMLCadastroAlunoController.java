@@ -1,9 +1,13 @@
 package apresentacao;
 
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import negocio.Aluno;
+import negocio.Turma;
 import org.controlsfx.control.Notifications;
 import persistencia.AlunoDao;
 import persistencia.DaoFactory;
@@ -31,10 +36,18 @@ public class FXMLCadastroAlunoController implements Initializable {
     private JFXTextField tfRg;
     @FXML
     private JFXDatePicker tfDataNascimento;
+    @FXML
+    private JFXComboBox cbTurma;
 
+    private ObservableList<Turma> obsTurmas;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        List<Turma> turmas = DaoFactory.criarTurmaDao().readAll();
+        
+        obsTurmas = FXCollections.observableArrayList(turmas);
+       
+        cbTurma.setItems(obsTurmas);
     }    
     
     public void voltar (MouseEvent event) throws Exception {
@@ -54,6 +67,7 @@ public class FXMLCadastroAlunoController implements Initializable {
         String filiacao = tfFiliacao.getText();
         String rg = tfRg.getText();
         String data = tfDataNascimento.getValue().toString();
+        Turma turma = (Turma) cbTurma.getSelectionModel().getSelectedItem();
         
         if (nome.isEmpty() || rg.isEmpty() || filiacao.isEmpty() || data.isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
@@ -64,7 +78,7 @@ public class FXMLCadastroAlunoController implements Initializable {
             AlunoDao alunodao = new AlunoDao();
             int id = alunodao.maxId();
             
-            Aluno aluno = new Aluno(id, nome, data, rg, filiacao, Boolean.FALSE, null);
+            Aluno aluno = new Aluno(id, nome, data, rg, filiacao, Boolean.FALSE, turma);
 
             DaoFactory.criarAlunoDao().create(aluno);
             

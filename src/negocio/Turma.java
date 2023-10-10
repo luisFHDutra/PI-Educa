@@ -7,11 +7,11 @@ public class Turma {
     
     private Integer idTurma;
     private String nome;
-    private Integer anoLetivo;
+    private String anoLetivo;
     private ArrayList<Professor> professores;
     private ArrayList<Disciplina> disciplinas;
 
-    public Turma(Integer idTurma, String nome, Integer anoLetivo, ArrayList<Professor> professores, ArrayList<Disciplina> disciplinas) {
+    public Turma(Integer idTurma, String nome, String anoLetivo, ArrayList<Professor> professores, ArrayList<Disciplina> disciplinas) {
         this.idTurma = idTurma;
         this.nome = nome;
         this.anoLetivo = anoLetivo;
@@ -35,11 +35,11 @@ public class Turma {
         this.nome = nome;
     }
 
-    public Integer getAnoLetivo() {
+    public String getAnoLetivo() {
         return anoLetivo;
     }
 
-    public void setAnoLetivo(Integer anoLetivo) {
+    public void setAnoLetivo(String anoLetivo) {
         this.anoLetivo = anoLetivo;
     }
 

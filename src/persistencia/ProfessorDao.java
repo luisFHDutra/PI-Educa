@@ -21,60 +21,21 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try
         {
-            dbcm.runSQL("begin transaction;");
             
-            String sql = "INSERT INTO professor VALUES ( ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO professor VALUES ( ?, ?, ?, ?, ?, ?);";
             
             dbcm.runPreparedSQL(sql, objeto.getIdProfessor(), objeto.getNome(), objeto.getAreaEspecializacao()
-                    ,objeto.getContato(), objeto.getDeletado().toString());
+                    ,objeto.getContato(), objeto.getDeletado().toString(), objeto.getDisciplina().getIdDisciplina());
             
-            cadastrarDisciplinas(objeto);
-            
-            cadastrarUsuario(objeto);
-            
-            dbcm.runSQL("commit;");
+            createUsuario(objeto);
             
             dbcm.closeConnection();
         } catch (DataBaseException ex) {
-            try {
-                dbcm.runSQL("rollback;");
-                
-                dbcm.closeConnection();
-            } catch (DataBaseException ex1) {
-                notifications.rollback();
-            }
-
             notifications.chaveDuplicada();
         }
     }
     
-    private void cadastrarDisciplinas (Professor objeto) {
-        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
-
-        ArrayList<Disciplina> disciplinas = objeto.getDisciplinas();
-
-        String sql = "INSERT INTO ensina (professor_id, disciplina_id) VALUES (?, ?)";
-
-        PreparedStatement statement = null;
-        try {
-
-            // Prepara a instrução SQL
-            statement = dbcm.prepareStatement(sql);
-
-            // Percorre a lista de itens e insere cada um no banco de dados
-            for (Disciplina disc : disciplinas) {
-                statement.setInt(1, objeto.getIdProfessor());
-                statement.setInt(2, disc.getIdDisciplina());
-
-                // Executa a instrução SQL para inserir o item
-                statement.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            notifications.erroSintaxe();
-        }
-    }
-    
-    private void cadastrarUsuario (Professor objeto) {
+    private void createUsuario (Professor objeto) {
         
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try
@@ -88,8 +49,11 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             statement.setBoolean(4, objeto.getUsuario().getDeletado());
             statement.executeUpdate();
             
+            dbcm.closeConnection();
         } catch (SQLException ex) {
             notifications.erroSintaxe();
+        } catch (DataBaseException ex) {
+            notifications.conexaoBD();
         }
     }
     
@@ -111,6 +75,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                 String areaEspecializacao = rs.getString("area_especializacao");
                 String contato = rs.getString("contato");
                 Boolean deletado = rs.getBoolean("deletado");
+                int idDisciplina = rs.getInt("disciplina_id");
                 
                 Usuario user = null;
                 try {
@@ -119,31 +84,14 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                    notifications.tabelaNaoExiste();
                 }
                 
-                ArrayList<Disciplina> disciplinas = new ArrayList();
-
-                String sqlDisc = "SELECT * FROM ensina WHERE professor_id = ?;";
-                ResultSet rsDisc = dbcm.runPreparedQuerySQL(sqlDisc, id);
-
-                if (rsDisc.isBeforeFirst()) // acho alguma coisa?
-                {
-                    rsDisc.next();
-                    while (!rs.isAfterLast()) {
-                        int idDisc = rsDisc.getInt("disciplina_id");
-
-                        Disciplina disciplina = null;
-                        try {
-                            disciplina = DaoFactory.criarDisciplinaDao().read(idDisc);
-                        } catch (NotFoundException ex) {
-                            notifications.tabelaNaoExiste();
-                        }
-
-                        disciplinas.add(disciplina);
-
-                        rs.next();
-                        }
-                    }
+                Disciplina disciplina = null;
+                try {
+                    disciplina = DaoFactory.criarDisciplinaDao().read(idDisciplina);
+                } catch (NotFoundException ex) {
+                    notifications.tabelaNaoExiste();
+                }
                 
-                p = new Professor(id, nome, areaEspecializacao, contato, user, deletado, disciplinas);
+                p = new Professor(id, nome, areaEspecializacao, contato, user, deletado, disciplina);
             }
             
             dbcm.closeConnection();
@@ -181,6 +129,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                     String areaEspecializacao = rs.getString("area_especializacao");
                     String contato = rs.getString("contato");
                     Boolean deletado = rs.getBoolean("deletado");
+                    int idDisciplina = rs.getInt("disciplina_id");
                     
                     Usuario user = null;
                     try {
@@ -188,31 +137,15 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
                     } catch (NotFoundException ex) {
                         notifications.tabelaNaoExiste();
                     }
-                    ArrayList<Disciplina> disciplinas = new ArrayList();
 
-                    String sqlDisc = "SELECT * FROM ensina WHERE professor_id = ?;";
-                    ResultSet rsDisc = dbcm.runPreparedQuerySQL(sqlDisc, id);
-
-                    if (rsDisc.isBeforeFirst()) // acho alguma coisa?
-                    {
-                        rsDisc.next();
-                        while (!rs.isAfterLast()) {
-                            int idDisc = rsDisc.getInt("disciplina_id");
-
-                            Disciplina disciplina = null;
-                            try {
-                                disciplina = DaoFactory.criarDisciplinaDao().read(idDisc);
-                            } catch (NotFoundException ex) {
-                                notifications.tabelaNaoExiste();
-                            }
-
-                            disciplinas.add(disciplina);
-
-                            rs.next();
-                        }
+                    Disciplina disciplina = null;
+                    try {
+                        disciplina = DaoFactory.criarDisciplinaDao().read(idDisciplina);
+                    } catch (NotFoundException ex) {
+                        notifications.tabelaNaoExiste();
                     }
                 
-                    Professor p = new Professor(id, nome, areaEspecializacao, contato, user, deletado, disciplinas);
+                    Professor p = new Professor(id, nome, areaEspecializacao, contato, user, deletado, disciplina);
                     lista.add(p);
                     
                     rs.next();
@@ -239,9 +172,9 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         
         try
         {
-            String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ?, deletado = ? WHERE id = ?";
+            String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ?, deletado = ?, disciplina_id = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(), objeto.getContato(),
-                    objeto.getDeletado().toString(), objeto.getIdProfessor());
+                    objeto.getDeletado().toString(), objeto.getIdProfessor(), objeto.getDisciplina().getIdDisciplina());
             
             dbcm.closeConnection();
         } 
@@ -297,26 +230,6 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         }
         return null;
          
-    }
-    
-    public void updateDisciplinas (Professor objeto) {
-        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
-        
-        try
-        {
-            String sql = "DELETE FROM ensina WHERE id = ?";
-            dbcm.runPreparedSQL(sql, objeto.getIdProfessor());
-            
-            dbcm.closeConnection();
-            
-            cadastrarDisciplinas(objeto);
-            
-        } 
-        catch (DataBaseException ex)
-        {
-            notifications.tabelaNaoExiste();
-        }
-        
     }
     
 }

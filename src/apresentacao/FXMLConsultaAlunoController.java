@@ -39,6 +39,8 @@ public class FXMLConsultaAlunoController implements Initializable {
     private TableColumn<Aluno, String> filiacao;
     @FXML
     private TableColumn<Aluno, String> rg;
+    @FXML
+    private TableColumn<Aluno, String> turma;
 
     @FXML
     private JFXButton btnAdicionar;
@@ -54,6 +56,7 @@ public class FXMLConsultaAlunoController implements Initializable {
         nascimento.setCellValueFactory(new PropertyValueFactory<Aluno, String>("dataNascimento"));
         filiacao.setCellValueFactory(new PropertyValueFactory<Aluno, String>("filiacao"));
         rg.setCellValueFactory(new PropertyValueFactory<Aluno, String>("rg"));
+        turma.setCellValueFactory(new PropertyValueFactory<Aluno, String>("turma"));
         
         List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll(new Filter<Aluno>() {
             @Override
@@ -96,6 +99,7 @@ public class FXMLConsultaAlunoController implements Initializable {
         nascimento.setCellValueFactory(new PropertyValueFactory<Aluno, String>("dataNascimento"));
         filiacao.setCellValueFactory(new PropertyValueFactory<Aluno, String>("filiacao"));
         rg.setCellValueFactory(new PropertyValueFactory<Aluno, String>("rg"));
+        turma.setCellValueFactory(new PropertyValueFactory<Aluno, String>("turma"));
         
         List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll(new Filter<Aluno>() {
             @Override

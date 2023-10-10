@@ -24,6 +24,8 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
             dbcm.runPreparedSQL(sqls, objeto.getIdAluno(), objeto.getNome(), objeto.getDataNascimento(),
                    objeto.getFiliacao(), objeto.getRg(), objeto.getDeletado().toString(), objeto.getTurma().getIdTurma());
             
+            dbcm.closeConnection();
+            
         } 
         catch (DataBaseException ex)
         {
@@ -63,6 +65,8 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
                 
                 a = new Aluno(id, nome, dataNasc, rg, filiacao, deletado, turma);
             }
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -116,6 +120,7 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
                 }
             }
 
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -140,6 +145,8 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
             String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, rg = ?, filiacao = ?, deletado = ?, turma_id = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getDataNascimento(), objeto.getRg(),
                     objeto.getFiliacao(), objeto.getDeletado().toString(), objeto.getTurma().getIdTurma(), objeto.getIdAluno());
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -155,6 +162,8 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
         {
             String sql = "DELETE FROM aluno WHERE id = ?";
             dbcm.runPreparedSQL(sql, primaryKey );
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {

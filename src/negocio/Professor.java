@@ -11,25 +11,25 @@ public class Professor {
     private String contato;
     private Usuario usuario;
     private Boolean deletado;
-    private ArrayList<Disciplina> disciplinas;
+    private Disciplina disciplina;
 
-    public Professor(String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado, ArrayList<Disciplina> disciplinas) {
+    public Professor(String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado, Disciplina disciplina) {
         this.nome = nome;
         this.areaEspecializacao = areaEspecializacao;
         this.contato = contato;
         this.usuario = usuario;
         this.deletado = deletado;
-        this.disciplinas = disciplinas;
+        this.disciplina = disciplina;
     }
     
-    public Professor(Integer idProfessor, String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado, ArrayList<Disciplina> disciplinas) {
+    public Professor(Integer idProfessor, String nome, String areaEspecializacao, String contato, Usuario usuario, Boolean deletado, Disciplina disciplina) {
         this.nome = nome;
         this.areaEspecializacao = areaEspecializacao;
         this.contato = contato;
         this.usuario = usuario;
         this.idProfessor = idProfessor;
         this.deletado = deletado;
-        this.disciplinas = disciplinas;
+        this.disciplina = disciplina;
     }
 
     public Integer getIdProfessor() {
@@ -79,13 +79,13 @@ public class Professor {
     public void setDeletado(Boolean deletado) {
         this.deletado = deletado;
     }
-    
-    public ArrayList<Disciplina> getDisciplinas() {
-        return disciplinas;
+
+    public Disciplina getDisciplina() {
+        return disciplina;
     }
 
-    public void setDisciplinas(ArrayList<Disciplina> disciplinas) {
-        this.disciplinas = disciplinas;
+    public void setDisciplina(Disciplina disciplina) {
+        this.disciplina = disciplina;
     }
     
     @Override

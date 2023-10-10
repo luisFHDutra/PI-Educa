@@ -3,9 +3,12 @@ package persistencia;
 
 import db.DataBaseConnectionManager;
 import db.DataBaseException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import negocio.Aluno;
 import negocio.Presenca;
 import negocio.Disciplina;
@@ -24,6 +27,7 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
 
             dbcm.runPreparedSQL(sql, objeto.getIdDisciplina(), objeto.getNome(), objeto.getCargaHorariaTotal());
 
+            dbcm.closeConnection();
         }
         catch (DataBaseException ex)
         {
@@ -31,19 +35,34 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
         }
     }
 
-    public void createPresenca(Disciplina objeto, Presenca objeto1) {
+    public void createPresenca(Disciplina objeto) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
+        ArrayList<Presenca> presencas = objeto.getPresencas();
+
+        String sql = "INSERT INTO presenca (aluno_id, disciplina_id, data, presente) VALUES (?, ?, ?, ?)";
+        
+        PreparedStatement statement = null;
         try {
-            String sql = "INSERT INTO presenca VALUES ( ?, ?, ?, ?);";
+            // Prepara a instrução SQL
+            statement = dbcm.prepareStatement(sql);
 
-            dbcm.runPreparedSQL(sql, objeto1.getAluno().getIdAluno(), objeto.getIdDisciplina(),
-                    objeto1.getData(), objeto1.getPresente().toString());
+            // Percorre a lista de itens e insere cada um no banco de dados
+            for (Presenca p : presencas) {
+                statement.setInt(1, p.getAluno().getIdAluno());
+                statement.setInt(2, objeto.getIdDisciplina());
+                statement.setString(3, p.getData());
+                statement.setBoolean(4, p.getPresente());
 
-        }
-        catch (DataBaseException ex)
-        {
-            notifications.chaveDuplicada();
+                // Executa a instrução SQL para inserir o item
+                statement.executeUpdate();
+            }
+
+            dbcm.closeConnection();
+        } catch (SQLException ex) {
+            notifications.erroSintaxe();
+        } catch (DataBaseException ex) {
+            notifications.conexaoBD();
         }
         
     }
@@ -94,6 +113,8 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
 
                 d = new Disciplina(id, nome, cargaTotal, presencas);
             }
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -159,6 +180,8 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
                     rs.next();
                 }
             }
+            
+            dbcm.closeConnection();
 
         } 
         catch (DataBaseException ex)
@@ -181,6 +204,8 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
         {
             String sql = "UPDATE disciplina SET nome = ?, carga_horaria = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getCargaHorariaTotal(), objeto.getIdDisciplina());
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
@@ -201,6 +226,8 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
             String sql = "UPDATE presenca SET presente = ? WHERE aluno_id = ? AND disciplina_id = ? AND data = ?";
             dbcm.runPreparedSQL(sql, objeto1.getPresente(), objeto1.getAluno().getIdAluno(), 
                     objeto.getIdDisciplina(), objeto1.getData());
+            
+            dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {

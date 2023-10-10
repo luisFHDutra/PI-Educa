@@ -17,6 +17,7 @@
       <JFXTextField fx:id="tfContato" layoutX="67.0" layoutY="200.0" promptText="Contato" />
       <JFXButton layoutX="43.0" layoutY="339.0" onMouseClicked="#voltar" text="Voltar" />
       <JFXButton layoutX="469.0" layoutY="339.0" onMouseClicked="#limparCampos" text="Limpar" />
-      <JFXComboBox fx:id="cbPermissoes" layoutX="204.0" layoutY="258.0" prefHeight="25.0" prefWidth="155.0" />
+      <JFXComboBox fx:id="cbPermissoes" layoutX="356.0" layoutY="263.0" prefHeight="25.0" prefWidth="135.0" />
+      <JFXComboBox fx:id="cbDisciplina" layoutX="67.0" layoutY="263.0" prefHeight="25.0" prefWidth="135.0" />
    </children>
 </AnchorPane>
