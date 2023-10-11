@@ -9,12 +9,14 @@ public class Disciplina {
     private String nome;
     private Integer cargaHorariaTotal;
     private ArrayList<Presenca> presencas;
+    private ArrayList<Nota> notas;
 
-    public Disciplina(Integer idDisciplina, String nome, Integer cargaHorariaTotal, ArrayList<Presenca> presencas) {
+    public Disciplina(Integer idDisciplina, String nome, Integer cargaHorariaTotal, ArrayList<Presenca> presencas, ArrayList<Nota> notas) {
         this.idDisciplina = idDisciplina;
         this.nome = nome;
         this.cargaHorariaTotal = cargaHorariaTotal;
         this.presencas = presencas;
+        this.notas = notas;
     }
 
     public Integer getIdDisciplina() {

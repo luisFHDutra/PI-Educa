@@ -7,11 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import negocio.Aluno;
 import negocio.Presenca;
 import negocio.Disciplina;
+import negocio.Nota;
 import pieduca.Sys;
 
 public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
@@ -35,7 +34,7 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
         }
     }
 
-    public void createPresenca(Disciplina objeto) {
+    public void createPresenca (Disciplina objeto) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         ArrayList<Presenca> presencas = objeto.getPresencas();
@@ -53,6 +52,37 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
                 statement.setInt(2, objeto.getIdDisciplina());
                 statement.setString(3, p.getData());
                 statement.setBoolean(4, p.getPresente());
+
+                // Executa a instrução SQL para inserir o item
+                statement.executeUpdate();
+            }
+
+            dbcm.closeConnection();
+        } catch (SQLException ex) {
+            notifications.erroSintaxe();
+        } catch (DataBaseException ex) {
+            notifications.conexaoBD();
+        }
+        
+    }
+    
+    public void createNota (Disciplina objeto) {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        ArrayList<Nota> notas = objeto.getNotas();
+
+        String sql = "INSERT INTO nota (aluno_id, disciplina_id, nota) VALUES (?, ?, ?)";
+        
+        PreparedStatement statement = null;
+        try {
+            // Prepara a instrução SQL
+            statement = dbcm.prepareStatement(sql);
+
+            // Percorre a lista de itens e insere cada um no banco de dados
+            for (Nota n : notas) {
+                statement.setInt(1, n.getAluno().getIdAluno());
+                statement.setInt(2, objeto.getIdDisciplina());
+                statement.setDouble(3, n.getNota());
 
                 // Executa a instrução SQL para inserir o item
                 statement.executeUpdate();
@@ -111,7 +141,33 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
                     }
                 }
 
-                d = new Disciplina(id, nome, cargaTotal, presencas);
+                ArrayList<Nota> notas = new ArrayList();
+
+                String sqlNota = "SELECT * FROM nota WHERE disciplina_id = ?;";
+                ResultSet rsNota = dbcm.runPreparedQuerySQL(sqlNota, primaryKey);
+                
+                if (rsNota.isBeforeFirst()) // acho alguma coisa?
+                {
+                    rsNota.next();
+                    while (!rs.isAfterLast()) {
+                        int idAluno = rsNota.getInt("aluno_id");
+                        double nota = rsNota.getDouble("nota");
+
+                        Aluno aluno = null;
+                        try {
+                            aluno = DaoFactory.criarAlunoDao().read(idAluno);
+                        } catch (NotFoundException ex) {
+                            notifications.tabelaNaoExiste();
+                        }
+
+                        Nota n = new Nota(aluno, nota);
+                        notas.add(n);
+                        
+                        rs.next();
+                    }
+                }
+                
+                d = new Disciplina(id, nome, cargaTotal, presencas, notas);
             }
             
             dbcm.closeConnection();
@@ -173,7 +229,33 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
                         }
                     }
 
-                    Disciplina d = new Disciplina(id, nome, cargaTotal, presencas);
+                    ArrayList<Nota> notas = new ArrayList();
+
+                    String sqlNota = "SELECT * FROM nota WHERE disciplina_id = ?;";
+                    ResultSet rsNota = dbcm.runPreparedQuerySQL(sqlNota, id);
+
+                    if (rsNota.isBeforeFirst()) // acho alguma coisa?
+                    {
+                        rsNota.next();
+                        while (!rs.isAfterLast()) {
+                            int idAluno = rsNota.getInt("aluno_id");
+                            double nota = rsNota.getDouble("nota");
+
+                            Aluno aluno = null;
+                            try {
+                                aluno = DaoFactory.criarAlunoDao().read(idAluno);
+                            } catch (NotFoundException ex) {
+                                notifications.tabelaNaoExiste();
+                            }
+
+                            Nota n = new Nota(aluno, nota);
+                            notas.add(n);
+
+                            rs.next();
+                        }
+                    }
+
+                    Disciplina d = new Disciplina(id, nome, cargaTotal, presencas, notas);
 
                     lista.add(d);
 
@@ -218,7 +300,7 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public void updatePresenca(Disciplina objeto, Presenca objeto1) {
+    public void updatePresenca (Disciplina objeto, Presenca objeto1) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
@@ -226,6 +308,23 @@ public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {
             String sql = "UPDATE presenca SET presente = ? WHERE aluno_id = ? AND disciplina_id = ? AND data = ?";
             dbcm.runPreparedSQL(sql, objeto1.getPresente(), objeto1.getAluno().getIdAluno(), 
                     objeto.getIdDisciplina(), objeto1.getData());
+            
+            dbcm.closeConnection();
+        } 
+        catch (DataBaseException ex)
+        {
+            notifications.tabelaNaoExiste();
+        }
+    }
+    
+    public void updateNota (Disciplina objeto, Nota objeto1) {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        try
+        {
+            String sql = "UPDATE nota SET nota = ? WHERE aluno_id = ? AND disciplina_id = ?";
+            dbcm.runPreparedSQL(sql, objeto1.getNota(), objeto1.getAluno().getIdAluno(), 
+                    objeto.getIdDisciplina());
             
             dbcm.closeConnection();
         } 
