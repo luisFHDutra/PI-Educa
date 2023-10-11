@@ -50,6 +50,14 @@ public class Disciplina {
     public void setPresencas(ArrayList<Presenca> presencas) {
         this.presencas = presencas;
     }
+
+    public ArrayList<Nota> getNotas() {
+        return notas;
+    }
+
+    public void setNotas(ArrayList<Nota> notas) {
+        this.notas = notas;
+    }
     
     @Override
     public String toString() {
