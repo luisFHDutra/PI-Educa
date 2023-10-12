@@ -1,5 +1,6 @@
 package apresentacao;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
@@ -36,10 +37,17 @@ public class FXMLCadastroAlunoController implements Initializable {
     private JFXTextField tfRg;
     @FXML
     private JFXDatePicker tfDataNascimento;
+    
+    @FXML
+    private JFXButton btnAtualizar;
+    @FXML
+    private JFXButton btnCadastrar;
+    
     @FXML
     private JFXComboBox cbTurma;
-
     private ObservableList<Turma> obsTurmas;
+    
+    private Aluno aluno;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -48,7 +56,28 @@ public class FXMLCadastroAlunoController implements Initializable {
         obsTurmas = FXCollections.observableArrayList(turmas);
        
         cbTurma.setItems(obsTurmas);
+        
+        btnCadastrar.setDisable(true);
+        btnAtualizar.setDisable(true);
     }    
+    
+    public void setBtnAtualizar (Boolean flag) {
+        this.btnAtualizar.setDisable(flag);
+    }
+    
+    public void setBtnCadastrar (Boolean flag) {
+        this.btnCadastrar.setDisable(flag);
+    }
+    
+    public void setAlunoSelecionado (Aluno objeto) {
+        this.aluno = objeto;
+    }
+    
+    public void preencherCampos (Aluno objeto) {
+        tfNome.setText(objeto.getNome());
+        tfFiliacao.setText(objeto.getFiliacao());
+        tfRg.setText(objeto.getRg());
+    }
     
     public void voltar (MouseEvent event) throws Exception {
         
@@ -63,10 +92,16 @@ public class FXMLCadastroAlunoController implements Initializable {
     }
     
     public void cadastrarAluno (MouseEvent event) throws Exception {
+        String data = "";
+        try {
+            data = tfDataNascimento.getValue().toString();
+        } catch (NullPointerException ex) {
+            data = "";
+        }
+        
         String nome = tfNome.getText();
         String filiacao = tfFiliacao.getText();
         String rg = tfRg.getText();
-        String data = tfDataNascimento.getValue().toString();
         Turma turma = (Turma) cbTurma.getSelectionModel().getSelectedItem();
         
         if (nome.isEmpty() || rg.isEmpty() || filiacao.isEmpty() || data.isEmpty()) {
@@ -74,7 +109,14 @@ public class FXMLCadastroAlunoController implements Initializable {
             alerta.setHeaderText(null);
             alerta.setContentText("Preencha todos os campos");
             alerta.showAndWait();
-        } else {
+        } 
+        else if (rg.length() != 10) {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setHeaderText(null);
+            alerta.setContentText("RG inválido");
+            alerta.showAndWait();
+        }
+        else {
             AlunoDao alunodao = new AlunoDao();
             int id = alunodao.maxId();
             
@@ -93,6 +135,54 @@ public class FXMLCadastroAlunoController implements Initializable {
     
     }
     
+    public void atualizarAluno (MouseEvent event) throws Exception {
+        String data = "";
+        try {
+            data = tfDataNascimento.getValue().toString();
+        } catch (NullPointerException ex) {
+            data = "";
+        }
+        
+        String nome = tfNome.getText();
+        String filiacao = tfFiliacao.getText();
+        String rg = tfRg.getText();
+        
+        Turma turma = (Turma) cbTurma.getSelectionModel().getSelectedItem();
+        
+        if (!nome.isEmpty()) {
+            this.aluno.setNome(nome);
+        }
+        
+        if (!filiacao.isEmpty()) {
+            this.aluno.setFiliacao(filiacao);
+        }
+        
+        if (!rg.isEmpty()) {
+            
+            if (rg.length() != 10) {
+                Alert alerta = new Alert(Alert.AlertType.WARNING);
+                alerta.setHeaderText(null);
+                alerta.setContentText("RG inválido");
+                alerta.showAndWait();
+            } else {
+                this.aluno.setRg(rg);
+            }
+            
+        }
+        
+        if (!data.isEmpty()) {
+            this.aluno.setDataNascimento(data);
+        }
+        
+        if (turma != null) {
+            this.aluno.setTurma(turma);
+        }
+        
+        DaoFactory.criarAlunoDao().update(this.aluno);
+        
+        check();
+    }
+    
     public void limparCampos() {
         limpar();
     }
@@ -102,6 +192,7 @@ public class FXMLCadastroAlunoController implements Initializable {
         tfFiliacao.setText(null);
         tfRg.setText("");
         tfDataNascimento.setValue(null);
+        cbTurma.setValue(null);
     }
     
     private void error(){
@@ -116,7 +207,7 @@ public class FXMLCadastroAlunoController implements Initializable {
     private void check(){
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
-        notification.text("Cadastro realizado com sucesso");
+        notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();

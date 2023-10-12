@@ -15,8 +15,9 @@
       <JFXTextField fx:id="tfRg" labelFloat="true" layoutX="56.0" layoutY="224.0" onKeyReleased="#checkNumeros" onKeyTyped="#checkInput" promptText="RG" />
       <JFXDatePicker fx:id="tfDataNascimento" layoutX="358.0" layoutY="224.0" promptText="Data de nascimento" />
       <JFXButton layoutX="56.0" layoutY="336.0" onMouseClicked="#voltar" text="Voltar" />
-      <JFXButton layoutX="274.0" layoutY="336.0" onMouseClicked="#cadastrarAluno" text="Cadastrar" />
+      <JFXButton fx:id="btnCadastrar" layoutX="280.0" layoutY="336.0" onMouseClicked="#cadastrarAluno" text="Cadastrar" />
       <JFXButton layoutX="467.0" layoutY="336.0" onMouseClicked="#limparCampos" text="Limpar" />
-      <JFXComboBox fx:id="cbTurma" layoutX="203.0" layoutY="276.0" prefHeight="25.0" prefWidth="154.0" />
+      <JFXComboBox fx:id="cbTurma" labelFloat="true" layoutX="203.0" layoutY="276.0" prefHeight="25.0" prefWidth="154.0" promptText="Turma" />
+      <JFXButton fx:id="btnAtualizar" layoutX="203.0" layoutY="336.0" onMouseClicked="#atualizarAluno" text="Atualizar" />
    </children>
 </AnchorPane>

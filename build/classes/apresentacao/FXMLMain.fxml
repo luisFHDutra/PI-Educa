@@ -17,5 +17,7 @@
       <Label layoutX="23.0" layoutY="18.0" prefHeight="17.0" prefWidth="48.0" text="Usuário:" />
       <Label fx:id="lbUsuario" layoutX="78.0" layoutY="18.0" prefHeight="17.0" prefWidth="129.0" />
       <JFXButton layoutX="207.0" layoutY="59.0" onMouseClicked="#consultaAluno" text="Alunos" />
+      <Label layoutX="219.0" layoutY="18.0" text="Permissão:" />
+      <Label fx:id="lbPermissao" layoutX="287.0" layoutY="18.0" prefHeight="17.0" prefWidth="109.0" />
    </children>
 </AnchorPane>

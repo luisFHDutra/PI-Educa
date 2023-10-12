@@ -20,6 +20,7 @@
       <JFXButton layoutX="22.0" layoutY="361.0" onMouseClicked="#voltarMain" text="Voltar" />
       <JFXButton fx:id="btnAdicionar" layoutX="20.0" layoutY="2.0" onMouseClicked="#cadastroAluno" text="Adicionar" />
       <JFXButton fx:id="btnDeletar" layoutX="101.0" layoutY="2.0" onMouseClicked="#deletar" text="Deletar" />
-      <JFXButton layoutX="168.0" layoutY="2.0" onMouseClicked="#refreshTabela" text="Atualizar Tabela" />
+      <JFXButton layoutX="294.0" layoutY="2.0" onMouseClicked="#refreshTabela" text="Atualizar Tabela" />
+      <JFXButton fx:id="btnAtualizarRegistro" layoutX="170.0" layoutY="2.0" onMouseClicked="#atualizarAluno" text="Atualizar Registro" />
    </children>
 </AnchorPane>

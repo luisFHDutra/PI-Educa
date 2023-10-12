@@ -73,7 +73,7 @@ public class Aluno {
         return turma;
     }
 
-    public void setIdTurma(Turma turma) {
+    public void setTurma(Turma turma) {
         this.turma = turma;
     }
     

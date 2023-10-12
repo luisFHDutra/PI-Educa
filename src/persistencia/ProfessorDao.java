@@ -176,11 +176,20 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(), objeto.getContato(),
                     objeto.getDeletado().toString(), objeto.getIdProfessor(), objeto.getDisciplina().getIdDisciplina());
             
+            String sqlUser = "UPDATE usuario SET senha = ? WHERE id = ?";
+            PreparedStatement statement = dbcm.prepareStatement(sqlUser);
+            
+            statement.setString(1, objeto.getUsuario().getHashCode());
+            statement.setInt(2, objeto.getUsuario().getId());
+            statement.executeUpdate();
+            
             dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
         {
             notifications.tabelaNaoExiste();
+        } catch (SQLException ex) {
+            notifications.erroSintaxe();
         }
     }
 

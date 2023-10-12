@@ -11,13 +11,14 @@
    <children>
       <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="67.0" layoutY="135.0" promptText="Nome" />
       <JFXPasswordField fx:id="tfPassword" labelFloat="true" layoutX="356.0" layoutY="200.0" promptText="Senha" />
-      <JFXButton layoutX="255.0" layoutY="339.0" onMouseClicked="#cadastrarProfessor" text="Cadastrar" />
+      <JFXButton fx:id="btnCadastrar" layoutX="289.0" layoutY="339.0" onMouseClicked="#cadastrarProfessor" text="Cadastrar" />
       <Label layoutX="224.0" layoutY="70.0" text="Cadastro de professores" />
-      <JFXTextField fx:id="tfAreaEspecializacao" layoutX="356.0" layoutY="135.0" promptText="Área de especialização" />
-      <JFXTextField fx:id="tfContato" layoutX="67.0" layoutY="200.0" promptText="Contato" />
+      <JFXTextField fx:id="tfAreaEspecializacao" labelFloat="true" layoutX="356.0" layoutY="135.0" promptText="Área de especialização" />
+      <JFXTextField fx:id="tfContato" labelFloat="true" layoutX="67.0" layoutY="200.0" promptText="Contato" />
       <JFXButton layoutX="43.0" layoutY="339.0" onMouseClicked="#voltar" text="Voltar" />
       <JFXButton layoutX="469.0" layoutY="339.0" onMouseClicked="#limparCampos" text="Limpar" />
-      <JFXComboBox fx:id="cbPermissoes" layoutX="356.0" layoutY="263.0" prefHeight="25.0" prefWidth="135.0" />
-      <JFXComboBox fx:id="cbDisciplina" layoutX="67.0" layoutY="263.0" prefHeight="25.0" prefWidth="135.0" />
+      <JFXComboBox fx:id="cbPermissoes" labelFloat="true" layoutX="356.0" layoutY="263.0" prefHeight="25.0" prefWidth="135.0" promptText="Permissão" />
+      <JFXComboBox fx:id="cbDisciplina" labelFloat="true" layoutX="67.0" layoutY="263.0" prefHeight="25.0" prefWidth="135.0" promptText="Disciplina" />
+      <JFXButton fx:id="btnAtualizar" layoutX="202.0" layoutY="339.0" onMouseClicked="#atualizarProfessor" text="Atualizar" />
    </children>
 </AnchorPane>

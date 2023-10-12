@@ -1,8 +1,6 @@
 
 package negocio;
 
-import java.util.ArrayList;
-
 public class Professor {
     
     private Integer idProfessor;

@@ -160,8 +160,8 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
         
         try
         {
-            String sql = "DELETE FROM aluno WHERE id = ?";
-            dbcm.runPreparedSQL(sql, primaryKey );
+            String sql = "UPDATE aluno SET deletado = ? WHERE id = ?";
+            dbcm.runPreparedSQL(sql, "true", primaryKey);
             
             dbcm.closeConnection();
         } 

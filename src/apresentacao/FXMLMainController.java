@@ -2,8 +2,6 @@ package apresentacao;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,6 +24,8 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     private Label lbUsuario;
+    @FXML
+    private Label lbPermissao;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -33,6 +33,7 @@ public class FXMLMainController implements Initializable {
             Professor prof = DaoFactory.criarProfessorDao().read(Sys.getInstance().getUser().getId());
             
             lbUsuario.setText(prof.getNome());
+            lbPermissao.setText(prof.getUsuario().getPermissao().getNome());
         } catch (NotFoundException ex) {
             
             Notifications notification = Notifications.create();

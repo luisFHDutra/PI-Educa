@@ -1,6 +1,7 @@
 package apresentacao;
 
 import auth.Authenticator;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -43,9 +44,16 @@ public class FXMLCadastroProfessoresController implements Initializable {
     @FXML
     private JFXComboBox cbDisciplina;
     
+    @FXML
+    private JFXButton btnAtualizar;
+    @FXML
+    private JFXButton btnCadastrar;
+    
     private ObservableList<Permissao> obsPermissoes;
     
     private ObservableList<Disciplina> obsDisciplinas;
+    
+    private Professor professor;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -60,6 +68,9 @@ public class FXMLCadastroProfessoresController implements Initializable {
         obsDisciplinas = FXCollections.observableArrayList(disciplinas);
        
         cbDisciplina.setItems(obsDisciplinas);
+        
+        btnCadastrar.setDisable(true);
+        btnAtualizar.setDisable(true);
     }   
     
     public void voltar (MouseEvent event) throws Exception {
@@ -111,6 +122,72 @@ public class FXMLCadastroProfessoresController implements Initializable {
         
     }
     
+    public void setProfessorSelecionado (Professor objeto) {
+        this.professor = objeto;
+    }
+    
+    public void setBtnAtualizar (Boolean flag) {
+        this.btnAtualizar.setDisable(flag);
+    }
+    
+    public void setBtnCadastrar (Boolean flag) {
+        this.btnCadastrar.setDisable(flag);
+    }
+    
+    public void preencherCampos (Professor objeto) {
+        tfNome.setText(objeto.getNome());
+        tfAreaEspecializacao.setText(objeto.getAreaEspecializacao());
+        tfContato.setText(objeto.getContato());
+    }
+    
+    public void atualizarProfessor (MouseEvent event) throws Exception {
+        String senha = tfPassword.getText();
+        String nome = tfNome.getText();
+        String area = tfAreaEspecializacao.getText();
+        String contato = tfContato.getText();
+        Disciplina disciplina = (Disciplina) cbDisciplina.getSelectionModel().getSelectedItem();
+        Permissao permissao = (Permissao) cbPermissoes.getSelectionModel().getSelectedItem();
+        
+        if (!nome.isEmpty()) {
+            this.professor.setNome(nome);
+        }
+        
+        if (!area.isEmpty()) {
+            this.professor.setAreaEscpecializacao(area);
+        }
+        
+        if (!contato.isEmpty()) {
+            this.professor.setContato(contato);
+        }
+        
+        if (disciplina != null) {
+            this.professor.setDisciplina(disciplina);
+        }
+        
+        if (!senha.isEmpty()) {
+            Authenticator auth = new Authenticator();
+            String hashCode = auth.generateHashCode(senha);
+            
+            Usuario user = this.professor.getUsuario();
+            
+            user.setHashCode(hashCode);
+            
+            this.professor.setUsuario(user);
+        }
+        
+        if (permissao != null) {
+            Usuario user = this.professor.getUsuario();
+            
+            user.setPermissao(permissao);
+            
+            this.professor.setUsuario(user);
+        }
+        
+        DaoFactory.criarProfessorDao().update(this.professor);
+        
+        check();
+    }
+    
     public void limparCampos() {
         limpar();
     }
@@ -120,6 +197,8 @@ public class FXMLCadastroProfessoresController implements Initializable {
         tfContato.setText(null);
         tfAreaEspecializacao.setText(null);
         tfPassword.setText(null);
+        cbDisciplina.setValue(null);
+        cbPermissoes.setValue(null);
     }
     
     private void error(){
@@ -134,7 +213,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
      private void check(){
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
-        notification.text("Cadastro realizado com sucesso");
+        notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();

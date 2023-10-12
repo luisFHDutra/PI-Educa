@@ -46,6 +46,8 @@ public class FXMLConsultaAlunoController implements Initializable {
     private JFXButton btnAdicionar;
     @FXML
     private JFXButton btnDeletar;
+    @FXML
+    private JFXButton btnAtualizarRegistro;
     
     private ObservableList<Aluno> obsAlunos;
     
@@ -72,6 +74,7 @@ public class FXMLConsultaAlunoController implements Initializable {
         if (Sys.getInstance().getUser().getPermissao().getIdPermissao() != 1) {
             btnDeletar.setDisable(true);
             btnAdicionar.setDisable(true);
+            btnAtualizarRegistro.setDisable(true);
         }
     }    
     
@@ -162,14 +165,54 @@ public class FXMLConsultaAlunoController implements Initializable {
     }
     
     public void cadastroAluno (MouseEvent event) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/apresentacao/FXMLCadastroAluno.fxml"));
+        Parent root = loader.load();
+        
+        FXMLCadastroAlunoController controller = loader.getController();
+        
+        controller.setBtnCadastrar(Boolean.FALSE);
         
         Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLCadastroAluno.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
         
+    }
+    
+    public void atualizarAluno (MouseEvent event) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/apresentacao/FXMLCadastroAluno.fxml"));
+        Parent root = loader.load();
+        
+        FXMLCadastroAlunoController controller = loader.getController();
+        
+        controller.setBtnAtualizar(Boolean.FALSE);
+        
+        Aluno aluno = tabela.getSelectionModel().getSelectedItem();
+        
+        if (aluno != null) {
+            
+            controller.preencherCampos(aluno);
+            
+            controller.setAlunoSelecionado(aluno);
+            
+    //      stage.initStyle(StageStyle.UNDECORATED);
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            ((Node)event.getSource()).getScene().getWindow().hide();
+            
+        } else {
+            
+            Notifications notification = Notifications.create();
+            notification.title("Error");
+            notification.text("Selecione um item da tabela");
+            notification.hideAfter(Duration.seconds(3));
+            notification.position(Pos.BOTTOM_CENTER);
+            notification.show();
+            
+        }
     }
 }
