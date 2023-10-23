@@ -3,6 +3,7 @@ package apresentacao;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -24,6 +25,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import negocio.Aluno;
 import negocio.AlunoDisciplina;
 import negocio.Disciplina;
 import negocio.Nota;
@@ -100,32 +102,44 @@ public class FXMLNotaController implements Initializable {
                 }
             });
             
-            List<AlunoDisciplina> filtroDisciplina = alunos.stream()
-                .filter(alunoDisciplina -> 
-                    alunoDisciplina.getAluno().getTurma().getDisciplinas().stream()
-                        .anyMatch(d -> d.getIdDisciplina() == disciplina.getIdDisciplina())
-                )
-            .collect(Collectors.toList());
-            
-            System.out.println("tam " + filtroDisciplina.size());
-            
-            for (AlunoDisciplina alunoDisciplina : filtroDisciplina) {
-                System.out.println("filtro disciplina " + alunoDisciplina.getAluno().getNome());
-            }
-            
-            
-            
-            List<AlunoDisciplina> alunosFiltrados = filtroDisciplina.stream()
+            List<AlunoDisciplina> alunosFiltrados = alunos.stream()
                 .filter(alunoDisciplina -> 
                     alunoDisciplina.getNotas().stream()
                         .anyMatch(nota -> nota.getDisciplina().getIdDisciplina() == disciplina.getIdDisciplina())
                 )
             .collect(Collectors.toList());
             
-            HashSet<AlunoDisciplina> set = new HashSet<>(alunosFiltrados);
-            set.addAll(filtroDisciplina);
-
-            obsAlunos = FXCollections.observableArrayList(set);
+            List<Aluno> alunoTodos = DaoFactory.criarAlunoDao().readAll(new Filter<Aluno>() {
+                @Override
+                public boolean isAccept(Aluno record) {
+                    return (record.getDeletado() == Boolean.FALSE
+                            && record.getTurma().getIdTurma() == turma.getIdTurma());
+                }
+            });
+            
+            ArrayList<Nota> notas = new ArrayList();
+            
+            ArrayList<AlunoDisciplina> todos = new ArrayList();
+            
+            for (Aluno a : alunoTodos) {
+                AlunoDisciplina ad = new AlunoDisciplina(a, null, notas);
+                
+                todos.add(ad);
+            }
+            
+            HashSet<Integer> set = new HashSet<>();
+            
+            for (AlunoDisciplina a : alunosFiltrados) {
+                set.add(a.getAluno().getIdAluno());
+            }
+            
+            for (AlunoDisciplina a: todos) {
+                if (!set.contains(a.getAluno().getIdAluno())) {
+                    alunosFiltrados.add(a);
+                }
+            }
+            
+            obsAlunos = FXCollections.observableArrayList(alunosFiltrados);
 
             tabela.setItems(obsAlunos);
         } else {
