@@ -20,5 +20,6 @@
       <Label layoutX="219.0" layoutY="18.0" text="Permissão:" />
       <Label fx:id="lbPermissao" layoutX="287.0" layoutY="18.0" prefHeight="17.0" prefWidth="109.0" />
       <JFXButton layoutX="323.0" layoutY="59.0" onMouseClicked="#nota" text="Notas" />
+      <JFXButton layoutX="422.0" layoutY="59.0" onMouseClicked="#turma" text="Turmas" />
    </children>
 </AnchorPane>

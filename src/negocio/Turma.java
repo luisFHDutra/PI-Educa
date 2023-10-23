@@ -10,6 +10,7 @@ public class Turma {
     private String anoLetivo;
     private ArrayList<Professor> professores;
     private ArrayList<Disciplina> disciplinas;
+    private Integer quantidadeAlunos;
 
     public Turma(Integer idTurma, String nome, String anoLetivo, ArrayList<Professor> professores, ArrayList<Disciplina> disciplinas) {
         this.idTurma = idTurma;
@@ -17,6 +18,15 @@ public class Turma {
         this.anoLetivo = anoLetivo;
         this.professores = professores;
         this.disciplinas = disciplinas;
+    }
+
+    public Turma(Integer idTurma, String nome, String anoLetivo, ArrayList<Professor> professores, ArrayList<Disciplina> disciplinas, Integer quantidadeAlunos) {
+        this.idTurma = idTurma;
+        this.nome = nome;
+        this.anoLetivo = anoLetivo;
+        this.professores = professores;
+        this.disciplinas = disciplinas;
+        this.quantidadeAlunos = quantidadeAlunos;
     }
     
     public Integer getIdTurma() {
@@ -57,6 +67,18 @@ public class Turma {
 
     public void setDisciplinas(ArrayList<Disciplina> disciplinas) {
         this.disciplinas = disciplinas;
+    }
+
+    public Integer getQuantidadeAlunos() {
+        return quantidadeAlunos;
+    }
+
+    public void setQuantidadeAlunos(Integer quantidadeAlunos) {
+        this.quantidadeAlunos = quantidadeAlunos;
+    }
+    
+    public void incrementarQuantidadeAlunos() {
+        this.quantidadeAlunos++;
     }
     
     @Override

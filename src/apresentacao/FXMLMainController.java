@@ -83,6 +83,18 @@ public class FXMLMainController implements Initializable {
         
     }
     
+    public void turma (MouseEvent event) throws Exception {
+        
+        Stage stage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLTurma.fxml"));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+//      stage.initStyle(StageStyle.UNDECORATED);
+        stage.show();
+        ((Node)event.getSource()).getScene().getWindow().hide();
+        
+    }
+    
     public void loginoff (MouseEvent event) throws Exception {
         Sys.getInstance().setUser(null);
         

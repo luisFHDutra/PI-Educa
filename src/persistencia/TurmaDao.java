@@ -139,7 +139,7 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
                     discs.add(disciplina);
                 }
 
-                t = new Turma(id, nome, ano, profs, discs);
+                t = new Turma(id, nome, ano, profs, discs, 0);
             }
 
             dbcm.closeConnection();
@@ -197,7 +197,7 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
                     discs.add(disciplina);
                 }
 
-                Turma t = new Turma(id, nome, ano, profs, discs);
+                Turma t = new Turma(id, nome, ano, profs, discs, 0);
                 lista.add(t);
             }
 
