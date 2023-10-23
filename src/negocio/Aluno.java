@@ -20,7 +20,7 @@ public class Aluno {
         this.deletado = deletado;
         this.turma = turma;
     }
-
+    
     public Integer getIdAluno() {
         return idAluno;
     }

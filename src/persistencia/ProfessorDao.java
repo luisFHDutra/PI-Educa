@@ -174,7 +174,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
         {
             String sql = "UPDATE professor SET nome = ?, area_especializacao = ?, contato = ?, deletado = ?, disciplina_id = ? WHERE id = ?";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAreaEspecializacao(), objeto.getContato(),
-                    objeto.getDeletado().toString(), objeto.getIdProfessor(), objeto.getDisciplina().getIdDisciplina());
+                    objeto.getDeletado().toString(), objeto.getDisciplina().getIdDisciplina(), objeto.getIdProfessor());
             
             String sqlUser = "UPDATE usuario SET senha = ? WHERE id = ?";
             PreparedStatement statement = dbcm.prepareStatement(sqlUser);

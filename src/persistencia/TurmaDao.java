@@ -26,6 +26,8 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
             
             dbcm.runPreparedSQL(sql, objeto.getIdTurma(), objeto.getNome(), objeto.getAnoLetivo());
             
+            createTurmaDisciplina(objeto);
+            
             dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
@@ -66,7 +68,7 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
     public void createTurmaDisciplina (Turma objeto) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
-        ArrayList<Disciplina> discs = objeto.getDisciplinas();
+        ArrayList<Disciplina> discs = DaoFactory.criarDisciplinaDao().readAll();
 
         String sql = "INSERT INTO turma_disciplina (turma_id, disciplina_id) VALUES (?, ?)";
         
@@ -96,78 +98,54 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
     public Turma read(Integer primaryKey) throws NotFoundException {
         Turma t = null;
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+
         try {
             String sql = "SELECT * FROM turma WHERE id = ?";
-
             ResultSet rs = dbcm.runPreparedQuerySQL(sql, primaryKey);
 
-            if (rs.isBeforeFirst()) // acho alguma coisa?
-            {
-                rs.next();
-                // não precisa while por que eu sei que só tem um resultado
+            if (rs.next()) { // Use um único if em vez de isBeforeFirst e next
                 int id = rs.getInt("id");
                 String nome = rs.getString("nome");
                 String ano = rs.getString("ano");
 
-                ArrayList<Professor> profs = new ArrayList();
-
-                String sqlMinistra = "SELECT * FROM ministra WHERE turma_id = ?;";
-                ResultSet rsMinistra = dbcm.runPreparedQuerySQL(sqlMinistra, primaryKey);
-                
-                if (rsMinistra.isBeforeFirst()) // acho alguma coisa?
-                {
-                    rsMinistra.next();
-                    while (!rs.isAfterLast()) {
-                        int idProf = rsMinistra.getInt("professor_id");
-
-                        Professor professor = null;
-                        try {
-                            professor = DaoFactory.criarProfessorDao().read(idProf);
-                        } catch (NotFoundException ex) {
-                            notifications.tabelaNaoExiste();
-                        }
-
-                        profs.add(professor);
-                        
-                        rs.next();
-                    }
-                }
-
+                ArrayList<Professor> profs = new ArrayList<>();
                 ArrayList<Disciplina> discs = new ArrayList();
 
-                String sqlDisc = "SELECT * FROM turma_disciplina WHERE turma_id = ?;";
-                ResultSet rsDisc = dbcm.runPreparedQuerySQL(sqlDisc, primaryKey);
-                
-                if (rsDisc.isBeforeFirst()) // acho alguma coisa?
-                {
-                    rsDisc.next();
-                    while (!rs.isAfterLast()) {
-                        int idDisc = rsDisc.getInt("disciplina_id");
+                String sqlMinistra = "SELECT * FROM ministra WHERE turma_id = ?";
+                ResultSet rsMinistra = dbcm.runPreparedQuerySQL(sqlMinistra, primaryKey);
 
-                        Disciplina disciplina = null;
-                        try {
-                            disciplina = DaoFactory.criarDisciplinaDao().read(idDisc);
-                        } catch (NotFoundException ex) {
-                            notifications.tabelaNaoExiste();
-                        }
-
-                        discs.add(disciplina);
-                        
-                        rs.next();
+                while (rsMinistra.next()) {
+                    int idProf = rsMinistra.getInt("professor_id");
+                    Professor professor = null;
+                    try {
+                        professor = DaoFactory.criarProfessorDao().read(idProf);
+                    } catch (NotFoundException ex) {
+                        notifications.tabelaNaoExiste();
                     }
+                    profs.add(professor);
                 }
-                
+
+                String sqlDisc = "SELECT * FROM turma_disciplina WHERE turma_id = ?";
+                ResultSet rsDisc = dbcm.runPreparedQuerySQL(sqlDisc, primaryKey);
+
+                while (rsDisc.next()) {
+                    int idDisc = rsDisc.getInt("disciplina_id");
+                    Disciplina disciplina = null;
+                    try {
+                        disciplina = DaoFactory.criarDisciplinaDao().read(idDisc);
+                    } catch (NotFoundException ex) {
+                        notifications.tabelaNaoExiste();
+                    }
+                    discs.add(disciplina);
+                }
+
                 t = new Turma(id, nome, ano, profs, discs);
             }
-            
+
             dbcm.closeConnection();
-        } 
-        catch (DataBaseException ex)
-        {
+        } catch (DataBaseException ex) {
             notifications.erroSintaxe();
-        } 
-        catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             notifications.dataTypeErrado();
         }
 
@@ -176,87 +154,57 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
 
     @Override
     public ArrayList<Turma> readAll() {
-        ArrayList<Turma> lista = new ArrayList();
-
+        ArrayList<Turma> lista = new ArrayList<>();
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+
         try {
             String sql = "SELECT * FROM turma";
+            ResultSet rs = dbcm.runQuerySQL(sql);
 
-            ResultSet rs = dbcm.runPreparedQuerySQL(sql);
+            while (rs.next()) { // Use um loop while para percorrer as linhas do ResultSet
+                int id = rs.getInt("id");
+                String nome = rs.getString("nome");
+                String ano = rs.getString("ano");
 
-            if (rs.isBeforeFirst()) // acho alguma coisa?
-            {
-                rs.next();
-                while (!rs.isAfterLast()) {
-                    int id = rs.getInt("id");
-                    String nome = rs.getString("nome");
-                    String ano = rs.getString("ano");
+                ArrayList<Professor> profs = new ArrayList<>();
+                ArrayList<Disciplina> discs = new ArrayList<>();
 
-                    ArrayList<Professor> profs = new ArrayList();
+                String sqlMinistra = "SELECT * FROM ministra WHERE turma_id = ?";
+                ResultSet rsMinistra = dbcm.runPreparedQuerySQL(sqlMinistra, id);
 
-                    String sqlMinistra = "SELECT * FROM ministra WHERE turma_id = ?;";
-                    ResultSet rsMinistra = dbcm.runPreparedQuerySQL(sqlMinistra, id);
-
-                    if (rsMinistra.isBeforeFirst()) // acho alguma coisa?
-                    {
-                        rsMinistra.next();
-                        while (!rs.isAfterLast()) {
-                            int idProf = rsMinistra.getInt("professor_id");
-
-                            Professor professor = null;
-                            try {
-                                professor = DaoFactory.criarProfessorDao().read(idProf);
-                            } catch (NotFoundException ex) {
-                                notifications.tabelaNaoExiste();
-                            }
-
-                            profs.add(professor);
-
-                            rs.next();
-                        }
+                while (rsMinistra.next()) {
+                    int idProf = rsMinistra.getInt("professor_id");
+                    Professor professor = null;
+                    try {
+                        professor = DaoFactory.criarProfessorDao().read(idProf);
+                    } catch (NotFoundException ex) {
+                        notifications.tabelaNaoExiste();
                     }
-
-                    ArrayList<Disciplina> discs = new ArrayList();
-
-                    String sqlDisc = "SELECT * FROM turma_disciplina WHERE turma_id = ?;";
-                    ResultSet rsDisc = dbcm.runPreparedQuerySQL(sqlDisc, id);
-
-                    if (rsDisc.isBeforeFirst()) // acho alguma coisa?
-                    {
-                        rsDisc.next();
-                        while (!rs.isAfterLast()) {
-                            int idDisc = rsDisc.getInt("disciplina_id");
-
-                            Disciplina disciplina = null;
-                            try {
-                                disciplina = DaoFactory.criarDisciplinaDao().read(idDisc);
-                            } catch (NotFoundException ex) {
-                                notifications.tabelaNaoExiste();
-                            }
-
-                            discs.add(disciplina);
-
-                            rs.next();
-                        }
-                    }
-
-                    Turma t = new Turma(id, nome, ano, profs, discs);
-
-                    lista.add(t);
-
-                    rs.next();
+                    profs.add(professor);
                 }
-            }
-            
-            dbcm.closeConnection();
 
-        } 
-        catch (DataBaseException ex)
-        {
+                String sqlDisc = "SELECT * FROM turma_disciplina WHERE turma_id = ?";
+                ResultSet rsDisc = dbcm.runPreparedQuerySQL(sqlDisc, id);
+
+                while (rsDisc.next()) {
+                    int idDisc = rsDisc.getInt("disciplina_id");
+                    Disciplina disciplina = null;
+                    try {
+                        disciplina = DaoFactory.criarDisciplinaDao().read(idDisc);
+                    } catch (NotFoundException ex) {
+                        notifications.tabelaNaoExiste();
+                    }
+                    discs.add(disciplina);
+                }
+
+                Turma t = new Turma(id, nome, ano, profs, discs);
+                lista.add(t);
+            }
+
+            dbcm.closeConnection();
+        } catch (DataBaseException ex) {
             notifications.erroSintaxe();
-        } 
-        catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             notifications.dataTypeErrado();
         }
 

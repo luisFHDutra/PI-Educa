@@ -2,6 +2,7 @@
 package persistencia;
 
 import negocio.Aluno;
+import negocio.AlunoDisciplina;
 import negocio.DiaSemana;
 import negocio.Disciplina;
 import negocio.Permissao;
@@ -44,5 +45,10 @@ public class DaoFactory {
     public static IDao<Permissao,Integer> criarPermissaoDao()
     {
         return new PermissaoDao();
+    }
+    
+    public static IDao<AlunoDisciplina,Integer> criarAlunoDisciplinaDao()
+    {
+        return new AlunoDisciplinaDao();
     }
 }

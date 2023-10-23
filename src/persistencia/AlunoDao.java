@@ -32,7 +32,7 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
             notifications.chaveDuplicada();
         }
     }
-
+    
     @Override
     public Aluno read(Integer primaryKey) throws NotFoundException {
         Aluno a = null;
@@ -112,7 +112,7 @@ public class AlunoDao extends DaoAdapter<Aluno, Integer> {
                     } catch (NotFoundException ex) {
                        notifications.tabelaNaoExiste();
                     }
-
+                    
                     Aluno a = new Aluno(id, nome, dataNasc, rg, filiacao, deletado, turma);
                     lista.add(a);
                     

@@ -3,20 +3,20 @@ package negocio;
 
 public class Nota {
     
-    private Aluno aluno;
+    private Disciplina disciplina;
     private double nota;
 
-    public Nota(Aluno aluno, double nota) {
-        this.aluno = aluno;
+    public Nota(Disciplina disciplina, double nota) {
+        this.disciplina = disciplina;
         this.nota = nota;
     }
     
-    public Aluno getAluno() {
-        return aluno;
+    public Disciplina getDisciplina() {
+        return disciplina;
     }
 
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
+    public void setDisciplina(Disciplina disciplina) {
+        this.disciplina = disciplina;
     }
 
     public double getNota() {
@@ -29,6 +29,6 @@ public class Nota {
     
     @Override
     public String toString() {
-        return this.aluno.getNome();
+        return String.valueOf(this.nota);
     }
 }

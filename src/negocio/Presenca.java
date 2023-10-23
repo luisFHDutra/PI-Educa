@@ -3,22 +3,22 @@ package negocio;
 
 public class Presenca {
     
-    private Aluno aluno;
+    private Disciplina disciplina;
     private String data;
     private Boolean presente;
 
-    public Presenca(Aluno aluno, String data, Boolean presente) {
-        this.aluno = aluno;
+    public Presenca(Disciplina disciplina, String data, Boolean presente) {
+        this.disciplina = disciplina;
         this.data = data;
         this.presente = presente;
     }
 
-    public Aluno getAluno() {
-        return aluno;
+    public Disciplina getDisciplina() {
+        return disciplina;
     }
 
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
+    public void setDisciplina(Disciplina disciplina) {
+        this.disciplina = disciplina;
     }
 
     public String getData() {
@@ -39,7 +39,7 @@ public class Presenca {
 
     @Override
     public String toString() {
-        return this.aluno.getNome();
+        return this.disciplina.getNome();
     }
     
 }
