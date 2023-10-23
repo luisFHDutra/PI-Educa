@@ -317,6 +317,8 @@ public class AlunoDisciplinaDao extends DaoAdapter<AlunoDisciplina, Integer> {
             if(rs.isBeforeFirst()) {
                 return true;
             }
+            
+            dbcm.closeConnection();
         } catch (DataBaseException ex) {
             notifications.tabelaNaoExiste();
         } catch (SQLException ex) {

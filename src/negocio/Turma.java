@@ -28,6 +28,12 @@ public class Turma {
         this.disciplinas = disciplinas;
         this.quantidadeAlunos = quantidadeAlunos;
     }
+
+    public Turma(Integer idTurma, String nome, String anoLetivo) {
+        this.idTurma = idTurma;
+        this.nome = nome;
+        this.anoLetivo = anoLetivo;
+    }
     
     public Integer getIdTurma() {
         return idTurma;

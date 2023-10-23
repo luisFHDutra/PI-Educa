@@ -26,7 +26,7 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
             
             dbcm.runPreparedSQL(sql, objeto.getIdTurma(), objeto.getNome(), objeto.getAnoLetivo());
             
-            createTurmaDisciplina(objeto);
+            updateTurmaDisciplina(objeto);
             
             dbcm.closeConnection();
         } 
@@ -41,25 +41,17 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
         
         ArrayList<Professor> profs = objeto.getProfessores();
 
-        String sql = "INSERT INTO ministra (professor_id, turma_id) VALUES (?, ?)";
+        String sql = "INSERT INTO ministra VALUES (?, ?)";
         
-        PreparedStatement statement = null;
         try {
-            // Prepara a instrução SQL
-            statement = dbcm.prepareStatement(sql);
 
             // Percorre a lista de itens e insere cada um no banco de dados
             for (Professor p : profs) {
-                statement.setInt(1, p.getIdProfessor());
-                statement.setInt(2, objeto.getIdTurma());
-
-                // Executa a instrução SQL para inserir o item
-                statement.executeUpdate();
+                dbcm.runPreparedSQL(sql, objeto.getIdTurma(), p.getIdProfessor());
             }
 
             dbcm.closeConnection();
-        } catch (SQLException ex) {
-            notifications.erroSintaxe();
+            
         } catch (DataBaseException ex) {
             notifications.conexaoBD();
         }
@@ -70,25 +62,16 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
         
         ArrayList<Disciplina> discs = DaoFactory.criarDisciplinaDao().readAll();
 
-        String sql = "INSERT INTO turma_disciplina (turma_id, disciplina_id) VALUES (?, ?)";
+        String sql = "INSERT INTO turma_disciplina VALUES (?, ?);";
         
-        PreparedStatement statement = null;
         try {
-            // Prepara a instrução SQL
-            statement = dbcm.prepareStatement(sql);
-
             // Percorre a lista de itens e insere cada um no banco de dados
             for (Disciplina d : discs) {
-                statement.setInt(1, objeto.getIdTurma());
-                statement.setInt(2, d.getIdDisciplina());
-
-                // Executa a instrução SQL para inserir o item
-                statement.executeUpdate();
+                dbcm.runPreparedSQL(sql, objeto.getIdTurma(), d.getIdDisciplina());
             }
 
             dbcm.closeConnection();
-        } catch (SQLException ex) {
-            notifications.erroSintaxe();
+            
         } catch (DataBaseException ex) {
             notifications.conexaoBD();
         }
@@ -217,7 +200,7 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
         
         try
         {
-            String sql = "UPDATE turma SET nome = ?, ano_letivo = ? WHERE id_turma = ?";
+            String sql = "UPDATE turma SET nome = ?, ano = ? WHERE id = ?;";
             dbcm.runPreparedSQL(sql, objeto.getNome(), objeto.getAnoLetivo(), objeto.getIdTurma() );
             
             dbcm.closeConnection();
@@ -233,8 +216,11 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
         
         try
         {
-            String sql = "DELETE FROM ministra WHERE turma_id = ?";
-            dbcm.runPreparedSQL(sql, objeto.getIdTurma());
+            
+            if(ministraExiste(objeto)) {
+                String sql = "DELETE FROM ministra WHERE turma_id = ?";
+                dbcm.runPreparedSQL(sql, objeto.getIdTurma());
+            }
             
             dbcm.closeConnection();
             
@@ -247,13 +233,37 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
         
     }
     
+    private boolean ministraExiste (Turma objeto) {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        try {
+            String sql = "SELECT * FROM ministra WHERE turma_id = ?";
+            ResultSet rs = dbcm.runPreparedQuerySQL(sql, objeto.getIdTurma());
+            
+            if(rs.isBeforeFirst()) {
+                return true;
+            }
+            
+            dbcm.closeConnection();
+        } catch (DataBaseException ex) {
+            notifications.tabelaNaoExiste();
+        } catch (SQLException ex) {
+            notifications.erroSintaxe();
+        }
+        
+        return false;
+    }
+    
     public void updateTurmaDisciplina (Turma objeto) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         
         try
         {
-            String sql = "DELETE FROM turma_disciplina WHERE turma_id = ?";
-            dbcm.runPreparedSQL(sql, objeto.getIdTurma());
+            
+            if(turmaDisciplinaExiste(objeto)) {
+                String sql = "DELETE FROM turma_disciplina WHERE turma_id = ?";
+                dbcm.runPreparedSQL(sql, objeto.getIdTurma());
+            }
             
             dbcm.closeConnection();
             
@@ -266,9 +276,58 @@ public class TurmaDao extends DaoAdapter<Turma, Integer> {
         
     }
     
+    private boolean turmaDisciplinaExiste (Turma objeto) {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        try {
+            String sql = "SELECT * FROM turma_disciplina WHERE turma_id = ?";
+            ResultSet rs = dbcm.runPreparedQuerySQL(sql, objeto.getIdTurma());
+            
+            if(rs.isBeforeFirst()) {
+                return true;
+            }
+            
+            dbcm.closeConnection();
+        } catch (DataBaseException ex) {
+            notifications.tabelaNaoExiste();
+        } catch (SQLException ex) {
+            notifications.erroSintaxe();
+        }
+        
+        return false;
+    }
+    
     @Override
     public void delete(Integer primaryKey) throws NotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    public Integer maxId() {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        try {
+            String sql = "SELECT MAX(id) FROM turma";
+            ResultSet rs = dbcm.runQuerySQL(sql);
+
+            int ultimoID = 1;
+
+            if (rs.next()) {
+             // Obtém o último ID da consulta
+             ultimoID = rs.getInt(1);
+            }
+
+            dbcm.closeConnection();
+            
+            // Calcula o próximo ID
+            return ultimoID + 1;
+            
+        } catch (SQLException e) {
+            notifications.tabelaNaoExiste();
+        } catch (DataBaseException ex) {
+            notifications.erroSintaxe();
+        }
+        return null;
+         
+    }
+    
 }
