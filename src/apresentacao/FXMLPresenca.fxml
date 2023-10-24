@@ -12,12 +12,12 @@
    <children>
       <TableView fx:id="tabela" layoutX="14.0" layoutY="79.0" prefHeight="261.0" prefWidth="572.0">
         <columns>
-          <TableColumn fx:id="aluno" prefWidth="455.0" text="ALUNO" />
-          <TableColumn fx:id="presenca" minWidth="0.0" prefWidth="116.0" text="PRESENÇA" />
+          <TableColumn fx:id="aluno" prefWidth="376.0" text="ALUNO" />
+          <TableColumn fx:id="presenca" minWidth="0.0" prefWidth="128.0" text="PRESENÇA" />
+            <TableColumn fx:id="edit" prefWidth="67.0" />
         </columns>
       </TableView>
       <JFXComboBox fx:id="cbTurma" labelFloat="true" layoutX="24.0" layoutY="21.0" prefHeight="25.0" prefWidth="108.0" promptText="Turma" />
-      <JFXButton layoutX="528.0" layoutY="356.0" text="Salvar" />
       <JFXDatePicker fx:id="tfData" layoutX="415.0" layoutY="21.0" overLay="true" promptText="Data" />
       <JFXButton layoutX="24.0" layoutY="356.0" onMouseClicked="#voltarMain" text="Voltar" />
       <JFXComboBox fx:id="cbDisciplina" labelFloat="true" layoutX="155.0" layoutY="21.0" prefHeight="25.0" prefWidth="108.0" promptText="Disciplina" />

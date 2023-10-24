@@ -271,7 +271,20 @@ public class AlunoDisciplinaDao extends DaoAdapter<AlunoDisciplina, Integer> {
         
         try
         {
-            String sql = "UPDATE presenca SET presente = ? WHERE aluno_id = ? AND disciplina_id = ? AND data = ?";
+            
+            System.out.println("" + objeto1.getPresente() + objeto.getAluno().getIdAluno() +
+                    objeto1.getDisciplina().getIdDisciplina()+ objeto1.getData());
+            
+            String sql = "";
+            
+            if(presencaExiste(objeto, objeto1)) {
+                sql = "UPDATE presenca SET presente = ? WHERE aluno_id = ? AND disciplina_id = ? AND data = ?;";
+            } else {
+                sql = "INSERT INTO presenca (presente, aluno_id, disciplina_id, data) VALUES (?, ?, ?, ?);";
+            }
+            
+            System.out.println("" + sql);
+            
             dbcm.runPreparedSQL(sql, objeto1.getPresente(), objeto.getAluno().getIdAluno(), 
                     objeto1.getDisciplina().getIdDisciplina(), objeto1.getData());
             
@@ -282,6 +295,29 @@ public class AlunoDisciplinaDao extends DaoAdapter<AlunoDisciplina, Integer> {
             notifications.tabelaNaoExiste();
         }
     }
+    
+    private boolean presencaExiste (AlunoDisciplina objeto, Presenca objeto1) {
+        DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
+        
+        try {
+            
+            String sql = "SELECT * FROM presenca WHERE aluno_id = ? AND disciplina_id = ? AND data = ?";
+            ResultSet rs = dbcm.runPreparedQuerySQL(sql, objeto.getAluno().getIdAluno(),
+                    objeto1.getDisciplina().getIdDisciplina(), objeto1.getData());
+            
+            if(rs.isBeforeFirst()) {
+                return true;
+            }
+            
+            dbcm.closeConnection();
+        } catch (DataBaseException ex) {
+            notifications.tabelaNaoExiste();
+        } catch (SQLException ex) {
+            notifications.erroSintaxe();
+        }
+        
+        return false;
+    } 
     
     public void updateNota (AlunoDisciplina objeto, Nota objeto1) {
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();

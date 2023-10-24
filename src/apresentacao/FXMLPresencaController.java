@@ -31,16 +31,20 @@ import java.util.stream.Collectors;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import negocio.Aluno;
 import negocio.Presenca;
+import persistencia.AlunoDisciplinaDao;
 
 public class FXMLPresencaController implements Initializable {
 
@@ -50,6 +54,8 @@ public class FXMLPresencaController implements Initializable {
     private TableColumn<AlunoDisciplina, String> aluno;
     @FXML
     private TableColumn<AlunoDisciplina, String> presenca;
+    @FXML
+    private TableColumn<AlunoDisciplina, String> edit;
     
     @FXML
     private JFXDatePicker tfData;
@@ -69,6 +75,68 @@ public class FXMLPresencaController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Callback<TableColumn<AlunoDisciplina, String>, TableCell<AlunoDisciplina, String>> cellFoctory = (TableColumn<AlunoDisciplina, String> param) -> {
+
+            final TableCell<AlunoDisciplina, String> cell = new TableCell<AlunoDisciplina, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+
+                    } else {
+
+                        FontAwesomeIconView presenteIcon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+                        FontAwesomeIconView faltaIcon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+
+                        faltaIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
+                                + "-fx-fill:#ff1744;"
+                        );
+                        presenteIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
+                                + "-fx-fill:#00E676;"
+                        );
+                        faltaIcon.setOnMouseClicked((MouseEvent event) -> {
+                            
+                            try {
+                                alunoAusente(event);
+                            } catch (Exception ex) {
+                                error();
+                            }
+
+                        });
+                        presenteIcon.setOnMouseClicked((MouseEvent event) -> {
+                            
+                            try {
+                                alunoPresente(event);
+                            } catch (Exception ex) {
+                                error();
+                            }
+
+                        });
+
+                        HBox managebtn = new HBox(presenteIcon, faltaIcon);
+                        managebtn.setStyle("-fx-alignment:center");
+                        HBox.setMargin(presenteIcon, new Insets(2, 2, 0, 3));
+                        HBox.setMargin(faltaIcon, new Insets(2, 3, 0, 2));
+
+                        setGraphic(managebtn);
+
+                        setText(null);
+
+                    }
+                }
+
+            };
+
+            return cell;
+        };
+        edit.setCellFactory(cellFoctory);
+        
         FontAwesomeIconView refreshIcon = new FontAwesomeIconView(FontAwesomeIcon.REFRESH);
         refreshIcon.setSize("2em");
         refreshIcon.getStyleClass().add("icon");
@@ -184,12 +252,13 @@ public class FXMLPresencaController implements Initializable {
                             && record.getAluno().getTurma().getIdTurma() == turma.getIdTurma());
                 }
             });
-            
+                
             List<AlunoDisciplina> alunosFiltrados = alunos.stream()
                 .filter(alunoDisciplina -> 
                     alunoDisciplina.getPresencas().stream()
-                        .anyMatch(presenca -> presenca.getDisciplina().getIdDisciplina() == disciplina.getIdDisciplina() &&
-                                presenca.getData() == dataEscolhida)
+                        .anyMatch(presenca -> presenca.getPresente() == true &&
+                                presenca.getData().equals(dataEscolhida) &&
+                                presenca.getDisciplina().getIdDisciplina() == disciplina.getIdDisciplina())
                 )
             .collect(Collectors.toList());
             
@@ -236,5 +305,55 @@ public class FXMLPresencaController implements Initializable {
             notification.position(Pos.BOTTOM_CENTER);
             notification.show();
         }
+    }
+    
+    public void alunoPresente (MouseEvent event) throws Exception {
+        Disciplina disciplina = (Disciplina) cbDisciplina.getSelectionModel().getSelectedItem();
+        AlunoDisciplina ad = (AlunoDisciplina) tabela.getSelectionModel().getSelectedItem();
+        String data = tfData.getValue().toString();
+        
+        Presenca presenca = new Presenca(disciplina, data, true);
+        
+        AlunoDisciplinaDao alunoDao = new AlunoDisciplinaDao();
+        
+        alunoDao.updatePresenca(ad, presenca);
+        
+        check();
+        
+        refresh();
+    }
+    
+    public void alunoAusente (MouseEvent event) throws Exception {
+        Disciplina disciplina = (Disciplina) cbDisciplina.getSelectionModel().getSelectedItem();
+        AlunoDisciplina ad = (AlunoDisciplina) tabela.getSelectionModel().getSelectedItem();
+        String data = tfData.getValue().toString();
+        
+        Presenca presenca = new Presenca(disciplina, data, false);
+        
+        AlunoDisciplinaDao alunoDao = new AlunoDisciplinaDao();
+        
+        alunoDao.updatePresenca(ad, presenca);
+        
+        check();
+        
+        refresh();
+    }
+    
+    private void check(){
+        Notifications notification = Notifications.create();
+        notification.title("Sucesso");
+        notification.text("Operação realizada com sucesso");
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.BOTTOM_CENTER);
+        notification.show();
+    }
+    
+    private void error(){
+        Notifications notification = Notifications.create();
+        notification.title("Error");
+        notification.text("Erro ao realizar a operação");
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.BOTTOM_CENTER);
+        notification.show();
     }
 }
