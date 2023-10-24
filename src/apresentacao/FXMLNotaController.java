@@ -29,11 +29,14 @@ import negocio.Aluno;
 import negocio.AlunoDisciplina;
 import negocio.Disciplina;
 import negocio.Nota;
+import negocio.Professor;
 import negocio.Turma;
 import org.controlsfx.control.Notifications;
 import persistencia.AlunoDisciplinaDao;
 import persistencia.DaoFactory;
 import persistencia.Filter;
+import persistencia.NotFoundException;
+import pieduca.Sys;
 
 public class FXMLNotaController implements Initializable {
 
@@ -65,12 +68,39 @@ public class FXMLNotaController implements Initializable {
        
         cbTurma.setItems(obsTurma);
         
-        List<Disciplina> disciplinas = DaoFactory.criarDisciplinaDao().readAll();
+        Professor professor = null;
+        try {
+            professor = DaoFactory.criarProfessorDao().read(Sys.getInstance().getUser().getId());
+        } catch (NotFoundException ex) {
+            Notifications notification = Notifications.create();
+            notification.title("Error");
+            notification.text("Professor não encontrado");
+            notification.hideAfter(Duration.seconds(3));
+            notification.position(Pos.BOTTOM_CENTER);
+            notification.show();
+        }
+        
+        List<Disciplina> disciplinas = null;
+        
+        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() == 1) {
+            
+            disciplinas = DaoFactory.criarDisciplinaDao().readAll();
+            
+        } else {
+            
+            int idDisciplina = professor.getDisciplina().getIdDisciplina();
+            
+            disciplinas = DaoFactory.criarDisciplinaDao().readAll(new Filter<Disciplina>() {
+                @Override
+                public boolean isAccept(Disciplina record) {
+                    return (record.getIdDisciplina() == idDisciplina);
+                }
+            });
+        }
         
         obsDisciplina = FXCollections.observableArrayList(disciplinas);
        
         cbDisciplina.setItems(obsDisciplina);
-        
     }    
     
     public void refreshTable (MouseEvent event) throws Exception {

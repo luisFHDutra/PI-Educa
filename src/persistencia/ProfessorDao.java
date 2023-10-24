@@ -58,7 +58,7 @@ public class ProfessorDao extends DaoAdapter<Professor, Integer> {
     }
     
     @Override
-    public Professor read(Integer primaryKey) throws NotFoundException {
+    public Professor read(Integer primaryKey) {
         Professor p = null;
         DataBaseConnectionManager dbcm = Sys.getInstance().getDB();
         try

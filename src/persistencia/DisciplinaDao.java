@@ -3,14 +3,10 @@ package persistencia;
 
 import db.DataBaseConnectionManager;
 import db.DataBaseException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import negocio.Aluno;
-import negocio.Presenca;
 import negocio.Disciplina;
-import negocio.Nota;
 import pieduca.Sys;
 
 public class DisciplinaDao extends DaoAdapter<Disciplina, Integer> {

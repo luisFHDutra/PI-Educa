@@ -28,6 +28,7 @@ import negocio.Usuario;
 import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
 import persistencia.ProfessorDao;
+import persistencia.TurmaDao;
 
 public class FXMLCadastroProfessoresController implements Initializable {
 
