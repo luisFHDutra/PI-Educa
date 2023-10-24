@@ -18,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -28,7 +29,6 @@ import negocio.Usuario;
 import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
 import persistencia.ProfessorDao;
-import persistencia.TurmaDao;
 
 public class FXMLCadastroProfessoresController implements Initializable {
 
@@ -75,11 +75,12 @@ public class FXMLCadastroProfessoresController implements Initializable {
     }   
     
     public void voltar (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLConsultaProfessor.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();

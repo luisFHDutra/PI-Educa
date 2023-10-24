@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -48,11 +49,12 @@ public class FXMLMainController implements Initializable {
     }  
     
     public void consultaProfessor (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLConsultaProfessor.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -60,11 +62,12 @@ public class FXMLMainController implements Initializable {
     }
     
     public void consultaAluno (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLConsultaAluno.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -72,11 +75,12 @@ public class FXMLMainController implements Initializable {
     }
     
     public void nota (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLNota.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -84,11 +88,12 @@ public class FXMLMainController implements Initializable {
     }
     
     public void turma (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLTurma.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -96,11 +101,12 @@ public class FXMLMainController implements Initializable {
     }
     
     public void presenca (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLPresenca.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -110,10 +116,12 @@ public class FXMLMainController implements Initializable {
     public void loginoff (MouseEvent event) throws Exception {
         Sys.getInstance().setUser(null);
         
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLLogin.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();

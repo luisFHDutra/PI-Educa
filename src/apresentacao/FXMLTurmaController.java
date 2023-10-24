@@ -20,6 +20,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -173,11 +174,12 @@ public class FXMLTurmaController implements Initializable {
 
     
     public void voltarMain (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -185,6 +187,7 @@ public class FXMLTurmaController implements Initializable {
     }
     
     public void cadastroTurma (MouseEvent event) throws Exception {
+        Image icon = new Image("/imagens/book-icon.png");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/apresentacao/FXMLCadastroTurma.fxml"));
         Parent root = loader.load();
         
@@ -195,6 +198,7 @@ public class FXMLTurmaController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -202,6 +206,7 @@ public class FXMLTurmaController implements Initializable {
     }
     
     public void atualizarTurma (MouseEvent event) throws Exception {
+        Image icon = new Image("/imagens/book-icon.png");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/apresentacao/FXMLCadastroTurma.fxml"));
         Parent root = loader.load();
         
@@ -221,6 +226,7 @@ public class FXMLTurmaController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.getIcons().add(icon);
             stage.show();
             ((Node)event.getSource()).getScene().getWindow().hide();
             

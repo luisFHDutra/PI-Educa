@@ -35,6 +35,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -142,11 +143,12 @@ public class FXMLPresencaController implements Initializable {
     }    
     
     public void voltarMain (MouseEvent event) throws Exception {
-        
+        Image icon = new Image("/imagens/book-icon.png");
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();

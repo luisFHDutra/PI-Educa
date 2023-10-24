@@ -1,15 +1,10 @@
 package apresentacao;
 
-import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -25,6 +20,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -35,7 +31,6 @@ import negocio.Aluno;
 import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
 import persistencia.Filter;
-import persistencia.NotFoundException;
 import pieduca.Sys;
 
 public class FXMLConsultaAlunoController implements Initializable {
@@ -199,11 +194,13 @@ public class FXMLConsultaAlunoController implements Initializable {
     }    
     
     public void voltarMain (MouseEvent event) throws Exception {
+        Image icon = new Image("/imagens/book-icon.png");
         
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -285,6 +282,7 @@ public class FXMLConsultaAlunoController implements Initializable {
     }
     
     public void cadastroAluno (MouseEvent event) throws Exception {
+        Image icon = new Image("/imagens/book-icon.png");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/apresentacao/FXMLCadastroAluno.fxml"));
         Parent root = loader.load();
         
@@ -295,6 +293,7 @@ public class FXMLConsultaAlunoController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.getIcons().add(icon);
 //      stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
@@ -302,6 +301,7 @@ public class FXMLConsultaAlunoController implements Initializable {
     }
     
     public void atualizarAluno (MouseEvent event) throws Exception {
+        Image icon = new Image("/imagens/book-icon.png");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/apresentacao/FXMLCadastroAluno.fxml"));
         Parent root = loader.load();
         
@@ -321,6 +321,7 @@ public class FXMLConsultaAlunoController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.getIcons().add(icon);
             stage.show();
             ((Node)event.getSource()).getScene().getWindow().hide();
             

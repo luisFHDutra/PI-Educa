@@ -53,11 +53,15 @@ public class FXMLLoginController implements Initializable {
 
             if (auth.isRight()){
                 Sys.getInstance().setUser(user);
-
+                Image icon = new Image("/imagens/book-icon.png");
+                
                 Stage stage = new Stage();
                 Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
+                
+                stage.getIcons().add(icon);
+                
     //            stage.initStyle(StageStyle.UNDECORATED);
                 stage.show();
                 ((Node)event.getSource()).getScene().getWindow().hide();
