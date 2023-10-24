@@ -15,10 +15,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import negocio.Professor;
 import negocio.Usuario;
 import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
@@ -40,32 +42,40 @@ public class FXMLLoginController implements Initializable {
     }    
     
     public void login (MouseEvent event) throws Exception {
-        
         if (tfUsuario.getText().isEmpty() || tfPassword.getText().isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
             alerta.setHeaderText(null);
             alerta.setContentText("Preencha todos os campos");
             alerta.showAndWait();
         } else {
-            Usuario user = DaoFactory.criarUsuarioDao().read(Integer.valueOf(tfUsuario.getText()));
+            int id = Integer.valueOf(tfUsuario.getText());
+            
+            Professor professor = DaoFactory.criarProfessorDao().read(id);
+            
+            if (!professor.getDeletado()) {
+                Usuario user = DaoFactory.criarUsuarioDao().read(id);
 
-            Authenticator auth = new Authenticator(user, Integer.valueOf(tfUsuario.getText()), tfPassword.getText());
+                Authenticator auth = new Authenticator(user, id, tfPassword.getText());
 
-            if (auth.isRight()){
-                Sys.getInstance().setUser(user);
-                Image icon = new Image("/imagens/book-icon.png");
-                
-                Stage stage = new Stage();
-                Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                
-                stage.getIcons().add(icon);
-                
-    //            stage.initStyle(StageStyle.UNDECORATED);
-                stage.show();
-                ((Node)event.getSource()).getScene().getWindow().hide();
-                check();
+                if (auth.isRight()){
+                    Sys.getInstance().setUser(user);
+                    Image icon = new Image("/imagens/book-icon.png");
+
+                    Stage stage = new Stage();
+                    Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLMain.fxml"));
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+
+                    stage.getIcons().add(icon);
+
+        //            stage.initStyle(StageStyle.UNDECORATED);
+                    stage.show();
+                    ((Node)event.getSource()).getScene().getWindow().hide();
+                    check();
+                } else {
+                    error();
+                }
+        
             } else {
                 error();
             }
@@ -88,5 +98,16 @@ public class FXMLLoginController implements Initializable {
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();
+    }
+    
+    public void checkInput(KeyEvent event) {
+        
+        if (event.getCharacter().matches("[^\\e\t\r\\d+$]")){
+            event.consume();
+            tfUsuario.setStyle("-fx-border-color: red");
+        } else {
+            tfUsuario.setStyle("-fx-border-color: blue");
+        }
+        
     }
 }

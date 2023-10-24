@@ -9,7 +9,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLLoginController">
    <children>
       <ImageView fx:id="imgLogo" fitHeight="50.0" fitWidth="50.0" layoutX="267.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" />
-      <JFXTextField fx:id="tfUsuario" labelFloat="true" layoutX="224.0" layoutY="174.0" promptText="Usuário" />
+      <JFXTextField fx:id="tfUsuario" labelFloat="true" layoutX="224.0" layoutY="174.0" onKeyTyped="#checkInput" promptText="Usuário" />
       <JFXPasswordField fx:id="tfPassword" labelFloat="true" layoutX="224.0" layoutY="238.0" promptText="Senha" />
       <JFXButton layoutX="265.0" layoutY="286.0" onMouseClicked="#login" text="Login" />
    </children>
