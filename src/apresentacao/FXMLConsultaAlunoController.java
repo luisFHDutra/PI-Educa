@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -57,11 +58,7 @@ public class FXMLConsultaAlunoController implements Initializable {
     private TableColumn<Aluno, String> edit;
 
     @FXML
-    private JFXButton btnAdicionar;
-    @FXML
-    private JFXButton btnDeletar;
-    @FXML
-    private JFXButton btnAtualizarRegistro;
+    private HBox iconContainer;
     
     private ObservableList<Aluno> obsAlunos;
     
@@ -136,6 +133,58 @@ public class FXMLConsultaAlunoController implements Initializable {
         };
         edit.setCellFactory(cellFoctory);
         
+        FontAwesomeIconView adicionarIcon = new FontAwesomeIconView(FontAwesomeIcon.USER_PLUS);
+        adicionarIcon.setSize("2em");
+        adicionarIcon.getStyleClass().add("icon");
+
+        adicionarIcon.setStyle(" -fx-cursor: hand ;"
+                    + "-glyph-size:28px;"
+                    + "-fx-fill:#aaaaaa;"
+            );
+        
+        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() == 1) {
+            
+            adicionarIcon.setStyle(" -fx-cursor: hand ;"
+                    + "-glyph-size:28px;"
+                    + "-fx-fill:#1aa7ec;"
+            );
+            
+            EventHandler<MouseEvent> adicionarHandler = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    try {
+                        cadastroAluno(event);
+                    } catch (Exception ex) {
+                        error();
+                    }
+                }
+            };
+            adicionarIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, adicionarHandler);
+        }
+        
+        FontAwesomeIconView refreshIcon = new FontAwesomeIconView(FontAwesomeIcon.REFRESH);
+        refreshIcon.setSize("2em");
+        refreshIcon.getStyleClass().add("icon");
+
+        refreshIcon.setStyle(" -fx-cursor: hand ;"
+                + "-glyph-size:28px;"
+                + "-fx-fill:#1aa7ec;"
+        );
+        
+        EventHandler<MouseEvent> refreshHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    refreshTabela(event);
+                } catch (Exception ex) {
+                    error();
+                }
+            }
+        };
+        refreshIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, refreshHandler);
+        
+        iconContainer.getChildren().addAll(adicionarIcon, refreshIcon);
+        
         List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll(new Filter<Aluno>() {
             @Override
             public boolean isAccept(Aluno record) {
@@ -147,11 +196,6 @@ public class FXMLConsultaAlunoController implements Initializable {
         
         tabela.setItems(obsAlunos);
         
-        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() != 1) {
-            btnDeletar.setDisable(true);
-            btnAdicionar.setDisable(true);
-            btnAtualizarRegistro.setDisable(true);
-        }
     }    
     
     public void voltarMain (MouseEvent event) throws Exception {

@@ -2,6 +2,8 @@ package apresentacao;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,6 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import negocio.Aluno;
@@ -60,8 +64,39 @@ public class FXMLNotaController implements Initializable {
     @FXML
     private JFXTextField tfNota;
     
+    @FXML
+    private HBox iconContainer;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        FontAwesomeIconView refreshIcon = new FontAwesomeIconView(FontAwesomeIcon.REFRESH);
+        refreshIcon.setSize("2em");
+        refreshIcon.getStyleClass().add("icon");
+
+        refreshIcon.setStyle(" -fx-cursor: hand ;"
+                + "-glyph-size:28px;"
+                + "-fx-fill:#1aa7ec;"
+        );
+        
+        EventHandler<MouseEvent> refreshHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    refreshTabela(event);
+                } catch (Exception ex) {
+                    Notifications notification = Notifications.create();
+                    notification.title("Error");
+                    notification.text("Erro ao deletar usuário ou professor");
+                    notification.hideAfter(Duration.seconds(3));
+                    notification.position(Pos.BOTTOM_CENTER);
+                    notification.show();
+                }
+            }
+        };
+        refreshIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, refreshHandler);
+        
+        iconContainer.getChildren().add( refreshIcon);
+        
         List<Turma> turmas = DaoFactory.criarTurmaDao().readAll();
         
         obsTurma = FXCollections.observableArrayList(turmas);
@@ -103,7 +138,7 @@ public class FXMLNotaController implements Initializable {
         cbDisciplina.setItems(obsDisciplina);
     }    
     
-    public void refreshTable (MouseEvent event) throws Exception {
+    public void refreshTabela (MouseEvent event) throws Exception {
         refresh();
     }
     

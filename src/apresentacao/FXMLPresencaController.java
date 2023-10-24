@@ -2,6 +2,8 @@ package apresentacao;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -27,12 +29,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import negocio.Aluno;
 import negocio.Presenca;
@@ -57,10 +61,41 @@ public class FXMLPresencaController implements Initializable {
     private JFXComboBox cbDisciplina;
     private ObservableList<Disciplina> obsDisciplina;
     
+    @FXML
+    private HBox iconContainer;
+    
     private ObservableList<AlunoDisciplina> obsAlunos;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        FontAwesomeIconView refreshIcon = new FontAwesomeIconView(FontAwesomeIcon.REFRESH);
+        refreshIcon.setSize("2em");
+        refreshIcon.getStyleClass().add("icon");
+
+        refreshIcon.setStyle(" -fx-cursor: hand ;"
+                + "-glyph-size:28px;"
+                + "-fx-fill:#1aa7ec;"
+        );
+        
+        EventHandler<MouseEvent> refreshHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    refreshTabela(event);
+                } catch (Exception ex) {
+                    Notifications notification = Notifications.create();
+                    notification.title("Error");
+                    notification.text("Erro ao deletar usuário ou professor");
+                    notification.hideAfter(Duration.seconds(3));
+                    notification.position(Pos.BOTTOM_CENTER);
+                    notification.show();
+                }
+            }
+        };
+        refreshIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, refreshHandler);
+        
+        iconContainer.getChildren().add( refreshIcon);
+        
         List<Turma> turmas = DaoFactory.criarTurmaDao().readAll();
         
         obsTurma = FXCollections.observableArrayList(turmas);
@@ -118,7 +153,7 @@ public class FXMLPresencaController implements Initializable {
         
     }
     
-    public void refreshTable (MouseEvent event) throws Exception {
+    public void refreshTabela (MouseEvent event) throws Exception {
         refresh();
     }
     

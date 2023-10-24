@@ -1,6 +1,5 @@
 package apresentacao;
 
-import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -46,9 +46,7 @@ public class FXMLTurmaController implements Initializable {
     private TableColumn<Turma, String> edit;
     
     @FXML
-    private JFXButton btnAdicionar;
-    @FXML
-    private JFXButton btnAtualizarItem;
+    private HBox iconContainer;
     
     private ObservableList<Turma> obsTurmas;
     
@@ -83,12 +81,7 @@ public class FXMLTurmaController implements Initializable {
                             try {
                                 atualizarTurma(event);
                             } catch (Exception ex) {
-                                Notifications notification = Notifications.create();
-                                notification.title("Error");
-                                notification.text("Erro ao deletar usuário ou professor");
-                                notification.hideAfter(Duration.seconds(3));
-                                notification.position(Pos.BOTTOM_CENTER);
-                                notification.show();
+                                error();
                             }
 
                         });
@@ -110,16 +103,43 @@ public class FXMLTurmaController implements Initializable {
         };
         edit.setCellFactory(cellFoctory);
         
+        FontAwesomeIconView adicionarIcon = new FontAwesomeIconView(FontAwesomeIcon.PLUS);
+        adicionarIcon.setSize("2em");
+        adicionarIcon.getStyleClass().add("icon");
+
+        adicionarIcon.setStyle(" -fx-cursor: hand ;"
+                    + "-glyph-size:28px;"
+                    + "-fx-fill:#aaaaaa;"
+            );
+        
+        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() == 1) {
+            
+            adicionarIcon.setStyle(" -fx-cursor: hand ;"
+                    + "-glyph-size:28px;"
+                    + "-fx-fill:#1aa7ec;"
+            );
+            
+            EventHandler<MouseEvent> adicionarHandler = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    try {
+                        cadastroTurma(event);
+                    } catch (Exception ex) {
+                        error();
+                    }
+                }
+            };
+            adicionarIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, adicionarHandler);
+        }
+        
+        iconContainer.getChildren().add(adicionarIcon);
+        
         List<Turma> turmas = obterTurmas();
         
         obsTurmas = FXCollections.observableArrayList(turmas);
         
         tabela.setItems(obsTurmas);
         
-        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() != 1) {
-            btnAdicionar.setDisable(true);
-            btnAtualizarItem.setDisable(true);
-        }
     }    
     
     private List<Turma> obterTurmas() {
@@ -228,5 +248,14 @@ public class FXMLTurmaController implements Initializable {
         obsTurmas = FXCollections.observableArrayList(turmas);
         
         tabela.setItems(obsTurmas);
+    }
+    
+    private void error(){
+        Notifications notification = Notifications.create();
+        notification.title("Error");
+        notification.text("Erro ao realizar a operação");
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.BOTTOM_CENTER);
+        notification.show();
     }
 }
