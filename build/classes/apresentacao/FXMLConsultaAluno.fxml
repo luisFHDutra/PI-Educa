@@ -5,9 +5,9 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLConsultaAlunoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="412.0" prefWidth="767.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLConsultaAlunoController">
    <children>
-      <TableView fx:id="tabela" layoutX="22.0" layoutY="35.0" prefHeight="320.0" prefWidth="647.0">
+      <TableView fx:id="tabela" layoutX="22.0" layoutY="47.0" prefHeight="320.0" prefWidth="723.0">
         <columns>
           <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
           <TableColumn fx:id="nome" prefWidth="123.0" text="NOME" />
@@ -15,12 +15,11 @@
             <TableColumn fx:id="filiacao" minWidth="9.0" prefWidth="139.0" text="FILIAÇÂO" />
             <TableColumn fx:id="rg" minWidth="0.0" prefWidth="114.0" text="RG" />
             <TableColumn fx:id="turma" prefWidth="85.0" text="TURMA" />
+            <TableColumn fx:id="edit" prefWidth="75.0" />
         </columns>
       </TableView>
-      <JFXButton layoutX="22.0" layoutY="361.0" onMouseClicked="#voltarMain" text="Voltar" />
-      <JFXButton fx:id="btnAdicionar" layoutX="20.0" layoutY="2.0" onMouseClicked="#cadastroAluno" text="Adicionar" />
-      <JFXButton fx:id="btnDeletar" layoutX="101.0" layoutY="2.0" onMouseClicked="#deletar" text="Deletar" />
-      <JFXButton layoutX="294.0" layoutY="2.0" onMouseClicked="#refreshTabela" text="Atualizar Tabela" />
-      <JFXButton fx:id="btnAtualizarRegistro" layoutX="170.0" layoutY="2.0" onMouseClicked="#atualizarAluno" text="Atualizar Registro" />
+      <JFXButton layoutX="22.0" layoutY="373.0" onMouseClicked="#voltarMain" text="Voltar" />
+      <JFXButton fx:id="btnAdicionar" layoutX="22.0" layoutY="15.0" onMouseClicked="#cadastroAluno" text="Adicionar" />
+      <JFXButton layoutX="99.0" layoutY="15.0" onMouseClicked="#refreshTabela" text="Atualizar Tabela" />
    </children>
 </AnchorPane>

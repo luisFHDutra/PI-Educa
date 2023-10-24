@@ -1,28 +1,40 @@
 package apresentacao;
 
 import com.jfoenix.controls.JFXButton;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import negocio.Aluno;
 import org.controlsfx.control.Notifications;
 import persistencia.DaoFactory;
 import persistencia.Filter;
+import persistencia.NotFoundException;
 import pieduca.Sys;
 
 public class FXMLConsultaAlunoController implements Initializable {
@@ -41,6 +53,8 @@ public class FXMLConsultaAlunoController implements Initializable {
     private TableColumn<Aluno, String> rg;
     @FXML
     private TableColumn<Aluno, String> turma;
+    @FXML
+    private TableColumn<Aluno, String> edit;
 
     @FXML
     private JFXButton btnAdicionar;
@@ -59,6 +73,68 @@ public class FXMLConsultaAlunoController implements Initializable {
         filiacao.setCellValueFactory(new PropertyValueFactory<Aluno, String>("filiacao"));
         rg.setCellValueFactory(new PropertyValueFactory<Aluno, String>("rg"));
         turma.setCellValueFactory(new PropertyValueFactory<Aluno, String>("turma"));
+        
+        Callback<TableColumn<Aluno, String>, TableCell<Aluno, String>> cellFoctory = (TableColumn<Aluno, String> param) -> {
+
+            final TableCell<Aluno, String> cell = new TableCell<Aluno, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+
+                    } else {
+
+                        FontAwesomeIconView deleteIcon = new FontAwesomeIconView(FontAwesomeIcon.TRASH);
+                        FontAwesomeIconView editIcon = new FontAwesomeIconView(FontAwesomeIcon.PENCIL_SQUARE);
+
+                        deleteIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
+                                + "-fx-fill:#ff1744;"
+                        );
+                        editIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
+                                + "-fx-fill:#00E676;"
+                        );
+                        deleteIcon.setOnMouseClicked((MouseEvent event) -> {
+                            
+                            try {
+                                deletar(event);
+                            } catch (Exception ex) {
+                                error();
+                            }
+
+                        });
+                        editIcon.setOnMouseClicked((MouseEvent event) -> {
+                            
+                            try {
+                                atualizarAluno(event);
+                            } catch (Exception ex) {
+                                error();
+                            }
+
+                        });
+
+                        HBox managebtn = new HBox(editIcon, deleteIcon);
+                        managebtn.setStyle("-fx-alignment:center");
+                        HBox.setMargin(deleteIcon, new Insets(2, 2, 0, 3));
+                        HBox.setMargin(editIcon, new Insets(2, 3, 0, 2));
+
+                        setGraphic(managebtn);
+
+                        setText(null);
+
+                    }
+                }
+
+            };
+
+            return cell;
+        };
+        edit.setCellFactory(cellFoctory);
         
         List<Aluno> alunos = DaoFactory.criarAlunoDao().readAll(new Filter<Aluno>() {
             @Override
@@ -116,7 +192,7 @@ public class FXMLConsultaAlunoController implements Initializable {
         tabela.setItems(obsAlunos);
     }
     
-     public void deletar (MouseEvent event) throws Exception {
+    public void deletar (MouseEvent event) throws Exception {
         Aluno aluno = tabela.getSelectionModel().getSelectedItem();
         
         if (aluno != null) {
@@ -149,7 +225,7 @@ public class FXMLConsultaAlunoController implements Initializable {
     private void error(){
         Notifications notification = Notifications.create();
         notification.title("Error");
-        notification.text("Erro ao deletar aluno");
+        notification.text("Erro ao realizar a operação");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();
@@ -158,7 +234,7 @@ public class FXMLConsultaAlunoController implements Initializable {
     private void check(){
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
-        notification.text("Delete realizado com sucesso");
+        notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.BOTTOM_CENTER);
         notification.show();

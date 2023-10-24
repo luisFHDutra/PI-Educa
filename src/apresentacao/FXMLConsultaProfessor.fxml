@@ -5,21 +5,20 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLConsultaProfessorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLConsultaProfessorController">
    <children>
-      <TableView fx:id="tabela" layoutX="33.0" layoutY="41.0" prefHeight="309.0" prefWidth="643.0">
+      <TableView fx:id="tabela" layoutX="33.0" layoutY="41.0" prefHeight="309.0" prefWidth="711.0">
         <columns>
           <TableColumn fx:id="id" prefWidth="97.0" text="ID" />
           <TableColumn fx:id="nome" prefWidth="146.0" text="NOME" />
             <TableColumn fx:id="area_espec" prefWidth="166.0" text="ÁREA DE ESPECIALIZAÇÃO" />
             <TableColumn fx:id="contato" prefWidth="130.0" text="CONTATO" />
             <TableColumn fx:id="disciplina" prefWidth="103.0" text="DISCIPLINA" />
+            <TableColumn fx:id="edit" prefWidth="75.0" />
         </columns>
       </TableView>
       <JFXButton layoutX="33.0" layoutY="361.0" onMouseClicked="#voltarMain" text="Voltar" />
       <JFXButton fx:id="btnAdicionar" layoutX="31.0" layoutY="14.0" onMouseClicked="#cadastroProfessor" text="Adicionar" />
-      <JFXButton layoutX="244.0" layoutY="14.0" onMouseClicked="#refreshTabela" text="Atualizar Tabela" />
-      <JFXButton fx:id="btnDeletar" layoutX="362.0" layoutY="14.0" onMouseClicked="#deletar" text="Deletar" />
-      <JFXButton fx:id="btnAtualizarRegistro" layoutX="114.0" layoutY="14.0" onMouseClicked="#atualizarProfessor" text="Atualizar Registro" />
+      <JFXButton layoutX="116.0" layoutY="14.0" onMouseClicked="#refreshTabela" text="Atualizar Tabela" />
    </children>
 </AnchorPane>

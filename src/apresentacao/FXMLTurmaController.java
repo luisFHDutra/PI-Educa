@@ -1,6 +1,8 @@
 package apresentacao;
 
 import com.jfoenix.controls.JFXButton;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -9,15 +11,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import negocio.Aluno;
 import negocio.Turma;
@@ -37,10 +43,13 @@ public class FXMLTurmaController implements Initializable {
     @FXML
     private TableColumn<Turma, Integer> alunos;
     @FXML
+    private TableColumn<Turma, String> edit;
+    
+    @FXML
     private JFXButton btnAdicionar;
     @FXML
     private JFXButton btnAtualizarItem;
-
+    
     private ObservableList<Turma> obsTurmas;
     
     @Override
@@ -49,6 +58,57 @@ public class FXMLTurmaController implements Initializable {
         turma.setCellValueFactory(new PropertyValueFactory<Turma, String>("nome"));
         ano.setCellValueFactory(new PropertyValueFactory<Turma, String>("anoLetivo"));
         alunos.setCellValueFactory(new PropertyValueFactory<Turma, Integer>("quantidadeAlunos"));
+        
+        Callback<TableColumn<Turma, String>, TableCell<Turma, String>> cellFoctory = (TableColumn<Turma, String> param) -> {
+
+            final TableCell<Turma, String> cell = new TableCell<Turma, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+
+                    } else {
+
+                        FontAwesomeIconView editIcon = new FontAwesomeIconView(FontAwesomeIcon.PENCIL_SQUARE);
+
+                        editIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
+                                + "-fx-fill:#00E676;"
+                        );
+                        editIcon.setOnMouseClicked((MouseEvent event) -> {
+                            
+                            try {
+                                atualizarTurma(event);
+                            } catch (Exception ex) {
+                                Notifications notification = Notifications.create();
+                                notification.title("Error");
+                                notification.text("Erro ao deletar usuário ou professor");
+                                notification.hideAfter(Duration.seconds(3));
+                                notification.position(Pos.BOTTOM_CENTER);
+                                notification.show();
+                            }
+
+                        });
+
+                        HBox managebtn = new HBox(editIcon);
+                        managebtn.setStyle("-fx-alignment:center");
+                        HBox.setMargin(editIcon, new Insets(2, 3, 0, 2));
+
+                        setGraphic(managebtn);
+
+                        setText(null);
+
+                    }
+                }
+
+            };
+
+            return cell;
+        };
+        edit.setCellFactory(cellFoctory);
         
         List<Turma> turmas = obterTurmas();
         

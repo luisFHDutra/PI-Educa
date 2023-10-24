@@ -1,6 +1,8 @@
 package apresentacao;
 
 import com.jfoenix.controls.JFXButton;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -9,15 +11,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import negocio.Professor;
 import org.controlsfx.control.Notifications;
@@ -39,6 +45,8 @@ public class FXMLConsultaProfessorController implements Initializable {
     private TableColumn<Professor, String> contato;
     @FXML
     private TableColumn<Professor, String> disciplina;
+    @FXML
+    private TableColumn<Professor, String> edit;
     
     @FXML
     private JFXButton btnAdicionar;
@@ -56,6 +64,68 @@ public class FXMLConsultaProfessorController implements Initializable {
         area_espec.setCellValueFactory(new PropertyValueFactory<Professor, String>("areaEspecializacao"));
         contato.setCellValueFactory(new PropertyValueFactory<Professor, String>("contato"));
         disciplina.setCellValueFactory(new PropertyValueFactory<Professor, String>("disciplina"));
+        
+        Callback<TableColumn<Professor, String>, TableCell<Professor, String>> cellFoctory = (TableColumn<Professor, String> param) -> {
+
+            final TableCell<Professor, String> cell = new TableCell<Professor, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+
+                    } else {
+
+                        FontAwesomeIconView deleteIcon = new FontAwesomeIconView(FontAwesomeIcon.TRASH);
+                        FontAwesomeIconView editIcon = new FontAwesomeIconView(FontAwesomeIcon.PENCIL_SQUARE);
+
+                        deleteIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
+                                + "-fx-fill:#ff1744;"
+                        );
+                        editIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
+                                + "-fx-fill:#00E676;"
+                        );
+                        deleteIcon.setOnMouseClicked((MouseEvent event) -> {
+                            
+                            try {
+                                deletar(event);
+                            } catch (Exception ex) {
+                                error();
+                            }
+
+                        });
+                        editIcon.setOnMouseClicked((MouseEvent event) -> {
+                            
+                            try {
+                                atualizarProfessor(event);
+                            } catch (Exception ex) {
+                                error();
+                            }
+
+                        });
+
+                        HBox managebtn = new HBox(editIcon, deleteIcon);
+                        managebtn.setStyle("-fx-alignment:center");
+                        HBox.setMargin(deleteIcon, new Insets(2, 2, 0, 3));
+                        HBox.setMargin(editIcon, new Insets(2, 3, 0, 2));
+
+                        setGraphic(managebtn);
+
+                        setText(null);
+
+                    }
+                }
+
+            };
+
+            return cell;
+        };
+        edit.setCellFactory(cellFoctory);
         
         List<Professor> profs = DaoFactory.criarProfessorDao().readAll(new Filter<Professor>() {
             @Override
