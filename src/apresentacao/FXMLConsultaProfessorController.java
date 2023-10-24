@@ -78,33 +78,46 @@ public class FXMLConsultaProfessorController implements Initializable {
                         FontAwesomeIconView editIcon = new FontAwesomeIconView(FontAwesomeIcon.PENCIL_SQUARE);
 
                         deleteIcon.setStyle(
-                                " -fx-cursor: hand ;"
-                                + "-glyph-size:28px;"
-                                + "-fx-fill:#ff1744;"
-                        );
-                        editIcon.setStyle(
-                                " -fx-cursor: hand ;"
-                                + "-glyph-size:28px;"
-                                + "-fx-fill:#00E676;"
-                        );
-                        deleteIcon.setOnMouseClicked((MouseEvent event) -> {
-                            
-                            try {
-                                deletar(event);
-                            } catch (Exception ex) {
-                                error();
-                            }
+                                    " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#aaaaaa;"
+                            );
+                            editIcon.setStyle(
+                                    " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#aaaaaa;"
+                            );
+                        
+                        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() == 1) {
+                            deleteIcon.setStyle(
+                                    " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#ff1744;"
+                            );
+                            editIcon.setStyle(
+                                    " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#00E676;"
+                            );
+                            deleteIcon.setOnMouseClicked((MouseEvent event) -> {
 
-                        });
-                        editIcon.setOnMouseClicked((MouseEvent event) -> {
-                            
-                            try {
-                                atualizarProfessor(event);
-                            } catch (Exception ex) {
-                                error();
-                            }
+                                try {
+                                    deletar(event);
+                                } catch (Exception ex) {
+                                    error();
+                                }
 
-                        });
+                            });
+                            editIcon.setOnMouseClicked((MouseEvent event) -> {
+
+                                try {
+                                    atualizarProfessor(event);
+                                } catch (Exception ex) {
+                                    error();
+                                }
+
+                            });
+                        }
 
                         HBox managebtn = new HBox(editIcon, deleteIcon);
                         managebtn.setStyle("-fx-alignment:center");

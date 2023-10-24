@@ -75,17 +75,25 @@ public class FXMLTurmaController implements Initializable {
                         editIcon.setStyle(
                                 " -fx-cursor: hand ;"
                                 + "-glyph-size:28px;"
+                                + "-fx-fill:#aaaaaa;"
+                            );
+                        
+                        if (Sys.getInstance().getUser().getPermissao().getIdPermissao() == 1) {
+                            editIcon.setStyle(
+                                " -fx-cursor: hand ;"
+                                + "-glyph-size:28px;"
                                 + "-fx-fill:#00E676;"
-                        );
-                        editIcon.setOnMouseClicked((MouseEvent event) -> {
-                            
-                            try {
-                                atualizarTurma(event);
-                            } catch (Exception ex) {
-                                error();
-                            }
+                            );
+                            editIcon.setOnMouseClicked((MouseEvent event) -> {
 
-                        });
+                                try {
+                                    atualizarTurma(event);
+                                } catch (Exception ex) {
+                                    error();
+                                }
+
+                            });
+                        }
 
                         HBox managebtn = new HBox(editIcon);
                         managebtn.setStyle("-fx-alignment:center");
