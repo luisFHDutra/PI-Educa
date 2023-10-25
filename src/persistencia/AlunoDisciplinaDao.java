@@ -112,7 +112,7 @@ public class AlunoDisciplinaDao extends DaoAdapter<AlunoDisciplina, Integer> {
                 if (rsPresenca.isBeforeFirst()) {
                     while (rsPresenca.next()) { // Use rsPresenca aqui
                         int idDisciplina = rsPresenca.getInt("disciplina_id");
-                        String data = rsPresenca.getString("data");
+                        String data = rsPresenca.getString("data_presenca");
                         Boolean presente = rsPresenca.getBoolean("presente");
 
                         Disciplina disciplina = null;
@@ -204,7 +204,7 @@ public class AlunoDisciplinaDao extends DaoAdapter<AlunoDisciplina, Integer> {
                     if (rsPresenca.isBeforeFirst()) {
                         while (rsPresenca.next()) { // Use rsPresenca aqui
                             int idDisciplina = rsPresenca.getInt("disciplina_id");
-                            String data = rsPresenca.getString("data");
+                            String data = rsPresenca.getString("data_presenca");
                             Boolean presente = rsPresenca.getBoolean("presente");
 
                             Disciplina disciplina = null;
@@ -272,22 +272,17 @@ public class AlunoDisciplinaDao extends DaoAdapter<AlunoDisciplina, Integer> {
         try
         {
             
-            System.out.println("" + objeto1.getPresente() + objeto.getAluno().getIdAluno() +
-                    objeto1.getDisciplina().getIdDisciplina()+ objeto1.getData());
-            
             String sql = "";
             
             if(presencaExiste(objeto, objeto1)) {
-                sql = "UPDATE presenca SET presente = ? WHERE aluno_id = ? AND disciplina_id = ? AND data = ?;";
+                sql = "UPDATE presenca SET presente = ? WHERE aluno_id = ? AND disciplina_id = ? AND data_presenca = ?;";
             } else {
-                sql = "INSERT INTO presenca (presente, aluno_id, disciplina_id, data) VALUES (?, ?, ?, ?);";
+                sql = "INSERT INTO presenca (presente, aluno_id, disciplina_id, data_presenca) VALUES (?, ?, ?, ?);";
             }
-            
-            System.out.println("" + sql);
-            
-            dbcm.runPreparedSQL(sql, objeto1.getPresente(), objeto.getAluno().getIdAluno(), 
+
+            dbcm.runPreparedSQL(sql, String.valueOf(objeto1.getPresente()), objeto.getAluno().getIdAluno(), 
                     objeto1.getDisciplina().getIdDisciplina(), objeto1.getData());
-            
+
             dbcm.closeConnection();
         } 
         catch (DataBaseException ex)
@@ -301,7 +296,7 @@ public class AlunoDisciplinaDao extends DaoAdapter<AlunoDisciplina, Integer> {
         
         try {
             
-            String sql = "SELECT * FROM presenca WHERE aluno_id = ? AND disciplina_id = ? AND data = ?";
+            String sql = "SELECT * FROM presenca WHERE aluno_id = ? AND disciplina_id = ? AND data_presenca = ?";
             ResultSet rs = dbcm.runPreparedQuerySQL(sql, objeto.getAluno().getIdAluno(),
                     objeto1.getDisciplina().getIdDisciplina(), objeto1.getData());
             

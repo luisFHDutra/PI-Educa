@@ -18,9 +18,9 @@
         </columns>
       </TableView>
       <JFXComboBox fx:id="cbTurma" labelFloat="true" layoutX="24.0" layoutY="21.0" prefHeight="25.0" prefWidth="108.0" promptText="Turma" />
-      <JFXDatePicker fx:id="tfData" layoutX="415.0" layoutY="21.0" overLay="true" promptText="Data" />
       <JFXButton layoutX="24.0" layoutY="356.0" onMouseClicked="#voltarMain" text="Voltar" />
       <JFXComboBox fx:id="cbDisciplina" labelFloat="true" layoutX="155.0" layoutY="21.0" prefHeight="25.0" prefWidth="108.0" promptText="Disciplina" />
       <HBox fx:id="iconContainer" alignment="CENTER" layoutX="290.0" layoutY="17.0" prefHeight="58.0" prefWidth="93.0" spacing="20.0" />
+      <JFXDatePicker fx:id="tfData" layoutX="415.0" layoutY="21.0" promptText="Data" />
    </children>
 </AnchorPane>
