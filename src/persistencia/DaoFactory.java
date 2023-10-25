@@ -3,7 +3,6 @@ package persistencia;
 
 import negocio.Aluno;
 import negocio.AlunoDisciplina;
-import negocio.DiaSemana;
 import negocio.Disciplina;
 import negocio.Permissao;
 import negocio.Professor;
@@ -15,11 +14,6 @@ public class DaoFactory {
     public static IDao<Aluno,Integer> criarAlunoDao()
     {
         return new AlunoDao();
-    }
-    
-    public static IDao<DiaSemana,Integer> criarDiaSemanaDao()
-    {
-        return new DiaSemanaDao();
     }
     
     public static IDao<Turma,Integer> criarTurmaDao()

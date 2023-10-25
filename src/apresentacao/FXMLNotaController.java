@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.property.SimpleStringProperty;
@@ -87,7 +88,7 @@ public class FXMLNotaController implements Initializable {
                 } catch (Exception ex) {
                     Notifications notification = Notifications.create();
                     notification.title("Error");
-                    notification.text("Erro ao deletar usuário ou professor");
+                    notification.text("Erro ao carregar a tabela");
                     notification.hideAfter(Duration.seconds(3));
                     notification.position(Pos.TOP_RIGHT);
                     notification.show();
@@ -149,13 +150,21 @@ public class FXMLNotaController implements Initializable {
         
         if (turma != null && disciplina != null) {
 
+            obsAlunos = null;
+            
             aluno.setCellValueFactory(new PropertyValueFactory<AlunoDisciplina, String>("aluno"));
 
             nota.setCellValueFactory(data -> {
             AlunoDisciplina alunoDisciplina = data.getValue();
+            
             List<Nota> notas = alunoDisciplina.getNotas();
-            if (notas.size() >= 1) {
-                return new SimpleStringProperty(String.valueOf(notas.get(0).getNota()));
+            
+            Optional<Nota> nota = notas.stream()
+                    .filter(n -> n.getDisciplina().getIdDisciplina() == disciplina.getIdDisciplina())
+                    .findFirst();
+            
+            if (nota.isPresent()) {
+                return new SimpleStringProperty(String.valueOf(nota.get().getNota()));
             }
                 return new SimpleStringProperty("0");
             });

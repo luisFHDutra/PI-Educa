@@ -154,7 +154,7 @@ public class FXMLPresencaController implements Initializable {
                 } catch (Exception ex) {
                     Notifications notification = Notifications.create();
                     notification.title("Error");
-                    notification.text("Erro ao deletar usuário ou professor");
+                    notification.text("Erro ao carregar a tabela");
                     notification.hideAfter(Duration.seconds(3));
                     notification.position(Pos.TOP_RIGHT);
                     notification.show();

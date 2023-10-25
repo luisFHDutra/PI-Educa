@@ -113,6 +113,19 @@ public class FXMLMainController implements Initializable {
         
     }
     
+    public void boletim (MouseEvent event) throws Exception {
+        Image icon = new Image("/imagens/book-icon.png");
+        Stage stage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/apresentacao/FXMLBoletim.fxml"));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.getIcons().add(icon);
+//      stage.initStyle(StageStyle.UNDECORATED);
+        stage.show();
+        ((Node)event.getSource()).getScene().getWindow().hide();
+        
+    }
+    
     public void loginoff (MouseEvent event) throws Exception {
         Sys.getInstance().setUser(null);
         
