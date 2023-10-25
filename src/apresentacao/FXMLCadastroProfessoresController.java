@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -95,10 +96,10 @@ public class FXMLCadastroProfessoresController implements Initializable {
         Permissao permissao = (Permissao) cbPermissoes.getSelectionModel().getSelectedItem();
         Disciplina disciplina = (Disciplina) cbDisciplina.getSelectionModel().getSelectedItem();
         
-        if (senha.isEmpty() || nome.isEmpty() || area.isEmpty() || contato.isEmpty()) {
+        if (senha.isEmpty() || nome.isEmpty() || area.isEmpty() || !checkEmailInput()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
             alerta.setHeaderText(null);
-            alerta.setContentText("Preencha todos os campos");
+            alerta.setContentText("Preencha todos os campos corretamente");
             alerta.showAndWait();
         } else {
             ProfessorDao professordao = new ProfessorDao();
@@ -159,7 +160,11 @@ public class FXMLCadastroProfessoresController implements Initializable {
         }
         
         if (!contato.isEmpty()) {
-            this.professor.setContato(contato);
+            
+            if (checkEmailInput()) {
+                this.professor.setContato(contato);
+            }
+            
         }
         
         if (disciplina != null) {
@@ -221,4 +226,33 @@ public class FXMLCadastroProfessoresController implements Initializable {
         notification.show();
      }
      
+     private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}(\\.[A-Z]{2,})?$", Pattern.CASE_INSENSITIVE
+    );
+
+    private boolean checkEmailInput() {
+        String email = tfContato.getText();
+        
+        if (!email.isEmpty()) {
+            if (EMAIL_PATTERN.matcher(email).matches()) {
+                tfContato.setStyle("-fx-border-color: blue;");
+
+                return true;
+            } else {
+                tfContato.setStyle("-fx-border-color: red;");
+
+                Notifications notification = Notifications.create();
+                notification.title("Error");
+                notification.text("Formato do e-mail incorreto");
+                notification.hideAfter(Duration.seconds(3));
+                notification.position(Pos.BOTTOM_CENTER);
+                notification.show();
+                
+                return false;
+            }
+        } else {
+            return false;
+        }
+        
+    }
 }
