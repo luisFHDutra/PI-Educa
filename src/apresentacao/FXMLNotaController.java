@@ -89,7 +89,7 @@ public class FXMLNotaController implements Initializable {
                     notification.title("Error");
                     notification.text("Erro ao deletar usuário ou professor");
                     notification.hideAfter(Duration.seconds(3));
-                    notification.position(Pos.BOTTOM_CENTER);
+                    notification.position(Pos.TOP_RIGHT);
                     notification.show();
                 }
             }
@@ -112,7 +112,7 @@ public class FXMLNotaController implements Initializable {
             notification.title("Error");
             notification.text("Professor não encontrado");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
         }
         
@@ -213,7 +213,7 @@ public class FXMLNotaController implements Initializable {
             notification.title("Error");
             notification.text("Selecione a turma e disciplina");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
         }
     }
@@ -253,7 +253,7 @@ public class FXMLNotaController implements Initializable {
             notification.title("Sucesso");
             notification.text("Operação realizada com sucesso");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
             
         } else {
@@ -261,7 +261,7 @@ public class FXMLNotaController implements Initializable {
             notification.title("Error");
             notification.text("Necessário selecionar um aluno e digitar a nota");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
         }
         

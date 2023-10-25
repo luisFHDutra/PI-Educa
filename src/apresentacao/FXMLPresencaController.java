@@ -156,7 +156,7 @@ public class FXMLPresencaController implements Initializable {
                     notification.title("Error");
                     notification.text("Erro ao deletar usuário ou professor");
                     notification.hideAfter(Duration.seconds(3));
-                    notification.position(Pos.BOTTOM_CENTER);
+                    notification.position(Pos.TOP_RIGHT);
                     notification.show();
                 }
             }
@@ -179,7 +179,7 @@ public class FXMLPresencaController implements Initializable {
             notification.title("Error");
             notification.text("Professor não encontrado");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
         }
         
@@ -239,10 +239,13 @@ public class FXMLPresencaController implements Initializable {
             presenca.setCellValueFactory(data -> {
             AlunoDisciplina alunoDisciplina = data.getValue();
             List<Presenca> presencas = alunoDisciplina.getPresencas();
+            
             if (presencas.size() >= 1) {
-                return new SimpleStringProperty(String.valueOf(presencas.get(0).getPresente()));
+                boolean presente = presencas.get(0).getPresente();
+                String status = presente ? "Presente" : "Ausente";
+                return new SimpleStringProperty(status);
             }
-                return new SimpleStringProperty("false");
+                return new SimpleStringProperty("Ausente");
             });
             
             List<AlunoDisciplina> alunos = DaoFactory.criarAlunoDisciplinaDao().readAll(new Filter<AlunoDisciplina>() {
@@ -302,7 +305,7 @@ public class FXMLPresencaController implements Initializable {
             notification.title("Error");
             notification.text("Selecione a turma e disciplina");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
         }
     }
@@ -344,7 +347,7 @@ public class FXMLPresencaController implements Initializable {
         notification.title("Sucesso");
         notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
-        notification.position(Pos.BOTTOM_CENTER);
+        notification.position(Pos.TOP_RIGHT);
         notification.show();
     }
     
@@ -353,7 +356,7 @@ public class FXMLPresencaController implements Initializable {
         notification.title("Error");
         notification.text("Erro ao realizar a operação");
         notification.hideAfter(Duration.seconds(3));
-        notification.position(Pos.BOTTOM_CENTER);
+        notification.position(Pos.TOP_RIGHT);
         notification.show();
     }
 }

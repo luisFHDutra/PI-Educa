@@ -244,7 +244,7 @@ public class FXMLTurmaController implements Initializable {
             notification.title("Error");
             notification.text("Selecione um item da tabela");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
             
         }
@@ -269,7 +269,7 @@ public class FXMLTurmaController implements Initializable {
         notification.title("Error");
         notification.text("Erro ao realizar a operação");
         notification.hideAfter(Duration.seconds(3));
-        notification.position(Pos.BOTTOM_CENTER);
+        notification.position(Pos.TOP_RIGHT);
         notification.show();
     }
 }

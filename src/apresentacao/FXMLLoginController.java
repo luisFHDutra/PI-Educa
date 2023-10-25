@@ -87,7 +87,7 @@ public class FXMLLoginController implements Initializable {
         notification.title("Error");
         notification.text("Usuário ou senha incorretos");
         notification.hideAfter(Duration.seconds(3));
-        notification.position(Pos.BOTTOM_CENTER);
+        notification.position(Pos.TOP_RIGHT);
         notification.show();
     }
     
@@ -96,7 +96,7 @@ public class FXMLLoginController implements Initializable {
         notification.title("Sucesso");
         notification.text("Bem vindo");
         notification.hideAfter(Duration.seconds(3));
-        notification.position(Pos.BOTTOM_CENTER);
+        notification.position(Pos.TOP_RIGHT);
         notification.show();
     }
     

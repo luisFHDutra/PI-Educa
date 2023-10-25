@@ -213,7 +213,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
         notification.title("Error");
         notification.text("Erro ao cadastrar usuário ou professor");
         notification.hideAfter(Duration.seconds(3));
-        notification.position(Pos.BOTTOM_CENTER);
+        notification.position(Pos.TOP_RIGHT);
         notification.show();
      }
 
@@ -222,7 +222,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
         notification.title("Sucesso");
         notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
-        notification.position(Pos.BOTTOM_CENTER);
+        notification.position(Pos.TOP_RIGHT);
         notification.show();
      }
      
@@ -245,7 +245,7 @@ public class FXMLCadastroProfessoresController implements Initializable {
                 notification.title("Error");
                 notification.text("Formato do e-mail incorreto");
                 notification.hideAfter(Duration.seconds(3));
-                notification.position(Pos.BOTTOM_CENTER);
+                notification.position(Pos.TOP_RIGHT);
                 notification.show();
                 
                 return false;

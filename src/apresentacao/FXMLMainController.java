@@ -41,7 +41,7 @@ public class FXMLMainController implements Initializable {
             notification.title("Error");
             notification.text("Nenhum usuário logado");
             notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.BOTTOM_CENTER);
+            notification.position(Pos.TOP_RIGHT);
             notification.show();
             
         }
