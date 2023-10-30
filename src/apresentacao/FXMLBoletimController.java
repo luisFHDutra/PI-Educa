@@ -3,6 +3,8 @@ package apresentacao;
 import com.jfoenix.controls.JFXComboBox;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Year;
 import java.util.ArrayList;
@@ -41,6 +43,11 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 public class FXMLBoletimController implements Initializable {
 
@@ -100,16 +107,35 @@ public class FXMLBoletimController implements Initializable {
         };
         lupaIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, lupaHandler);
         
-        FontAwesomeIconView printIcon = new FontAwesomeIconView(FontAwesomeIcon.PRINT);
-        printIcon.setSize("2em");
-        printIcon.getStyleClass().add("icon");
+        FontAwesomeIconView fileIcon = new FontAwesomeIconView(FontAwesomeIcon.FILE);
+        fileIcon.setSize("2em");
+        fileIcon.getStyleClass().add("icon");
 
-        printIcon.setStyle(" -fx-cursor: hand ;"
+        fileIcon.setStyle(" -fx-cursor: hand ;"
                 + "-glyph-size:28px;"
                 + "-fx-fill:#1aa7ec;"
         );
         
-        iconContainer.getChildren().addAll( lupaIcon, printIcon);
+        EventHandler<MouseEvent> fileHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    gerarPdf(event);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                    
+                    Notifications notification = Notifications.create();
+                    notification.title("Error");
+                    notification.text("Erro ao gerar PDF");
+                    notification.hideAfter(Duration.seconds(3));
+                    notification.position(Pos.TOP_RIGHT);
+                    notification.show();
+                }
+            }
+        };
+        fileIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, fileHandler);
+        
+        iconContainer.getChildren().addAll( lupaIcon, fileIcon);
         
         List<Turma> turmas = DaoFactory.criarTurmaDao().readAll();
         
@@ -174,17 +200,18 @@ public class FXMLBoletimController implements Initializable {
                 double porcentagem = (boletim.getFrequencia() / cargaHoraria) * 100;
                 
                 if (boletim.getNota() >= 7 && porcentagem >= 75) {
-                    
+                    boletim.setAprovado("Aprovado");
                     return new SimpleStringProperty("Aprovado");
                     
                 } else if (boletim.getNota() < 7) {
-                    
+                    boletim.setAprovado("Reprovado por nota");
                     return new SimpleStringProperty("Reprovado por nota");
                 } else if (porcentagem < 75) {
-                    
+                    boletim.setAprovado("Reprovado por falta");
                     return new SimpleStringProperty("Reprovado por falta");
                 }
                 
+                boletim.setAprovado("Reprovado");
                 return new SimpleStringProperty("Reprovado");
             });
             
@@ -235,12 +262,7 @@ public class FXMLBoletimController implements Initializable {
             tabela.setItems(obsBoletim);
             
         } else {
-            Notifications notification = Notifications.create();
-            notification.title("Error");
-            notification.text("Selecione todas as opções para continuar");
-            notification.hideAfter(Duration.seconds(3));
-            notification.position(Pos.TOP_RIGHT);
-            notification.show();
+            error();
         }
     }
     
@@ -248,13 +270,13 @@ public class FXMLBoletimController implements Initializable {
         
         // Configurar as propriedades
         Properties propriedades = new Properties();
-        propriedades.put("mail.smtp.host", "smtp.example.com"); // Substitua pelo servidor SMTP apropriado
-        propriedades.put("mail.smtp.port", "587"); // Porta SMTP
+        propriedades.put("mail.smtp.host", "smtp.gmail.com"); // Substitua pelo servidor SMTP apropriado
+        propriedades.put("mail.smtp.port", "465"); // Porta SMTP
         propriedades.put("mail.smtp.auth", "true");
 
         // Configurar credenciais
-        String usuario = "seu_email@example.com";
-        String senha = "sua_senha";
+        String usuario = "educaprojetointegrador@gmail.com";
+        String senha = "educa12345";
 
         // Criar uma sessão
         Session sessao = Session.getInstance(propriedades, new Authenticator() {
@@ -267,12 +289,119 @@ public class FXMLBoletimController implements Initializable {
         // Criar mensagem de e-mail
         Message mensagem = new MimeMessage(sessao);
         mensagem.setFrom(new InternetAddress(usuario));
-        mensagem.setRecipients(Message.RecipientType.TO, InternetAddress.parse(""));
-        mensagem.setSubject("");
-        mensagem.setText("");
+        mensagem.setRecipients(Message.RecipientType.TO, InternetAddress.parse("luis.dutra@universo.univates.br"));
+        mensagem.setSubject("Teste");
+        mensagem.setText("Olá!");
 
         // Enviar o e-mail
         Transport.send(mensagem);
+        
+    }
+    
+    public void gerarPdf (MouseEvent event) throws Exception {
+        Turma turma = (Turma) cbTurma.getSelectionModel().getSelectedItem();
+        Aluno aluno = (Aluno) cbAluno.getSelectionModel().getSelectedItem();
+        Integer ano = (Integer) cbAno.getSelectionModel().getSelectedItem();
+        
+        if (turma != null || aluno != null || ano != null || tabela.getSelectionModel() != null) {
+            try {
+                String nomeTurma = turma.getNome();
+                nomeTurma = nomeTurma.replaceAll("\\s", "");
+                
+                String nomeAluno = aluno.getNome();
+                nomeAluno = nomeAluno.replaceAll("\\s", "");
+                
+                PDDocument document = new PDDocument();
+                PDPage page = new PDPage(PDRectangle.A4);
+                document.addPage(page);
+
+                PDPageContentStream contentStream = new PDPageContentStream(document, page);     
+                
+                float margin = 50; // Margem esquerda
+                float yStart = page.getMediaBox().getHeight() - margin;
+                float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
+                float yPosition = yStart;
+                int cols = 4;
+                float rowHeight = 20f;
+
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(tableWidth / 2, yPosition);
+                contentStream.showText("BOLETIM");
+                contentStream.endText();
+                
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(margin, yPosition - 25f);
+                contentStream.showText("Aluno: " + aluno.getNome() + "    Turma: " + turma.getNome() + "    Ano: " + ano);
+                contentStream.endText();
+                 
+                // Configurar os cabeçalhos da tabela
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                float nextX = margin;
+                yPosition -= 60f;
+                for (TableColumn<Boletim, ?> column : tabela.getColumns()) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(nextX, yPosition);
+                    contentStream.showText(column.getText());
+                    contentStream.endText();
+                    nextX += tableWidth / cols;
+                }
+
+                // Preencher a tabela com os dados da tabela JavaFX
+                for (Boletim item : tabela.getItems()) {
+                    yPosition -= rowHeight;
+                    contentStream.setFont(PDType1Font.HELVETICA, 12);
+                    nextX = margin;
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(nextX, yPosition);
+                    contentStream.showText(item.getDisciplina().getNome());
+                    contentStream.endText();
+                    
+                    nextX += tableWidth / cols;
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(nextX, yPosition);
+                    contentStream.showText(String.valueOf(item.getNota()));
+                    contentStream.endText();
+                    
+                    nextX += tableWidth / cols;
+                    double cargaHoraria = item.getDisciplina().getCargaHorariaTotal();
+                    double porcentagem = (item.getFrequencia() / cargaHoraria) * 100;
+                    
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(nextX, yPosition);
+                    contentStream.showText(String.format("%.2f%%", porcentagem));
+                    contentStream.endText();
+                    
+                    nextX += tableWidth / cols;
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(nextX, yPosition);
+                    contentStream.showText(item.getAprovado());
+                    contentStream.endText();
+                }
+                contentStream.close();
+
+                // Salve o PDF em um arquivo
+                File file = new File("boletim" + nomeTurma + nomeAluno + ano + ".pdf");
+                document.save(file.getAbsolutePath());
+    //            document.save("boletim.pdf");
+
+                // Feche o documento
+                document.close();
+
+                Notifications notification = Notifications.create();
+                notification.title("Sucesso");
+                notification.text("Arquivo criado " + file.getAbsolutePath());
+                notification.hideAfter(Duration.seconds(3));
+                notification.position(Pos.TOP_RIGHT);
+                notification.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            error();
+        }
         
     }
     
@@ -287,5 +416,14 @@ public class FXMLBoletimController implements Initializable {
         stage.show();
         ((Node)event.getSource()).getScene().getWindow().hide();
         
+    }
+    
+    private void error() {
+        Notifications notification = Notifications.create();
+        notification.title("Error");
+        notification.text("Selecione todas as opções para continuar");
+        notification.hideAfter(Duration.seconds(3));
+        notification.position(Pos.TOP_RIGHT);
+        notification.show();
     }
 }

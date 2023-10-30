@@ -8,13 +8,18 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="PIEduca.jar" size="6644969" download="eager" />
+    <jar href="PIEduca.jar" size="11594825" download="eager" />
+    <jar href="lib\commons-logging-1.1-for-pdfbox.jar" size="52915" download="eager" />
     <jar href="lib\controlsfx-8.40.11.jar" size="985420" download="eager" />
     <jar href="lib\fontawesomefx-8.9.jar" size="571068" download="eager" />
     <jar href="lib\fontawesomefx-glyphsbrowser-all-1.0.jar" size="1662483" download="eager" />
+    <jar href="lib\fontbox-2.0.29.jar" size="1567722" download="eager" />
+    <jar href="lib\javax.mail.jar" size="659033" download="eager" />
     <jar href="lib\jbcrypt-0.4.jar" size="17429" download="eager" />
     <jar href="lib\jfoenix-8.0.8.jar" size="2708772" download="eager" />
+    <jar href="lib\pdfbox-2.0.29.jar" size="2779524" download="eager" />
     <jar href="lib\postgresql-42.6.0.jar" size="1081604" download="eager" />
+    <jar href="lib\xmpbox-2.0.29.jar" size="132509" download="eager" />
   </resources>
   <jfx:javafx-desc  width="800" height="600" main-class="pieduca.Main"  name="PIEduca" />
   <update check="always"/>
