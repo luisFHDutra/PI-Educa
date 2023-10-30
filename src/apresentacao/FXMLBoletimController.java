@@ -1,6 +1,8 @@
 package apresentacao;
 
+import auth.EmailAuthenticator;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.File;
@@ -43,6 +45,7 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
+import javax.mail.internet.MimeBodyPart;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -75,6 +78,9 @@ public class FXMLBoletimController implements Initializable {
     private ObservableList<Integer> obsAnos;
 
     private ObservableList<Boletim> obsBoletim;
+    
+    @FXML
+    private JFXTextField tfEmail;
     
     @FXML
     private HBox iconContainer;
@@ -135,7 +141,33 @@ public class FXMLBoletimController implements Initializable {
         };
         fileIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, fileHandler);
         
-        iconContainer.getChildren().addAll( lupaIcon, fileIcon);
+        FontAwesomeIconView mailIcon = new FontAwesomeIconView(FontAwesomeIcon.MAIL_FORWARD);
+        mailIcon.setSize("2em");
+        mailIcon.getStyleClass().add("icon");
+
+        mailIcon.setStyle(" -fx-cursor: hand ;"
+                + "-glyph-size:28px;"
+                + "-fx-fill:#1aa7ec;"
+        );
+        
+        EventHandler<MouseEvent> mailHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    enviarEmail(event);
+                } catch (Exception ex) {                    
+                    Notifications notification = Notifications.create();
+                    notification.title("Error");
+                    notification.text("Erro ao enviar o e-mail");
+                    notification.hideAfter(Duration.seconds(3));
+                    notification.position(Pos.TOP_RIGHT);
+                    notification.show();
+                }
+            }
+        };
+        mailIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, mailHandler);
+        
+        iconContainer.getChildren().addAll( lupaIcon, fileIcon, mailIcon);
         
         List<Turma> turmas = DaoFactory.criarTurmaDao().readAll();
         
@@ -267,35 +299,70 @@ public class FXMLBoletimController implements Initializable {
     }
     
     public void enviarEmail (MouseEvent event) throws Exception {
+        Turma turma = (Turma) cbTurma.getSelectionModel().getSelectedItem();
+        Aluno aluno = (Aluno) cbAluno.getSelectionModel().getSelectedItem();
+        Integer ano = (Integer) cbAno.getSelectionModel().getSelectedItem();
+        String email = tfEmail.getText();
         
-        // Configurar as propriedades
-        Properties propriedades = new Properties();
-        propriedades.put("mail.smtp.host", "smtp.gmail.com"); // Substitua pelo servidor SMTP apropriado
-        propriedades.put("mail.smtp.port", "465"); // Porta SMTP
-        propriedades.put("mail.smtp.auth", "true");
+        if (turma != null || aluno != null || ano != null || tabela.getSelectionModel() != null || !email.isEmpty()) {
+            // Configurar credenciais
+            String usuario = "educaprojetointegrador@gmail.com";
+            String senha = "unkj emgk iutb yhve";
 
-        // Configurar credenciais
-        String usuario = "educaprojetointegrador@gmail.com";
-        String senha = "educa12345";
+            // Define as propriedades de configuração
+            Properties propriedades = new Properties();
+            propriedades.put("mail.smtp.host", "smtp.gmail.com"); // Substitua pelo servidor SMTP apropriado
+            propriedades.put("mail.smtp.port", "587"); // Porta SMTP
+            propriedades.put("mail.smtp.auth", "true");
+            propriedades.put("mail.smtp.user", usuario);
+            propriedades.put("mail.smtp.password", senha);
+            propriedades.put("mail.smtp.starttls.enable", "true");
 
-        // Criar uma sessão
-        Session sessao = Session.getInstance(propriedades, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(usuario, senha);
+            Authenticator authenticator = new EmailAuthenticator(usuario, senha);
+
+            // Criar uma sessão
+            Session sessao = Session.getInstance(propriedades, authenticator);
+            
+            String tabelaBoletim = "Olá, resumo do boletim do aluno " + aluno.getNome() + "\n\n";
+            for (Boletim boletim : tabela.getItems()) {
+                double cargaHoraria = boletim.getDisciplina().getCargaHorariaTotal();
+                double porcentagem = (boletim.getFrequencia() / cargaHoraria) * 100;
+                
+                tabelaBoletim += boletim.getDisciplina().getNome() + " |\t" +
+                    boletim.getNota() + " |\t" +
+                    String.format("%.2f%%", porcentagem) + " |\t" +
+                    boletim.isAprovado() + "\n";
             }
-        });
+            
+            MimeBodyPart corpoEmail = new MimeBodyPart();
+            corpoEmail.setContent(tabelaBoletim, "text/plain");
+            
+            String conteudo = (String) corpoEmail.getContent();
+            
+            // Criar mensagem de e-mail
+            Message mensagem = new MimeMessage(sessao);
+            mensagem.setFrom(new InternetAddress(usuario));
+            mensagem.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            mensagem.setSubject("Boletim " + ano + " - " + aluno);
+            mensagem.setText(conteudo);
 
-        // Criar mensagem de e-mail
-        Message mensagem = new MimeMessage(sessao);
-        mensagem.setFrom(new InternetAddress(usuario));
-        mensagem.setRecipients(Message.RecipientType.TO, InternetAddress.parse("luis.dutra@universo.univates.br"));
-        mensagem.setSubject("Teste");
-        mensagem.setText("Olá!");
+            Transport transport = sessao.getTransport("smtp");
+            transport.connect("smtp.gmail.com", usuario, senha);
 
-        // Enviar o e-mail
-        Transport.send(mensagem);
-        
+            // Envia o e-mail
+            transport.sendMessage(mensagem, mensagem.getAllRecipients());
+            transport.close();
+
+            Notifications notification = Notifications.create();
+            notification.title("Sucesso");
+            notification.text("E-mail enviado para " + tfEmail.getText());
+            notification.hideAfter(Duration.seconds(3));
+            notification.position(Pos.TOP_RIGHT);
+            notification.show();
+        } else {
+            error();
+        }
+ 
     }
     
     public void gerarPdf (MouseEvent event) throws Exception {
@@ -376,7 +443,7 @@ public class FXMLBoletimController implements Initializable {
                     nextX += tableWidth / cols;
                     contentStream.beginText();
                     contentStream.newLineAtOffset(nextX, yPosition);
-                    contentStream.showText(item.getAprovado());
+                    contentStream.showText(item.isAprovado());
                     contentStream.endText();
                 }
                 contentStream.close();

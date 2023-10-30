@@ -43,7 +43,7 @@ public class Boletim {
         this.frequencia += frequencia;
     }
 
-    public String getAprovado() {
+    public String isAprovado() {
         return aprovado;
     }
 

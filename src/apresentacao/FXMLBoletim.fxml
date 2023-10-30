@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -21,6 +22,7 @@
       <JFXComboBox fx:id="cbAluno" labelFloat="true" layoutX="177.0" layoutY="29.0" prefHeight="25.0" prefWidth="110.0" promptText="Aluno" />
       <JFXButton layoutX="25.0" layoutY="407.0" onMouseClicked="#voltarMain" text="Voltar" />
       <JFXComboBox fx:id="cbAno" labelFloat="true" layoutX="316.0" layoutY="29.0" prefHeight="25.0" prefWidth="110.0" promptText="Ano" />
-      <HBox fx:id="iconContainer" alignment="CENTER" layoutX="461.0" layoutY="15.0" prefHeight="46.0" prefWidth="118.0" spacing="20.0" />
+      <HBox fx:id="iconContainer" alignment="CENTER" layoutX="437.0" layoutY="15.0" prefHeight="46.0" prefWidth="142.0" spacing="20.0" />
+      <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="369.0" layoutY="407.0" prefHeight="25.0" prefWidth="210.0" promptText="E-mail destinatário" />
    </children>
 </AnchorPane>
