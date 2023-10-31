@@ -155,18 +155,19 @@ public class FXMLNotaController implements Initializable {
             aluno.setCellValueFactory(new PropertyValueFactory<AlunoDisciplina, String>("aluno"));
 
             nota.setCellValueFactory(data -> {
-            AlunoDisciplina alunoDisciplina = data.getValue();
-            
-            List<Nota> notas = alunoDisciplina.getNotas();
-            
-            Optional<Nota> nota = notas.stream()
-                    .filter(n -> n.getDisciplina().getIdDisciplina() == disciplina.getIdDisciplina())
-                    .findFirst();
-            
-            if (nota.isPresent()) {
-                return new SimpleStringProperty(String.valueOf(nota.get().getNota()));
-            }
-                return new SimpleStringProperty("0");
+                AlunoDisciplina alunoDisciplina = data.getValue();
+
+                List<Nota> notas = alunoDisciplina.getNotas();
+
+                Optional<Nota> nota = notas.stream()
+                        .filter(n -> n.getDisciplina().getIdDisciplina() == disciplina.getIdDisciplina())
+                        .findFirst();
+
+                if (nota.isPresent()) {
+                    return new SimpleStringProperty(String.valueOf(nota.get().getNota()));
+                } else {
+                    return new SimpleStringProperty("0");
+                }
             });
 
             List<AlunoDisciplina> alunos = DaoFactory.criarAlunoDisciplinaDao().readAll(new Filter<AlunoDisciplina>() {

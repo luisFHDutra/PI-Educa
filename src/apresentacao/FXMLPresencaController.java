@@ -27,6 +27,7 @@ import pieduca.Sys;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
@@ -232,20 +233,30 @@ public class FXMLPresencaController implements Initializable {
         Disciplina disciplina = (Disciplina) cbDisciplina.getSelectionModel().getSelectedItem();
         
         if (turma != null && disciplina != null && tfData.getValue() != null) {
+            obsAlunos = null;
+            
             String dataEscolhida = tfData.getValue().toString();
             
             aluno.setCellValueFactory(new PropertyValueFactory<AlunoDisciplina, String>("aluno"));
             
             presenca.setCellValueFactory(data -> {
-            AlunoDisciplina alunoDisciplina = data.getValue();
-            List<Presenca> presencas = alunoDisciplina.getPresencas();
-            
-            if (presencas.size() >= 1) {
-                boolean presente = presencas.get(0).getPresente();
-                String status = presente ? "Presente" : "Ausente";
-                return new SimpleStringProperty(status);
-            }
-                return new SimpleStringProperty("Ausente");
+                AlunoDisciplina alunoDisciplina = data.getValue();
+
+                List<Presenca> presencas = alunoDisciplina.getPresencas();
+
+                Optional<Presenca> presenca = presencas.stream()
+                        .filter(p -> p.getDisciplina().getIdDisciplina() == disciplina.getIdDisciplina())
+                        .findFirst();
+
+                if (presenca.isPresent()) {
+                    boolean presente = presenca.get().getPresente();
+                    
+                    String status = presente ? "Presente" : "Ausente";
+                    
+                    return new SimpleStringProperty(status);
+                } else {
+                    return new SimpleStringProperty("Ausente");
+                }
             });
             
             List<AlunoDisciplina> alunos = DaoFactory.criarAlunoDisciplinaDao().readAll(new Filter<AlunoDisciplina>() {
@@ -274,7 +285,7 @@ public class FXMLPresencaController implements Initializable {
             });
             
             ArrayList<Presenca> presencas = new ArrayList();
-            presencas.add(new Presenca(null, dataEscolhida, false));
+//            presencas.add(new Presenca(null, dataEscolhida, false));
             
             ArrayList<AlunoDisciplina> todos = new ArrayList();
             
