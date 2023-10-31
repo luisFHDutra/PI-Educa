@@ -7,17 +7,17 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLCadastroAlunoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLCadastroAlunoController">
    <children>
-      <Label layoutX="248.0" layoutY="60.0" text="Cadastro de Alunos" />
-      <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="56.0" layoutY="139.0" promptText="Nome" />
-      <JFXTextField fx:id="tfFiliacao" labelFloat="true" layoutX="358.0" layoutY="139.0" promptText="Filiação" />
-      <JFXTextField fx:id="tfRg" labelFloat="true" layoutX="56.0" layoutY="224.0" onKeyReleased="#checkNumeros" onKeyTyped="#checkInput" promptText="RG" />
-      <JFXDatePicker fx:id="tfDataNascimento" layoutX="358.0" layoutY="224.0" promptText="Data de nascimento" />
-      <JFXButton layoutX="56.0" layoutY="336.0" onMouseClicked="#voltar" text="Voltar" />
-      <JFXButton fx:id="btnCadastrar" layoutX="280.0" layoutY="336.0" onMouseClicked="#cadastrarAluno" text="Cadastrar" />
-      <JFXButton layoutX="467.0" layoutY="336.0" onMouseClicked="#limparCampos" text="Limpar" />
-      <JFXComboBox fx:id="cbTurma" labelFloat="true" layoutX="203.0" layoutY="276.0" prefHeight="25.0" prefWidth="154.0" promptText="Turma" />
-      <JFXButton fx:id="btnAtualizar" layoutX="203.0" layoutY="336.0" onMouseClicked="#atualizarAluno" text="Atualizar" />
+      <Label layoutX="448.0" layoutY="157.0" text="Cadastro de Alunos" AnchorPane.topAnchor="157.0" />
+      <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="191.0" layoutY="358.0" promptText="Nome" AnchorPane.leftAnchor="191.0" />
+      <JFXTextField fx:id="tfFiliacao" labelFloat="true" layoutX="686.0" layoutY="358.0" promptText="Filiação" AnchorPane.rightAnchor="179.0" />
+      <JFXTextField fx:id="tfRg" labelFloat="true" layoutX="191.0" layoutY="522.0" onKeyReleased="#checkNumeros" onKeyTyped="#checkInput" promptText="RG" AnchorPane.leftAnchor="191.0" />
+      <JFXDatePicker fx:id="tfDataNascimento" layoutX="668.0" layoutY="522.0" promptText="Data de nascimento" AnchorPane.rightAnchor="161.0" />
+      <JFXButton layoutX="32.0" layoutY="732.0" onMouseClicked="#voltar" text="Voltar" AnchorPane.bottomAnchor="43.0" AnchorPane.leftAnchor="32.0" />
+      <JFXButton fx:id="btnCadastrar" layoutX="500.0" layoutY="732.0" onMouseClicked="#cadastrarAluno" text="Cadastrar" AnchorPane.bottomAnchor="43.0" />
+      <JFXButton layoutX="906.0" layoutY="732.0" onMouseClicked="#limparCampos" text="Limpar" AnchorPane.bottomAnchor="43.0" AnchorPane.rightAnchor="41.0" />
+      <JFXComboBox fx:id="cbTurma" labelFloat="true" layoutX="407.0" layoutY="596.0" prefHeight="25.0" prefWidth="154.0" promptText="Turma" AnchorPane.bottomAnchor="179.0" />
+      <JFXButton fx:id="btnAtualizar" layoutX="369.0" layoutY="732.0" onMouseClicked="#atualizarAluno" text="Atualizar" AnchorPane.bottomAnchor="43.0" />
    </children>
 </AnchorPane>

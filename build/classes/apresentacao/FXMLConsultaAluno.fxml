@@ -6,20 +6,20 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="428.0" prefWidth="767.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLConsultaAlunoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLConsultaAlunoController">
    <children>
-      <TableView fx:id="tabela" layoutX="22.0" layoutY="62.0" prefHeight="320.0" prefWidth="723.0">
+      <TableView fx:id="tabela" layoutX="22.0" layoutY="62.0" prefHeight="664.0" prefWidth="960.0" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="62.0">
         <columns>
           <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
-          <TableColumn fx:id="nome" prefWidth="123.0" text="NOME" />
-            <TableColumn fx:id="nascimento" minWidth="9.0" prefWidth="110.0" text="NASCIMENTO" />
-            <TableColumn fx:id="filiacao" minWidth="9.0" prefWidth="139.0" text="FILIAÇÂO" />
-            <TableColumn fx:id="rg" minWidth="0.0" prefWidth="114.0" text="RG" />
-            <TableColumn fx:id="turma" prefWidth="85.0" text="TURMA" />
-            <TableColumn fx:id="edit" prefWidth="75.0" />
+          <TableColumn fx:id="nome" prefWidth="176.0" text="NOME" />
+            <TableColumn fx:id="nascimento" minWidth="9.0" prefWidth="177.0" text="NASCIMENTO" />
+            <TableColumn fx:id="filiacao" minWidth="9.0" prefWidth="178.0" text="FILIAÇÂO" />
+            <TableColumn fx:id="rg" minWidth="0.0" prefWidth="137.0" text="RG" />
+            <TableColumn fx:id="turma" prefWidth="132.0" text="TURMA" />
+            <TableColumn fx:id="edit" prefWidth="84.0" />
         </columns>
       </TableView>
-      <JFXButton layoutX="22.0" layoutY="389.0" onMouseClicked="#voltarMain" text="Voltar" />
-      <HBox fx:id="iconContainer" alignment="CENTER_LEFT" layoutX="22.0" layoutY="14.0" prefHeight="44.0" prefWidth="141.0" spacing="20.0" />
+      <JFXButton layoutX="22.0" layoutY="748.0" onMouseClicked="#voltarMain" text="Voltar" AnchorPane.bottomAnchor="27.0" AnchorPane.leftAnchor="22.0" />
+      <HBox fx:id="iconContainer" alignment="CENTER_LEFT" layoutX="22.0" layoutY="14.0" prefHeight="44.0" prefWidth="141.0" spacing="20.0" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="14.0" />
    </children>
 </AnchorPane>

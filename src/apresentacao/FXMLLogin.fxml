@@ -6,11 +6,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLLoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLLoginController">
    <children>
-      <ImageView fx:id="imgLogo" fitHeight="50.0" fitWidth="50.0" layoutX="267.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" />
-      <JFXTextField fx:id="tfUsuario" labelFloat="true" layoutX="224.0" layoutY="174.0" onKeyTyped="#checkInput" promptText="Usuário" />
-      <JFXPasswordField fx:id="tfPassword" labelFloat="true" layoutX="224.0" layoutY="238.0" promptText="Senha" />
-      <JFXButton layoutX="265.0" layoutY="286.0" onMouseClicked="#login" text="Login" />
+      <ImageView fx:id="imgLogo" fitHeight="50.0" fitWidth="50.0" layoutX="476.0" layoutY="201.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="476.0" AnchorPane.rightAnchor="474.0" AnchorPane.topAnchor="201.0" />
+      <JFXTextField fx:id="tfUsuario" labelFloat="true" layoutX="433.0" layoutY="318.0" onKeyTyped="#checkInput" promptText="Usuário" AnchorPane.leftAnchor="433.0" AnchorPane.rightAnchor="432.0" />
+      <JFXPasswordField fx:id="tfPassword" labelFloat="true" layoutX="433.0" layoutY="410.0" promptText="Senha" AnchorPane.leftAnchor="433.0" AnchorPane.rightAnchor="432.0" />
+      <JFXButton layoutX="477.0" layoutY="504.0" onMouseClicked="#login" text="Login" AnchorPane.bottomAnchor="271.0" AnchorPane.leftAnchor="477.0" AnchorPane.rightAnchor="477.0" />
    </children>
 </AnchorPane>
