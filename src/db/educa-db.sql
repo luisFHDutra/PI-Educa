@@ -1,3 +1,6 @@
+CREATE DATABASE educa;
+\c educa
+
 CREATE TABLE Aluno (
   id int PRIMARY KEY,
   nome varchar NOT NULL,
@@ -91,8 +94,6 @@ ALTER TABLE Nota ADD FOREIGN KEY (disciplina_id) REFERENCES Disciplina (id);
 ALTER TABLE Usuario ADD FOREIGN KEY (id) REFERENCES Professor (id);
 
 ALTER TABLE Usuario ADD FOREIGN KEY (permissao_id) REFERENCES Permissao (id);
-
-
 
 INSERT INTO permissao VALUES (1, 'Administrador');
 INSERT INTO permissao VALUES (2, 'Usuário');
