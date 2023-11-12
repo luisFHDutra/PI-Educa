@@ -5,12 +5,22 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.FXMLLoginController">
    <children>
-      <ImageView fx:id="imgLogo" fitHeight="50.0" fitWidth="50.0" layoutX="476.0" layoutY="201.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="476.0" AnchorPane.rightAnchor="474.0" AnchorPane.topAnchor="201.0" />
-      <JFXTextField fx:id="tfUsuario" labelFloat="true" layoutX="433.0" layoutY="318.0" onKeyTyped="#checkInput" promptText="Usuário" AnchorPane.leftAnchor="433.0" AnchorPane.rightAnchor="432.0" />
-      <JFXPasswordField fx:id="tfPassword" labelFloat="true" layoutX="433.0" layoutY="410.0" promptText="Senha" AnchorPane.leftAnchor="433.0" AnchorPane.rightAnchor="432.0" />
-      <JFXButton layoutX="477.0" layoutY="504.0" onMouseClicked="#login" text="Login" AnchorPane.bottomAnchor="271.0" AnchorPane.leftAnchor="477.0" AnchorPane.rightAnchor="477.0" />
+      <ImageView fx:id="imgLogo" fitHeight="50.0" fitWidth="50.0" layoutX="475.0" layoutY="202.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="475.0" AnchorPane.rightAnchor="475.0" AnchorPane.topAnchor="202.0" />
+      <JFXTextField fx:id="tfUsuario" labelFloat="true" layoutX="325.0" layoutY="306.0" onKeyTyped="#checkInput" prefHeight="25.0" prefWidth="350.0" promptText="Usuário" AnchorPane.leftAnchor="325.0" AnchorPane.rightAnchor="325.0">
+         <font>
+            <Font size="18.0" />
+         </font></JFXTextField>
+      <JFXPasswordField fx:id="tfPassword" labelFloat="true" layoutX="326.0" layoutY="411.0" prefHeight="25.0" prefWidth="350.0" promptText="Senha" AnchorPane.leftAnchor="326.0" AnchorPane.rightAnchor="324.0">
+         <font>
+            <Font size="18.0" />
+         </font></JFXPasswordField>
+      <JFXButton fx:id="btnLogin" layoutX="448.0" layoutY="521.0" onMouseClicked="#login" prefHeight="60.0" prefWidth="105.0" text="Login" AnchorPane.bottomAnchor="219.0" AnchorPane.leftAnchor="448.0" AnchorPane.rightAnchor="447.0">
+         <font>
+            <Font size="18.0" />
+         </font></JFXButton>
    </children>
 </AnchorPane>

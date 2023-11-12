@@ -102,8 +102,13 @@ public class FXMLBoletimController implements Initializable {
                 try {
                     pesquisar(event);
                 } catch (Exception ex) {
+                    FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+                    icon.setSize("2em");
+                    icon.setStyle(" -fx-fill: red ;");
+                    
                     Notifications notification = Notifications.create();
                     notification.title("Error");
+                    notification.graphic(icon);
                     notification.text("Erro ao procurar boletim");
                     notification.hideAfter(Duration.seconds(3));
                     notification.position(Pos.TOP_RIGHT);
@@ -128,10 +133,13 @@ public class FXMLBoletimController implements Initializable {
                 try {
                     gerarPdf(event);
                 } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
+                    FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+                    icon.setSize("2em");
+                    icon.setStyle(" -fx-fill: red ;");
                     
                     Notifications notification = Notifications.create();
                     notification.title("Error");
+                    notification.graphic(icon);
                     notification.text("Erro ao gerar PDF");
                     notification.hideAfter(Duration.seconds(3));
                     notification.position(Pos.TOP_RIGHT);
@@ -155,9 +163,14 @@ public class FXMLBoletimController implements Initializable {
             public void handle(MouseEvent event) {
                 try {
                     enviarEmail(event);
-                } catch (Exception ex) {                    
+                } catch (Exception ex) {      
+                    FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+                    icon.setSize("2em");
+                    icon.setStyle(" -fx-fill: red ;");
+                    
                     Notifications notification = Notifications.create();
                     notification.title("Error");
+                    notification.graphic(icon);
                     notification.text("Erro ao enviar o e-mail");
                     notification.hideAfter(Duration.seconds(3));
                     notification.position(Pos.TOP_RIGHT);
@@ -353,8 +366,13 @@ public class FXMLBoletimController implements Initializable {
             transport.sendMessage(mensagem, mensagem.getAllRecipients());
             transport.close();
 
+            FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+            icon.setSize("2em");
+            icon.setStyle(" -fx-fill: green ;");
+            
             Notifications notification = Notifications.create();
             notification.title("Sucesso");
+            notification.graphic(icon);
             notification.text("E-mail enviado para " + tfEmail.getText());
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
@@ -456,8 +474,13 @@ public class FXMLBoletimController implements Initializable {
                 // Feche o documento
                 document.close();
 
+                FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+                icon.setSize("2em");
+                icon.setStyle(" -fx-fill: green ;");
+                
                 Notifications notification = Notifications.create();
                 notification.title("Sucesso");
+                notification.graphic(icon);
                 notification.text("Arquivo criado " + file.getAbsolutePath());
                 notification.hideAfter(Duration.seconds(3));
                 notification.position(Pos.TOP_RIGHT);
@@ -486,8 +509,13 @@ public class FXMLBoletimController implements Initializable {
     }
     
     private void error() {
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: red ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Error");
+        notification.graphic(icon);
         notification.text("Selecione todas as opções para continuar");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);

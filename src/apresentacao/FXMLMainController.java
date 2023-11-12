@@ -1,5 +1,8 @@
 package apresentacao;
 
+import com.jfoenix.controls.JFXButton;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -27,6 +30,23 @@ public class FXMLMainController implements Initializable {
     private Label lbUsuario;
     @FXML
     private Label lbPermissao;
+    @FXML
+    private Label lbUser;
+    
+    @FXML
+    private JFXButton btnNota;
+    @FXML
+    private JFXButton btnAluno;
+    @FXML
+    private JFXButton btnProfessor;
+    @FXML
+    private JFXButton btnTurma;
+    @FXML
+    private JFXButton btnLogin;
+    @FXML
+    private JFXButton btnPresenca;
+    @FXML
+    private JFXButton btnBoletim;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -35,6 +55,39 @@ public class FXMLMainController implements Initializable {
             
             lbUsuario.setText(prof.getNome());
             lbPermissao.setText(prof.getUsuario().getPermissao().getNome());
+            
+            FontAwesomeIconView userIcon = new FontAwesomeIconView(FontAwesomeIcon.USER);
+            userIcon.setSize("2em");
+            lbUser.setGraphic(userIcon);
+            
+            FontAwesomeIconView userIcon1 = new FontAwesomeIconView(FontAwesomeIcon.USER);
+            userIcon1.setSize("2em");
+            btnProfessor.setGraphic(userIcon1);
+            
+            FontAwesomeIconView lockIcon = new FontAwesomeIconView(FontAwesomeIcon.LOCK);
+            lockIcon.setSize("2em");
+            btnLogin.setGraphic(lockIcon);
+            
+            FontAwesomeIconView alunoIcon = new FontAwesomeIconView(FontAwesomeIcon.GRADUATION_CAP);
+            alunoIcon.setSize("2em");
+            btnAluno.setGraphic(alunoIcon);
+            
+            FontAwesomeIconView preseIcon = new FontAwesomeIconView(FontAwesomeIcon.CALENDAR_CHECK_ALT);
+            preseIcon.setSize("2em");
+            btnPresenca.setGraphic(preseIcon);
+            
+            FontAwesomeIconView bolIcon = new FontAwesomeIconView(FontAwesomeIcon.FILE_TEXT);
+            bolIcon.setSize("2em");
+            btnBoletim.setGraphic(bolIcon);
+            
+            FontAwesomeIconView notaIcon = new FontAwesomeIconView(FontAwesomeIcon.PENCIL);
+            notaIcon.setSize("2em");
+            btnNota.setGraphic(notaIcon);
+            
+            FontAwesomeIconView turmaIcon = new FontAwesomeIconView(FontAwesomeIcon.USERS);
+            turmaIcon.setSize("2em");
+            btnTurma.setGraphic(turmaIcon);
+            
         } catch (NotFoundException ex) {
             
             Notifications notification = Notifications.create();

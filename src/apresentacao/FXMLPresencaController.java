@@ -153,8 +153,13 @@ public class FXMLPresencaController implements Initializable {
                 try {
                     refreshTabela(event);
                 } catch (Exception ex) {
+                    FontAwesomeIconView errorIcon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+                    errorIcon.setSize("2em");
+                    errorIcon.setStyle(" -fx-fill: red ;");
+                    
                     Notifications notification = Notifications.create();
                     notification.title("Error");
+                    notification.graphic(errorIcon);
                     notification.text("Erro ao carregar a tabela");
                     notification.hideAfter(Duration.seconds(3));
                     notification.position(Pos.TOP_RIGHT);
@@ -176,8 +181,13 @@ public class FXMLPresencaController implements Initializable {
         try {
             professor = DaoFactory.criarProfessorDao().read(Sys.getInstance().getUser().getId());
         } catch (NotFoundException ex) {
+            FontAwesomeIconView errorIcon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            errorIcon.setSize("2em");
+            errorIcon.setStyle(" -fx-fill: red ;");
+            
             Notifications notification = Notifications.create();
             notification.title("Error");
+            notification.graphic(errorIcon);
             notification.text("Professor não encontrado");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
@@ -312,8 +322,13 @@ public class FXMLPresencaController implements Initializable {
             tabela.setItems(obsAlunos);
             
         } else {
+            FontAwesomeIconView errorIcon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            errorIcon.setSize("2em");
+            errorIcon.setStyle(" -fx-fill: red ;");
+            
             Notifications notification = Notifications.create();
             notification.title("Error");
+            notification.graphic(errorIcon);
             notification.text("Selecione a turma e disciplina");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
@@ -354,8 +369,13 @@ public class FXMLPresencaController implements Initializable {
     }
     
     private void check(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: green ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
+        notification.graphic(icon);
         notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);
@@ -363,8 +383,13 @@ public class FXMLPresencaController implements Initializable {
     }
     
     private void error(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: red ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Error");
+        notification.graphic(icon);
         notification.text("Erro ao realizar a operação");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);

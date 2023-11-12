@@ -1,8 +1,11 @@
 package apresentacao;
 
 import auth.Authenticator;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -34,11 +37,17 @@ public class FXMLLoginController implements Initializable {
     private JFXPasswordField tfPassword;
     @FXML
     private JFXTextField tfUsuario;
-
+    @FXML
+    private JFXButton btnLogin;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Image img = new Image("/imagens/icon-user.png");
         imgLogo.setImage(img);
+        
+        FontAwesomeIconView lockIcon = new FontAwesomeIconView(FontAwesomeIcon.LOCK);
+        lockIcon.setSize("2em");
+        btnLogin.setGraphic(lockIcon);
     }    
     
     public void login (MouseEvent event) throws Exception {
@@ -83,18 +92,28 @@ public class FXMLLoginController implements Initializable {
     }
     
     private void error(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: red ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Error");
         notification.text("Usuário ou senha incorretos");
+        notification.graphic(icon);
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);
         notification.show();
     }
     
     private void check(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: green ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
         notification.text("Bem vindo");
+        notification.graphic(icon);
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);
         notification.show();

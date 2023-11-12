@@ -239,9 +239,13 @@ public class FXMLTurmaController implements Initializable {
             ((Node)event.getSource()).getScene().getWindow().hide();
             
         } else {
+            FontAwesomeIconView errorIcon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            errorIcon.setSize("2em");
+            errorIcon.setStyle(" -fx-fill: red ;");
             
             Notifications notification = Notifications.create();
             notification.title("Error");
+            notification.graphic(errorIcon);
             notification.text("Selecione um item da tabela");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
@@ -265,8 +269,13 @@ public class FXMLTurmaController implements Initializable {
     }
     
     private void error(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: red ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Error");
+        notification.graphic(icon);
         notification.text("Erro ao realizar a operação");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);

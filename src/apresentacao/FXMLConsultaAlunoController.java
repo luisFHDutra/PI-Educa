@@ -264,9 +264,13 @@ public class FXMLConsultaAlunoController implements Initializable {
                 error();
             }
         } else {
+            FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            icon.setSize("2em");
+            icon.setStyle(" -fx-fill: red ;");
             
             Notifications notification = Notifications.create();
             notification.title("Error");
+            notification.graphic(icon);
             notification.text("Selecione um item da tabela");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
@@ -277,8 +281,13 @@ public class FXMLConsultaAlunoController implements Initializable {
     }
     
     private void error(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: red ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Error");
+        notification.graphic(icon);
         notification.text("Erro ao realizar a operação");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);
@@ -286,8 +295,13 @@ public class FXMLConsultaAlunoController implements Initializable {
     }
 
     private void check(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: green ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
+        notification.graphic(icon);
         notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);
@@ -339,9 +353,13 @@ public class FXMLConsultaAlunoController implements Initializable {
             ((Node)event.getSource()).getScene().getWindow().hide();
             
         } else {
+            FontAwesomeIconView errorIcon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            errorIcon.setSize("2em");
+            errorIcon.setStyle(" -fx-fill: red ;");
             
             Notifications notification = Notifications.create();
             notification.title("Error");
+            notification.graphic(errorIcon);
             notification.text("Selecione um item da tabela");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);

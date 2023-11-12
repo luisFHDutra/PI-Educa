@@ -86,8 +86,13 @@ public class FXMLNotaController implements Initializable {
                 try {
                     refreshTabela(event);
                 } catch (Exception ex) {
+                    FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+                    icon.setSize("2em");
+                    icon.setStyle(" -fx-fill: red ;");
+                    
                     Notifications notification = Notifications.create();
                     notification.title("Error");
+                    notification.graphic(icon);
                     notification.text("Erro ao carregar a tabela");
                     notification.hideAfter(Duration.seconds(3));
                     notification.position(Pos.TOP_RIGHT);
@@ -109,9 +114,14 @@ public class FXMLNotaController implements Initializable {
         try {
             professor = DaoFactory.criarProfessorDao().read(Sys.getInstance().getUser().getId());
         } catch (NotFoundException ex) {
+            FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            icon.setSize("2em");
+            icon.setStyle(" -fx-fill: red ;");
+            
             Notifications notification = Notifications.create();
             notification.title("Error");
             notification.text("Professor não encontrado");
+            notification.graphic(icon);
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
             notification.show();
@@ -219,8 +229,13 @@ public class FXMLNotaController implements Initializable {
 
             tabela.setItems(obsAlunos);
         } else {
+            FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            icon.setSize("2em");
+            icon.setStyle(" -fx-fill: red ;");
+            
             Notifications notification = Notifications.create();
             notification.title("Error");
+            notification.graphic(icon);
             notification.text("Selecione a turma e disciplina");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
@@ -259,16 +274,26 @@ public class FXMLNotaController implements Initializable {
             
             refresh();
             
+            FontAwesomeIconView checkIcon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+            checkIcon.setSize("2em");
+            checkIcon.setStyle(" -fx-fill: green ;");
+            
             Notifications notification = Notifications.create();
             notification.title("Sucesso");
+            notification.graphic(checkIcon);
             notification.text("Operação realizada com sucesso");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);
             notification.show();
             
         } else {
+            FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+            icon.setSize("2em");
+            icon.setStyle(" -fx-fill: red ;");
+            
             Notifications notification = Notifications.create();
             notification.title("Error");
+            notification.graphic(icon);
             notification.text("Necessário selecionar um aluno e digitar a nota");
             notification.hideAfter(Duration.seconds(3));
             notification.position(Pos.TOP_RIGHT);

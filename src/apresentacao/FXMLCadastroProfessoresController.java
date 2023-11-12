@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -209,8 +211,13 @@ public class FXMLCadastroProfessoresController implements Initializable {
     }
     
     private void error(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: red ;");
+        
         Notifications notification = Notifications.create();
         notification.title("Error");
+        notification.graphic(icon);
         notification.text("Erro ao cadastrar usuário ou professor");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);
@@ -218,8 +225,13 @@ public class FXMLCadastroProfessoresController implements Initializable {
      }
 
      private void check(){
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.CHECK_CIRCLE);
+        icon.setSize("2em");
+        icon.setStyle(" -fx-fill: green ;");
+         
         Notifications notification = Notifications.create();
         notification.title("Sucesso");
+        notification.graphic(icon);
         notification.text("Operação realizada com sucesso");
         notification.hideAfter(Duration.seconds(3));
         notification.position(Pos.TOP_RIGHT);
@@ -241,8 +253,13 @@ public class FXMLCadastroProfessoresController implements Initializable {
             } else {
                 tfContato.setStyle("-fx-border-color: red;");
 
+                FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
+                icon.setSize("2em");
+                icon.setStyle(" -fx-fill: red ;");
+                
                 Notifications notification = Notifications.create();
                 notification.title("Error");
+                notification.graphic(icon);
                 notification.text("Formato do e-mail incorreto");
                 notification.hideAfter(Duration.seconds(3));
                 notification.position(Pos.TOP_RIGHT);
