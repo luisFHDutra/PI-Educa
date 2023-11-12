@@ -100,15 +100,6 @@ INSERT INTO permissao VALUES (2, 'Usuário');
 INSERT INTO professor VALUES (1, 'Admin', 'Admin', 'admin@email.com', FALSE);
 INSERT INTO usuario VALUES (1, '$2a$10$dtAPkculHQqRuDd6Znn0KOQQIa61Jlt0iL73ZbmyPm3gD6VSfGcQa', 1, FALSE);
 
--- select * from professor;
--- select * from usuario;
--- select * from permissao;
--- select * from aluno;
--- select * from turma;
--- select * from disciplina;
-
-
-
 INSERT INTO disciplina (id, nome, carga_horaria)
 VALUES
     (1, 'História', 60),
