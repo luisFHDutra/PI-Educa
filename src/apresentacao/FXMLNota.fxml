@@ -19,7 +19,7 @@
           <TableColumn fx:id="nota" prefWidth="251.0" text="NOTA" />
         </columns>
       </TableView>
-      <JFXTextField fx:id="tfNota" labelFloat="true" layoutX="78.0" layoutY="687.0" onKeyReleased="#checkNumeros" onKeyTyped="#checkInput" prefHeight="25.0" prefWidth="300.0" promptText="Digite a nota" AnchorPane.bottomAnchor="74.0">
+      <JFXTextField fx:id="tfNota" labelFloat="true" layoutX="79.0" layoutY="695.0" onKeyReleased="#checkNumeros" onKeyTyped="#checkInput" prefHeight="25.0" prefWidth="300.0" promptText="Digite a nota" AnchorPane.bottomAnchor="66.0">
          <font>
             <Font size="18.0" />
          </font></JFXTextField>
@@ -32,7 +32,7 @@
             <Font size="18.0" />
          </font></JFXButton>
       <JFXComboBox fx:id="cbDisciplina" labelFloat="true" layoutX="256.0" layoutY="32.0" prefHeight="25.0" prefWidth="200.0" promptText="Disciplina" AnchorPane.topAnchor="32.0" />
-      <Label layoutX="16.0" layoutY="693.0" text="Nota:" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="16.0">
+      <Label layoutX="16.0" layoutY="707.0" text="Nota:" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="16.0">
          <font>
             <Font size="18.0" />
          </font></Label>
